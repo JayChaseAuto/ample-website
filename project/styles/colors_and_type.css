@@ -1,0 +1,572 @@
+/* ==========================================================================
+   Ampleproducts — Colors & Type
+   A premium, OEM+ automotive parts brand.
+   Visual DNA: Obsidian Black, Racing Red, Gold accents. High-contrast,
+   engineered, road-ready.
+   ========================================================================== */
+
+/* ---------- Web fonts ---------- */
+/* Alibaba PuHuiTi — the primary UI typeface (Chinese + Latin).
+   Geometric, clean, industrial. Pairs naturally with the Ample wordmark. */
+@font-face {
+  font-family: "AlibabaPuHuiTi";
+  src: url("fonts/AlibabaPuHuiTi-2-65-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "AlibabaPuHuiTi";
+  src: url("fonts/AlibabaPuHuiTi-2-75-SemiBold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Proxima Sans Medium — used for Latin / product descriptor text on the
+   existing packaging ("BRAKE PADS", "AUTO MOBILE PARTS LEAGUE ENTERPRISE"). */
+@font-face {
+  font-family: "ProximaSans";
+  src: url("fonts/ProximaSansMedium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Display typeface used for italic "Engine Parts"-style callouts in the
+   brand sheet. We use a free weight-matched substitute: Barlow Condensed
+   Italic. FLAG: swap for the brand's actual display italic if provided. */
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,600;1,800&family=Barlow:wght@400;500;600;700;800&display=swap");
+
+/* JetBrains Mono for part numbers, SKUs, specs. Substitution — flag if the
+   brand prefers a different mono. */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+/* ==========================================================================
+   :root — Tokens
+   ========================================================================== */
+:root {
+  /* ---------- Brand core ---------- */
+  --ample-red: #E92024;           /* Racing Red — primary action, logo */
+  --ample-red-hot: #FF2A2F;       /* Hover / hot state */
+  --ample-red-deep: #B3181C;      /* Pressed / deep red */
+  --ample-red-ink: #5A0E10;       /* Red for text on light bg / used sparingly */
+
+  --ample-gold: #CCAE69;          /* Gold — "Gold Standard" callouts only */
+  --ample-gold-hot: #E0C27E;
+  --ample-gold-deep: #9E8547;
+
+  --ample-obsidian: #0B0B0D;      /* Obsidian Black — primary dark surface */
+  --ample-black: #000000;         /* Pure black — for packaging-level contrast */
+  --ample-coal: #17181B;          /* Raised surface on black */
+  --ample-graphite: #23252A;      /* Card on black / dividers */
+  --ample-steel: #3A3D44;         /* Muted borders on dark */
+  --ample-silver: #9EA3AD;        /* Muted text on dark */
+  --ample-chrome: #D7DADF;        /* Light text on dark / secondary */
+
+  --ample-white: #FFFFFF;
+  --ample-paper: #F6F5F2;         /* Warm off-white — light mode surface */
+  --ample-paper-2: #ECEAE4;       /* Slightly darker paper */
+  --ample-ink: #0B0B0D;           /* Body text on light bg (same as obsidian) */
+
+  /* ---------- Semantic foundation — DARK (default) ---------- */
+  --bg-0: var(--ample-black);          /* Page */
+  --bg-1: var(--ample-obsidian);       /* Panel */
+  --bg-2: var(--ample-coal);           /* Raised card */
+  --bg-3: var(--ample-graphite);       /* Over-raised / input */
+
+  --fg-1: var(--ample-white);          /* Primary text */
+  --fg-2: var(--ample-chrome);         /* Secondary text */
+  --fg-3: var(--ample-silver);         /* Tertiary / meta */
+  --fg-4: var(--ample-steel);          /* Disabled */
+
+  --border-1: #2A2D33;                 /* Hairline border */
+  --border-2: #3A3D44;                 /* Strong border */
+  --border-hot: var(--ample-red);      /* Focused/selected */
+
+  --accent: var(--ample-red);
+  --accent-hover: var(--ample-red-hot);
+  --accent-press: var(--ample-red-deep);
+  --accent-fg: var(--ample-white);
+
+  --gold: var(--ample-gold);           /* Reserved for "Gold Standard" */
+
+  /* ---------- Semantic feedback ---------- */
+  --ok: #2FB776;
+  --warn: #F2B705;
+  --err: var(--ample-red);
+  --info: #4DA3FF;
+
+  /* ---------- Type scale ---------- */
+  /* Based on the product packaging hierarchy: huge brand marks, chunky
+     sans product labels, condensed monospace specs. */
+  --font-display: "Barlow Condensed", "AlibabaPuHuiTi", sans-serif; /* italic display */
+  --font-sans:    "AlibabaPuHuiTi", "ProximaSans", "Inter", system-ui, sans-serif;
+  --font-product: "Barlow", "ProximaSans", "AlibabaPuHuiTi", system-ui, sans-serif; /* BRAKE PADS-style */
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --fs-12: 0.75rem;
+  --fs-13: 0.8125rem;
+  --fs-14: 0.875rem;
+  --fs-15: 0.9375rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-20: 1.25rem;
+  --fs-24: 1.5rem;
+  --fs-28: 1.75rem;
+  --fs-32: 2rem;
+  --fs-40: 2.5rem;
+  --fs-48: 3rem;
+  --fs-64: 4rem;
+  --fs-80: 5rem;
+  --fs-96: 6rem;
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.2;
+  --lh-body: 1.5;
+  --lh-loose: 1.7;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+  --tracking-widest: 0.18em;   /* packaging-style caps */
+
+  /* ---------- Spacing (4px base) ---------- */
+  --s-0: 0;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+  --s-24: 96px;
+
+  /* ---------- Radii ---------- */
+  /* The brand leans ENGINEERED: hard corners on panels, small rounds
+     on inline chips, pill for tags. Avoid huge rounded-2xl softness. */
+  --r-0: 0;
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 8px;
+  --r-4: 12px;
+  --r-pill: 999px;
+
+  /* ---------- Elevation ---------- */
+  /* Dark UI: elevation is NOT soft drop-shadow — it's a thin top
+     highlight + a hard outer shadow. Replicates machined metal. */
+  --e-1: 0 1px 0 0 rgba(255,255,255,0.04) inset,
+         0 2px 8px rgba(0,0,0,0.4);
+  --e-2: 0 1px 0 0 rgba(255,255,255,0.06) inset,
+         0 8px 24px rgba(0,0,0,0.5);
+  --e-3: 0 1px 0 0 rgba(255,255,255,0.08) inset,
+         0 20px 48px rgba(0,0,0,0.6);
+  --glow-red: 0 0 0 1px var(--ample-red),
+              0 0 24px rgba(233,32,36,0.35);
+  --glow-gold: 0 0 0 1px var(--ample-gold),
+               0 0 24px rgba(204,174,105,0.28);
+
+  /* ---------- Transitions ---------- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-sharp: cubic-bezier(0.4, 0, 0.1, 1);  /* mechanical, snappy */
+  --t-fast: 120ms;
+  --t-med:  200ms;
+  --t-slow: 360ms;
+
+  /* ---------- Container ---------- */
+  --content-max: 1280px;
+  --gutter: 32px;
+
+  /* ---------- Diagonal stripes (packaging motif) ---------- */
+  --stripes-gold: repeating-linear-gradient(
+    -60deg,
+    var(--ample-gold) 0 8px,
+    transparent 8px 16px
+  );
+  --stripes-red: repeating-linear-gradient(
+    -60deg,
+    var(--ample-red) 0 8px,
+    transparent 8px 16px
+  );
+}
+
+/* ---------- LIGHT mode (for specs sheets, invoices, documentation) ---------- */
+:root[data-theme="light"] {
+  --bg-0: var(--ample-paper);
+  --bg-1: var(--ample-white);
+  --bg-2: var(--ample-paper-2);
+  --bg-3: #E2DFD8;
+
+  --fg-1: var(--ample-ink);
+  --fg-2: #3A3D44;
+  --fg-3: #6B6E75;
+  --fg-4: #9EA3AD;
+
+  --border-1: #DAD6CC;
+  --border-2: #BBB5A6;
+  --accent-fg: var(--ample-white);
+}
+
+/* ==========================================================================
+   Base semantic styles — elements map to tokens directly
+   ========================================================================== */
+html { color-scheme: dark; }
+body {
+  background: var(--bg-0);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-16);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-product);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  margin: 0;
+}
+
+h1 { font-size: clamp(var(--fs-40), 6vw, var(--fs-80)); text-transform: uppercase; letter-spacing: var(--tracking-normal); }
+h2 { font-size: clamp(var(--fs-32), 4vw, var(--fs-48)); text-transform: uppercase; letter-spacing: var(--tracking-normal); }
+h3 { font-size: var(--fs-24); }
+h4 { font-size: var(--fs-20); }
+h5 { font-size: var(--fs-18); }
+h6 { font-size: var(--fs-14); text-transform: uppercase; letter-spacing: var(--tracking-widest); color: var(--fg-3); }
+
+p { margin: 0 0 var(--s-4) 0; color: var(--fg-1); }
+
+small, .meta {
+  font-size: var(--fs-12);
+  color: var(--fg-3);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Monospace for part numbers, SKUs, specs, version strings */
+code, .sku, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--fg-1);
+  letter-spacing: var(--tracking-normal);
+}
+
+/* "Eyebrow" label — tiny caps used over a block. Ubiquitous in the brand. */
+.eyebrow {
+  font-family: var(--font-product);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--ample-red);
+}
+.eyebrow--gold { color: var(--ample-gold); }
+.eyebrow--muted { color: var(--fg-3); }
+
+/* Display italic — "Engine Parts" style accent */
+.display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-tight);
+  color: var(--ample-red);
+  line-height: 0.95;
+}
+
+/* Selection */
+::selection { background: var(--ample-red); color: #fff; }
+
+/* Focus ring — high visibility, mechanical */
+:focus-visible {
+  outline: 2px solid var(--ample-red);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Scroll Animations — fade/slide-in reveals + Lenis support
+   ========================================================================== */
+
+/* Lenis adds these classes to <html> when enabled. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-scrolling iframe { pointer-events: none; }
+
+/* Reveal: fade + lift on enter. One-shot — once .is-visible is added it stays. */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 700ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+.reveal[data-delay="1"] { transition-delay: 80ms; }
+.reveal[data-delay="2"] { transition-delay: 160ms; }
+.reveal[data-delay="3"] { transition-delay: 240ms; }
+.reveal[data-delay="4"] { transition-delay: 320ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible {
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   Category banner cards (homepage Explore Categories grid)
+   Photo-led card: photo top, gradient shade, glass icon chip, meta at bottom.
+   ========================================================================== */
+.cat-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--ample-coal);
+  border: 1px solid var(--border-1);
+  border-left: 1px solid var(--border-1);
+  border-radius: 4;
+  overflow: hidden;
+  transition: border-color 200ms var(--ease-sharp),
+              border-left-width 200ms var(--ease-sharp),
+              transform 200ms var(--ease-sharp);
+  text-decoration: none;
+  color: inherit;
+  min-height: 360px;
+}
+.cat-card:hover {
+  border-color: var(--border-2);
+  border-left: 3px solid var(--ample-red);
+  transform: translateY(-2px);
+}
+.cat-card:hover .cat-photo { transform: scale(1.04); }
+
+.cat-photo {
+  position: absolute;
+  inset: 0 0 35% 0;
+  background-size: cover;
+  background-position: center;
+  background-color: #0a0b0d;
+  background-image: linear-gradient(135deg, #1f2024 0%, #0a0b0d 100%);
+  transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: 0;
+}
+.cat-shade {
+  position: absolute;
+  inset: 0 0 35% 0;
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(11, 11, 13, 0.4) 60%,
+    rgba(11, 11, 13, 0.95) 100%);
+  z-index: 1;
+}
+.cat-icon-chip {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+.cat-meta {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  padding: 22px 22px 22px;
+  background: var(--ample-coal);
+  border-top: 1px solid var(--border-1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.cat-label {
+  font-family: var(--font-product);
+  font-weight: 800;
+  text-transform: uppercase;
+  font-size: 22px;
+  letter-spacing: 0.02em;
+  color: var(--fg-1);
+}
+.cat-body {
+  color: var(--fg-3);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0;
+}
+.cat-cta {
+  display: inline-block;
+  margin-top: 4px;
+  font-family: var(--font-product);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ample-red);
+  align-self: flex-start;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 2px;
+  transition: border-color 200ms var(--ease-sharp);
+}
+.cat-card:hover .cat-cta {
+  border-bottom-color: var(--ample-red);
+}
+
+/* Drop target — element accepts a dragged image file. The ring + hint
+   appear only while a file is hovering. */
+.drop-target {
+  position: relative;
+}
+.drop-target::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border: 2px dashed var(--ample-red);
+  border-radius: 4px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms var(--ease-sharp);
+  z-index: 5;
+}
+.drop-target.is-dragover::after { opacity: 1; }
+.drop-target .drop-hint {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-1);
+  font-family: var(--font-product);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-align: center;
+  background: rgba(11, 11, 13, 0.72);
+  pointer-events: none;
+  z-index: 6;
+  padding: 12px;
+}
+.drop-target.is-dragover .drop-hint { display: flex; }
+
+/* ==========================================================================
+   Product detail hero — drop-only image area, no SVG illustration.
+   Empty state: placeholder with prompt. Filled state: image fills the area.
+   ========================================================================== */
+.product-hero {
+  position: relative;
+  background:
+    radial-gradient(ellipse at center, rgba(255,255,255,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at center, #15161a 0%, #050608 80%);
+  border: 1px solid var(--border-1);
+  border-radius: 4px;
+  min-height: 480px;
+  overflow: hidden;
+  cursor: copy;
+}
+.product-hero-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.product-hero-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: var(--fg-3);
+  text-align: center;
+  padding: 24px;
+}
+.product-hero-placeholder-frame {
+  width: 64px;
+  height: 64px;
+  border: 1px dashed var(--border-2);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--fg-3);
+  font-size: 28px;
+  line-height: 1;
+}
+.product-hero-placeholder-text {
+  font-family: var(--font-product);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.product-hero-placeholder-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-3);
+  letter-spacing: 0.06em;
+}
+.product-hero.is-dragover .product-hero-placeholder-frame {
+  border-color: var(--ample-red);
+  color: var(--ample-red);
+}
+
+/* ==========================================================================
+   Atmosphere layers (page-level decorative overlays)
+   Three stackable layers, all pointer-events:none, sit behind page content.
+   ========================================================================== */
+.atm-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.atm-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 30%, #000 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 30%, #000 30%, transparent 100%);
+}
+.atm-noise {
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 1   0 0 0 0 1   0 0 0 0 1   0 0 0 1 0'/></filter><rect width='200' height='200' filter='url(%23n)'/></svg>");
+}
+.atm-glow {
+  background: radial-gradient(ellipse 60% 40% at 50% -10%,
+    var(--ample-red) 0%, transparent 70%);
+}
+
+/* Page content above atmosphere — page roots are direct children of .atm-host
+   (the App wrapper). Each page wraps in <div style="background:...">. We bump
+   ALL direct children except the atm-* layers and the floating tweaks panel
+   (which must stay position:fixed to dock to the viewport corner). */
+.atm-host > div:not(.atm-layer):not(.twk-panel) {
+  position: relative;
+  z-index: 2;
+}

@@ -1,0 +1,263 @@
+/* ==========================================================================
+   Ampleproducts — Colors & Type
+   A premium, OEM+ automotive parts brand.
+   Visual DNA: Obsidian Black, Racing Red, Gold accents. High-contrast,
+   engineered, road-ready.
+   ========================================================================== */
+
+/* ---------- Web fonts ---------- */
+/* In the Canva-bundled export we drop the local OTF/TTF font files
+   (~14MB combined) and lean on Google Fonts for everything. The brand
+   uses only Latin glyphs, so a Latin-only stack is fine. */
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,600;1,800&family=Barlow:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap");
+
+/* JetBrains Mono for part numbers, SKUs, specs. */
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+/* ==========================================================================
+   :root — Tokens
+   ========================================================================== */
+:root {
+  /* ---------- Brand core ---------- */
+  --ample-red: #E92024;           /* Racing Red — primary action, logo */
+  --ample-red-hot: #FF2A2F;       /* Hover / hot state */
+  --ample-red-deep: #B3181C;      /* Pressed / deep red */
+  --ample-red-ink: #5A0E10;       /* Red for text on light bg / used sparingly */
+
+  --ample-gold: #CCAE69;          /* Gold — "Gold Standard" callouts only */
+  --ample-gold-hot: #E0C27E;
+  --ample-gold-deep: #9E8547;
+
+  --ample-obsidian: #0B0B0D;      /* Obsidian Black — primary dark surface */
+  --ample-black: #000000;         /* Pure black — for packaging-level contrast */
+  --ample-coal: #17181B;          /* Raised surface on black */
+  --ample-graphite: #23252A;      /* Card on black / dividers */
+  --ample-steel: #3A3D44;         /* Muted borders on dark */
+  --ample-silver: #9EA3AD;        /* Muted text on dark */
+  --ample-chrome: #D7DADF;        /* Light text on dark / secondary */
+
+  --ample-white: #FFFFFF;
+  --ample-paper: #F6F5F2;         /* Warm off-white — light mode surface */
+  --ample-paper-2: #ECEAE4;       /* Slightly darker paper */
+  --ample-ink: #0B0B0D;           /* Body text on light bg (same as obsidian) */
+
+  /* ---------- Semantic foundation — DARK (default) ---------- */
+  --bg-0: var(--ample-black);          /* Page */
+  --bg-1: var(--ample-obsidian);       /* Panel */
+  --bg-2: var(--ample-coal);           /* Raised card */
+  --bg-3: var(--ample-graphite);       /* Over-raised / input */
+
+  --fg-1: var(--ample-white);          /* Primary text */
+  --fg-2: var(--ample-chrome);         /* Secondary text */
+  --fg-3: var(--ample-silver);         /* Tertiary / meta */
+  --fg-4: var(--ample-steel);          /* Disabled */
+
+  --border-1: #2A2D33;                 /* Hairline border */
+  --border-2: #3A3D44;                 /* Strong border */
+  --border-hot: var(--ample-red);      /* Focused/selected */
+
+  --accent: var(--ample-red);
+  --accent-hover: var(--ample-red-hot);
+  --accent-press: var(--ample-red-deep);
+  --accent-fg: var(--ample-white);
+
+  --gold: var(--ample-gold);           /* Reserved for "Gold Standard" */
+
+  /* ---------- Semantic feedback ---------- */
+  --ok: #2FB776;
+  --warn: #F2B705;
+  --err: var(--ample-red);
+  --info: #4DA3FF;
+
+  /* ---------- Type scale ---------- */
+  /* Based on the product packaging hierarchy: huge brand marks, chunky
+     sans product labels, condensed monospace specs. */
+  --font-display: "Barlow Condensed", "AlibabaPuHuiTi", sans-serif; /* italic display */
+  --font-sans:    "AlibabaPuHuiTi", "ProximaSans", "Inter", system-ui, sans-serif;
+  --font-product: "Barlow", "ProximaSans", "AlibabaPuHuiTi", system-ui, sans-serif; /* BRAKE PADS-style */
+  --font-mono:    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --fs-12: 0.75rem;
+  --fs-13: 0.8125rem;
+  --fs-14: 0.875rem;
+  --fs-15: 0.9375rem;
+  --fs-16: 1rem;
+  --fs-18: 1.125rem;
+  --fs-20: 1.25rem;
+  --fs-24: 1.5rem;
+  --fs-28: 1.75rem;
+  --fs-32: 2rem;
+  --fs-40: 2.5rem;
+  --fs-48: 3rem;
+  --fs-64: 4rem;
+  --fs-80: 5rem;
+  --fs-96: 6rem;
+
+  --lh-tight: 1.05;
+  --lh-snug: 1.2;
+  --lh-body: 1.5;
+  --lh-loose: 1.7;
+
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.04em;
+  --tracking-wider: 0.08em;
+  --tracking-widest: 0.18em;   /* packaging-style caps */
+
+  /* ---------- Spacing (4px base) ---------- */
+  --s-0: 0;
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+  --s-16: 64px;
+  --s-20: 80px;
+  --s-24: 96px;
+
+  /* ---------- Radii ---------- */
+  /* The brand leans ENGINEERED: hard corners on panels, small rounds
+     on inline chips, pill for tags. Avoid huge rounded-2xl softness. */
+  --r-0: 0;
+  --r-1: 2px;
+  --r-2: 4px;
+  --r-3: 8px;
+  --r-4: 12px;
+  --r-pill: 999px;
+
+  /* ---------- Elevation ---------- */
+  /* Dark UI: elevation is NOT soft drop-shadow — it's a thin top
+     highlight + a hard outer shadow. Replicates machined metal. */
+  --e-1: 0 1px 0 0 rgba(255,255,255,0.04) inset,
+         0 2px 8px rgba(0,0,0,0.4);
+  --e-2: 0 1px 0 0 rgba(255,255,255,0.06) inset,
+         0 8px 24px rgba(0,0,0,0.5);
+  --e-3: 0 1px 0 0 rgba(255,255,255,0.08) inset,
+         0 20px 48px rgba(0,0,0,0.6);
+  --glow-red: 0 0 0 1px var(--ample-red),
+              0 0 24px rgba(233,32,36,0.35);
+  --glow-gold: 0 0 0 1px var(--ample-gold),
+               0 0 24px rgba(204,174,105,0.28);
+
+  /* ---------- Transitions ---------- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-sharp: cubic-bezier(0.4, 0, 0.1, 1);  /* mechanical, snappy */
+  --t-fast: 120ms;
+  --t-med:  200ms;
+  --t-slow: 360ms;
+
+  /* ---------- Container ---------- */
+  --content-max: 1280px;
+  --gutter: 32px;
+
+  /* ---------- Diagonal stripes (packaging motif) ---------- */
+  --stripes-gold: repeating-linear-gradient(
+    -60deg,
+    var(--ample-gold) 0 8px,
+    transparent 8px 16px
+  );
+  --stripes-red: repeating-linear-gradient(
+    -60deg,
+    var(--ample-red) 0 8px,
+    transparent 8px 16px
+  );
+}
+
+/* ---------- LIGHT mode (for specs sheets, invoices, documentation) ---------- */
+:root[data-theme="light"] {
+  --bg-0: var(--ample-paper);
+  --bg-1: var(--ample-white);
+  --bg-2: var(--ample-paper-2);
+  --bg-3: #E2DFD8;
+
+  --fg-1: var(--ample-ink);
+  --fg-2: #3A3D44;
+  --fg-3: #6B6E75;
+  --fg-4: #9EA3AD;
+
+  --border-1: #DAD6CC;
+  --border-2: #BBB5A6;
+  --accent-fg: var(--ample-white);
+}
+
+/* ==========================================================================
+   Base semantic styles — elements map to tokens directly
+   ========================================================================== */
+html { color-scheme: dark; }
+body {
+  background: var(--bg-0);
+  color: var(--fg-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-16);
+  line-height: var(--lh-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-product);
+  font-weight: 700;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tracking-tight);
+  margin: 0;
+}
+
+h1 { font-size: clamp(var(--fs-40), 6vw, var(--fs-80)); text-transform: uppercase; letter-spacing: var(--tracking-normal); }
+h2 { font-size: clamp(var(--fs-32), 4vw, var(--fs-48)); text-transform: uppercase; letter-spacing: var(--tracking-normal); }
+h3 { font-size: var(--fs-24); }
+h4 { font-size: var(--fs-20); }
+h5 { font-size: var(--fs-18); }
+h6 { font-size: var(--fs-14); text-transform: uppercase; letter-spacing: var(--tracking-widest); color: var(--fg-3); }
+
+p { margin: 0 0 var(--s-4) 0; color: var(--fg-1); }
+
+small, .meta {
+  font-size: var(--fs-12);
+  color: var(--fg-3);
+  letter-spacing: var(--tracking-wide);
+}
+
+/* Monospace for part numbers, SKUs, specs, version strings */
+code, .sku, .mono {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  color: var(--fg-1);
+  letter-spacing: var(--tracking-normal);
+}
+
+/* "Eyebrow" label — tiny caps used over a block. Ubiquitous in the brand. */
+.eyebrow {
+  font-family: var(--font-product);
+  font-size: var(--fs-12);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  color: var(--ample-red);
+}
+.eyebrow--gold { color: var(--ample-gold); }
+.eyebrow--muted { color: var(--fg-3); }
+
+/* Display italic — "Engine Parts" style accent */
+.display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-tight);
+  color: var(--ample-red);
+  line-height: 0.95;
+}
+
+/* Selection */
+::selection { background: var(--ample-red); color: #fff; }
+
+/* Focus ring — high visibility, mechanical */
+:focus-visible {
+  outline: 2px solid var(--ample-red);
+  outline-offset: 2px;
+}

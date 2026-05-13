@@ -1,0 +1,422 @@
+/* Ample — Catalog, Gold Standard, Story/Contact pages */
+
+function CatalogPage({ filter: filterProp } = {}) {
+  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const eyebrow = tweaks.catalogEyebrow || 'Our Inventory';
+  const title = tweaks.catalogTitle || 'Our Catalog.';
+  const intro = tweaks.catalogIntro || "A curated selection of our precision components, organized by system. For fitment, pricing, or availability on any part, get in touch.";
+  const cardCols = tweaks.catalogCardCols || 3;
+  const showBlurbs = tweaks.catalogShowBlurbs !== false;
+  const cardImgRatio = tweaks.catalogCardRatio || '4/3';
+  const headerSize = tweaks.catalogHeaderSize || 84;
+  const filter = filterProp || tweaks.catalogFilter || 'all';
+  const layout = tweaks.catalogLayout || 'grouped'; // grouped | flat
+  const sortMode = tweaks.catalogSort || 'category';
+
+  // Group products by broad category
+  const grouped = PRODUCT_ORDER.reduce((acc, slug) => {
+    const p = PRODUCTS[slug];
+    (acc[p.category] = acc[p.category] || []).push(slug);
+    return acc;
+  }, {});
+  const categoryOrder = ['Braking', 'Cooling', 'HVAC', 'Engine', 'Electrical', 'Lighting', 'Steering', 'Wipers', 'Service'];
+  let categories = categoryOrder.filter((c) => grouped[c]);
+  if (filter !== 'all') categories = categories.filter((c) => c === filter);
+
+  const categoryBlurbs = {
+    'Braking': '',
+    'Cooling': '',
+    'HVAC': '',
+    'Engine': '',
+    'Electrical': '',
+    'Lighting': '',
+    'Steering': '',
+    'Wipers': '',
+    'Service': ''
+  };
+
+  // Flat list (sorted) when layout = flat
+  let flatSlugs = [];
+  if (layout === 'flat') {
+    flatSlugs = PRODUCT_ORDER.filter((s) => filter === 'all' || PRODUCTS[s].category === filter);
+    if (sortMode === 'name') flatSlugs.sort((a, b) => (PRODUCTS[a].title + PRODUCTS[a].title2).localeCompare(PRODUCTS[b].title + PRODUCTS[b].title2));else
+    if (sortMode === 'gold') flatSlugs.sort((a, b) => (PRODUCTS[b].goldStandard ? 1 : 0) - (PRODUCTS[a].goldStandard ? 1 : 0));
+  }
+
+  return (
+    <div style={{ background: 'var(--bg-0)', minHeight: '100vh' }}>
+      <SiteHeader active="catalog" />
+      <main style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px 80px' }} data-screen-label="Catalog">
+        <Reveal><Eyebrow>{eyebrow}</Eyebrow></Reveal>
+        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: headerSize, textTransform: 'uppercase', margin: '10px 0 0', letterSpacing: '-0.02em', lineHeight: 0.95 }}>{title}</Reveal>
+        <Reveal as="p" delay={2} style={{ color: 'var(--fg-2)', fontSize: 15, lineHeight: 1.6, marginTop: 18, maxWidth: 640 }}>
+          {intro}
+        </Reveal>
+
+        {layout === 'flat' ?
+        <div style={{ marginTop: 56 }}>
+            <Reveal style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 20, borderBottom: '1px solid var(--border-1)', paddingBottom: 14 }}>
+              <div>
+                <Eyebrow color="red">{flatSlugs.length} {flatSlugs.length === 1 ? 'product' : 'products'}</Eyebrow>
+                <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 44, textTransform: 'uppercase', margin: '8px 0 0', letterSpacing: '-0.01em' }}>{filter === 'all' ? 'All Products.' : filter + '.'}</h2>
+              </div>
+            </Reveal>
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cardCols}, 1fr)`, gap: 16 }}>
+              {flatSlugs.map((slug, idx) => (
+                <Reveal key={slug} delay={idx % 4}>
+                  <CatalogCard slug={slug} ratio={cardImgRatio} />
+                </Reveal>
+              ))}
+            </div>
+          </div> :
+
+        <div style={{ marginTop: 56, display: 'grid', gap: 64 }}>
+            {categories.map((cat) =>
+          <section key={cat}>
+                <Reveal style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 20, borderBottom: '1px solid var(--border-1)', paddingBottom: 14 }}>
+                  <div>
+                    <Eyebrow color="red">{grouped[cat].length} {grouped[cat].length === 1 ? 'product' : 'products'}</Eyebrow>
+                    <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 44, textTransform: 'uppercase', margin: '8px 0 0', letterSpacing: '-0.01em' }}>{{ Braking: 'Ample Brakes', Cooling: 'Ample Cooling', HVAC: 'Ample AC', Engine: 'Ample Engine', Electrical: 'Ample Electrical', Lighting: 'Ample Lighting', Steering: 'Ample Steering Parts', Wipers: 'Ample Wipers', Service: 'Ample Filters' }[cat] || cat}</h2>
+                  </div>
+                  {showBlurbs &&
+              <p style={{ color: 'var(--fg-3)', fontSize: 13, lineHeight: 1.6, margin: 0, maxWidth: 420, textAlign: 'right' }}>{categoryBlurbs[cat]}</p>
+              }
+                </Reveal>
+                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cardCols}, 1fr)`, gap: 16 }}>
+                  {grouped[cat].map((slug, idx) => (
+                    <Reveal key={slug} delay={idx % 4}>
+                      <CatalogCard slug={slug} ratio={cardImgRatio} />
+                    </Reveal>
+                  ))}
+                </div>
+              </section>
+          )}
+          </div>
+        }
+      </main>
+      <SiteFooter />
+    </div>);
+
+}
+
+function CatalogCard({ slug, ratio = '4/3' }) {
+  const p = PRODUCTS[slug];
+  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const cardImage = (tweaks.catalogCardImages || {})[slug];
+  const imageFit = tweaks.cardImageFit || 'contain';
+
+  const dropRef = React.useRef(null);
+  useImageDrop(dropRef, (path) => {
+    window.__ampleSetTweak && window.__ampleSetTweak('catalogCardImages',
+      { ...(window.__ampleTweaks?.catalogCardImages || {}), [slug]: path });
+  }, { namePrefix: `card-${slug}` });
+
+  return (
+    <div
+      ref={dropRef}
+      className="catalog-card drop-target"
+      style={{
+        position: 'relative',
+        background: 'var(--ample-coal)',
+        border: '1px solid var(--border-1)',
+        borderRadius: 4,
+        overflow: 'hidden',
+        transition: 'all 120ms var(--ease-sharp)'
+      }}
+      onMouseEnter={(e) => {e.currentTarget.style.transform = 'translateY(-2px)';e.currentTarget.style.boxShadow = 'var(--e-2)';e.currentTarget.style.borderColor = 'var(--border-2)';}}
+      onMouseLeave={(e) => {e.currentTarget.style.transform = 'none';e.currentTarget.style.boxShadow = 'none';e.currentTarget.style.borderColor = 'var(--border-1)';}}>
+      <div className="drop-hint">Drop image for {p.title} {p.title2 || ''}</div>
+      {p.goldStandard &&
+      <span style={{ position: 'absolute', top: 10, right: 10, zIndex: 4, background: 'var(--ample-gold)', color: '#17110a', fontFamily: 'var(--font-product)', fontSize: 9, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 999, pointerEvents: 'none' }}>★ Gold</span>
+      }
+      <div style={{ position: 'relative', aspectRatio: ratio, background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', padding: 16, overflow: 'hidden' }}>
+        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240} override={cardImage} />
+      </div>
+      <a href={`#/product/${slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block', padding: '14px 18px 18px', borderTop: '1px solid var(--border-1)' }}>
+        <Eyebrow color={p.goldStandard ? 'gold' : 'red'} style={{ fontSize: 10 }}>{p.category}</Eyebrow>
+        <div style={{ fontFamily: 'var(--font-product)', fontWeight: 700, textTransform: 'uppercase', fontSize: 16, marginTop: 6 }}>{p.title} {p.title2}</div>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginTop: 12 }}>
+          <div style={{ fontFamily: 'var(--font-product)', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--ample-red)', borderBottom: '1px solid var(--ample-red)' }}>View Details</div>
+        </div>
+      </a>
+    </div>);
+
+}
+
+/* ---------- Gold Standard · Lab media box ---------- */
+/* Lab-01 dyno panel — droppable image OR video. Defaults to the
+   caliper SVG. If the stored path ends in a recognised video
+   extension we render an autoplay/loop/muted <video> sized to the
+   box; otherwise we treat it as an image background. */
+const VIDEO_EXT_RE = /\.(mp4|webm|mov|m4v|ogg|ogv|mkv)(\?|$)/i;
+
+function LabMediaBox() {
+  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const media = tweaks.goldStandardMedia || '';
+  const isVideo = VIDEO_EXT_RE.test(media);
+  const isImage = !!media && !isVideo;
+
+  const dropRef = React.useRef(null);
+  useImageDrop(dropRef, (path) => {
+    window.__ampleSetTweak && window.__ampleSetTweak('goldStandardMedia', path);
+  }, { namePrefix: 'gold-dyno', accept: ['image', 'video'] });
+
+  return (
+    <div
+      ref={dropRef}
+      className="drop-target"
+      style={{ background: 'var(--ample-coal)', border: '1px solid var(--border-1)', aspectRatio: '4/3', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', inset: 0, background: isImage
+        ? `url(${media}) center / cover no-repeat`
+        : 'radial-gradient(ellipse at 30% 30%, #2a2d33 0%, #0a0b0d 80%)' }} />
+      {isVideo && (
+        <video
+          src={media}
+          autoPlay loop muted playsInline
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', background: '#000' }}
+        />
+      )}
+      {!media && (
+        <div style={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%,-50%)' }}>
+          <ProductHero type="caliper" size={260} />
+        </div>
+      )}
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 65%, rgba(0,0,0,0.5) 100%)', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', bottom: 20, left: 20, fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', letterSpacing: '0.1em', zIndex: 2 }}>LAB-01 · FRICTION DYNO</div>
+      <div className="drop-hint">Drop image or video</div>
+    </div>
+  );
+}
+
+/* ---------- Gold Standard · Precision + Material feature cards ---------- */
+const GOLD_FEATURES = [
+  { key: 'precision', t: 'Precision Engineering', b: 'Our machining partners hold ±5 µm tolerances across the whole catalog, verified per-batch on a CMM.', bg: 'linear-gradient(135deg, #2a2d33 0%, #0a0b0d 100%)' },
+  { key: 'material',  t: 'Material Sourcing',     b: 'Metallurgy-traceable billet stock. Every critical part ships with a material certificate on request.',  bg: 'linear-gradient(135deg, #1a1b1e 0%, #000 100%)' },
+];
+
+function GoldFeatureCard({ feature, delay }) {
+  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const img = (tweaks.goldFeatureImages || {})[feature.key] || '';
+  const dropRef = React.useRef(null);
+  useImageDrop(dropRef, (path) => {
+    window.__ampleSetTweak && window.__ampleSetTweak('goldFeatureImages',
+      { ...(window.__ampleTweaks?.goldFeatureImages || {}), [feature.key]: path });
+  }, { namePrefix: `gold-${feature.key}` });
+  return (
+    <Reveal delay={delay} style={{ background: 'var(--ample-coal)', border: '1px solid var(--border-1)', overflow: 'hidden' }}>
+      <div
+        ref={dropRef}
+        className="drop-target"
+        style={{ aspectRatio: '16/9', position: 'relative', background: img
+          ? `url(${img}) center / cover no-repeat`
+          : feature.bg }}>
+        {!img && (
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 60%)' }} />
+        )}
+        <div className="drop-hint">Drop image for {feature.t}</div>
+      </div>
+      <div style={{ padding: 24, borderTop: '1px solid var(--border-1)' }}>
+        <Eyebrow color="gold">{feature.t}</Eyebrow>
+        <p style={{ color: 'var(--fg-2)', fontSize: 14, lineHeight: 1.6, marginTop: 10 }}>{feature.b}</p>
+      </div>
+    </Reveal>
+  );
+}
+
+/* ---------- Gold Standard page ---------- */
+function GoldStandardPage() {
+  return (
+    <div style={{ background: '#000', minHeight: '100vh' }}>
+      <SiteHeader active="gold" />
+      <main data-screen-label="Gold Standard">
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px 32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 48, alignItems: 'start' }}>
+            <Reveal>
+              <Eyebrow color="gold">The Standard</Eyebrow>
+              <h1 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 88, lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: '-0.02em', margin: '12px 0 0' }}>
+                <span style={{ color: 'var(--ample-gold)' }}>The Gold Standard.</span><br />
+                Uncompromising<br />quality assurance.
+              </h1>
+            </Reveal>
+            <Reveal delay={2} style={{ display: 'flex', justifyContent: 'center', paddingTop: 40 }}>
+              <GoldMedallion size={200} />
+            </Reveal>
+          </div>
+        </section>
+
+        {/* Rigorous testing block */}
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '24px 40px 40px' }}>
+          <Reveal style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            <LabMediaBox />
+            <div style={{ padding: '32px 8px' }}>
+              <Eyebrow>Rigorous Testing</Eyebrow>
+              <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 36, textTransform: 'uppercase', margin: '10px 0 14px' }}>Every SKU gets the dyno.</h2>
+              <p style={{ color: 'var(--fg-2)', fontSize: 15, lineHeight: 1.6, maxWidth: 520 }}>
+                Our high-inertia friction dyno runs each Gold Standard batch to failure. Thermally, mechanically, then in duty cycle. Nothing leaves the lab on a spec sheet alone.
+              </p>
+              <div style={{ background: 'var(--ample-coal)', border: '1px solid var(--ample-gold)', padding: 20, marginTop: 22, display: 'inline-block', boxShadow: 'var(--glow-gold)' }}>
+                <div style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 40, color: 'var(--ample-gold)', lineHeight: 1 }}>800 °C</div>
+                <div style={{ fontFamily: 'var(--font-product)', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--fg-3)', marginTop: 8 }}>Brake fade ceiling · verified</div>
+              </div>
+            </div>
+          </Reveal>
+        </section>
+
+        {/* Precision + Material row */}
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '20px 40px 40px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+            {GOLD_FEATURES.map((c, i) => (
+              <GoldFeatureCard key={c.key} feature={c} delay={i % 4} />
+            ))}
+          </div>
+        </section>
+
+        {/* Warranty band */}
+        <section style={{ borderTop: '1px solid var(--border-1)', borderBottom: '1px solid var(--border-1)', background: '#000' }}>
+          <Stripes color="gold" height={6} />
+          <Reveal style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px', textAlign: 'center' }}>
+            <Eyebrow color="gold">Service Promise</Eyebrow>
+            <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 56, textTransform: 'uppercase', margin: '14px 0 0', lineHeight: 0.95 }}>
+              We stand behind every part.<br /><span style={{ color: 'var(--ample-gold)' }}>Trusted by professionals.</span>
+            </h2>
+          </Reveal>
+          <Stripes color="gold" height={6} />
+        </section>
+      </main>
+      <SiteFooter />
+    </div>);
+
+}
+
+/* ---------- Our Story page ---------- */
+const STORY_ENTRIES = [
+  { key: '2009', year: '2009',       t: 'Entered the auto parts industry', b: 'and provided consistent service towards shops and suppliers', img: 'assets/history_2009_1778520721447.png' },
+  { key: '2011', year: '2011 to 2019', t: 'THE QUALITY MISSION', b: "Over a decade of experience revealed a critical gap: the market was flooded with failing supply chains and inconsistent parts. We spent these years improving supplier relationships and maintaining quality", img: 'assets/history_2011_1778520777617.png' },
+  { key: '2019', year: '2019 to present', t: 'THE AMPLE STANDARD', b: "Ample was born to bridge that gap. Today, we manage over 10,000 SKUs all strictly certified to OEM or OEM+ specifications ensuring that \"aftermarket\" never means a compromise in performance.", img: 'assets/history_2024_1778520797001.png' },
+];
+
+function TimelineEntry({ entry, delay }) {
+  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const override = (tweaks.storyImages || {})[entry.key];
+  const img = override || entry.img;
+  const dropRef = React.useRef(null);
+  useImageDrop(dropRef, (path) => {
+    window.__ampleSetTweak && window.__ampleSetTweak('storyImages',
+      { ...(window.__ampleTweaks?.storyImages || {}), [entry.key]: path });
+  }, { namePrefix: `history-${entry.key}` });
+  return (
+    <Reveal delay={delay} style={{ display: 'grid', gridTemplateColumns: '170px 60px 1fr', gap: 0, marginBottom: 32, alignItems: 'start' }}>
+      <div
+        ref={dropRef}
+        className="drop-target"
+        style={{ background: `url(${img}) center / cover no-repeat`, aspectRatio: '4/3', borderRadius: 2, border: '1px solid var(--border-1)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(11,11,13,0.7) 100%)' }} />
+        <div style={{ position: 'absolute', bottom: 8, left: 10, fontFamily: 'var(--font-mono)', fontSize: 9, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em', zIndex: 2 }}>ARCHIVE · {entry.key}</div>
+        <div className="drop-hint">Drop image for {entry.year}</div>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 60 }}>
+        <div style={{ width: 14, height: 14, borderRadius: 7, background: 'var(--ample-red)', border: '3px solid #000', boxShadow: '0 0 0 1px var(--ample-red)' }} />
+      </div>
+      <div style={{ paddingTop: 4 }}>
+        <div style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 22, textTransform: 'uppercase' }}>{entry.t} <span style={{ color: 'var(--fg-3)', fontWeight: 500 }}>({entry.year})</span></div>
+        <p style={{ color: 'var(--fg-2)', fontSize: 13, lineHeight: 1.6, marginTop: 8, maxWidth: 380 }}>{entry.b}</p>
+      </div>
+    </Reveal>
+  );
+}
+
+function StoryPage() {
+  return (
+    <div style={{ background: '#000', minHeight: '100vh' }}>
+      <SiteHeader active="story" />
+      <main style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px 64px' }} data-screen-label="Our Story">
+        <Reveal><Eyebrow>History · Timeline</Eyebrow></Reveal>
+        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 84, textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 48px' }}>
+          Our Story.
+        </Reveal>
+
+        <div style={{ position: 'relative', maxWidth: 920 }}>
+          <div style={{ position: 'absolute', left: 200, top: 24, bottom: 24, width: 1, background: 'var(--border-2)' }} />
+          {STORY_ENTRIES.map((e, i) => (
+            <TimelineEntry key={e.key} entry={e} delay={i % 4} />
+          ))}
+        </div>
+
+        {/* Bottom big slogan */}
+        <Reveal style={{ marginTop: 80, borderTop: '1px solid var(--border-1)', paddingTop: 40 }}>
+          <Eyebrow>Features · Now Driving</Eyebrow>
+          <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 64, textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 0' }}>
+            Built for the road, <br /><span style={{ color: 'var(--ample-red)' }}>not the shelf.</span>
+          </h2>
+        </Reveal>
+      </main>
+      <SiteFooter />
+    </div>);
+
+}
+
+/* ---------- Contact Us page ---------- */
+function ContactPage() {
+  return (
+    <div style={{ background: '#000', minHeight: '100vh' }}>
+      <SiteHeader active="contact" />
+      <main style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px 64px' }} data-screen-label="Contact Us">
+        <Reveal><Eyebrow>Get In Touch</Eyebrow></Reveal>
+        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 84, textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 48px' }}>
+          Contact Us.
+        </Reveal>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'start' }}>
+          {/* Contact details */}
+          <Reveal delay={1}>
+            <Eyebrow>Reach The Team</Eyebrow>
+            <p style={{ color: 'var(--fg-2)', fontSize: 16, lineHeight: 1.6, marginTop: 14, maxWidth: 480 }}>This site showcases our product line it is not a storefront. For pricing, technical specifications, or to learn more about a component, get in touch with our team directly.
+
+            </p>
+
+            <div style={{ marginTop: 36, display: 'grid', gap: 24 }}>
+              {[
+              { label: 'General Inquiries', v: 'support@ampleproducts.ca' },
+              { label: 'Technical Support', v: 'support@ampleproducts.ca' },
+              { label: 'Buisness Inquiries', v: 'partners@ampleproducts.ca' },
+              { label: 'Headquarters', v: 'Toronto, Canada' }].
+              map((r) =>
+              <div key={r.label} style={{ borderTop: '1px solid var(--border-1)', paddingTop: 16 }}>
+                  <div style={{ fontFamily: 'var(--font-product)', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>{r.label}</div>
+                  <div style={{ fontFamily: 'var(--font-product)', fontSize: 22, fontWeight: 700, color: 'var(--fg-1)', marginTop: 6 }}>{r.v}</div>
+                </div>
+              )}
+            </div>
+          </Reveal>
+
+          {/* Contact form */}
+          <Reveal as="div" delay={2} id="contact" style={{ background: 'var(--ample-coal)', border: '1px solid var(--border-1)', padding: 32 }}>
+            <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 40, textTransform: 'uppercase', margin: 0 }}>Send a message</h2>
+            <div style={{ fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--fg-3)', marginTop: 4 }}></div>
+            <p style={{ color: 'var(--fg-2)', fontSize: 14, marginTop: 16, lineHeight: 1.6 }}>We'll respond within two business days</p>
+            <form onSubmit={(e) => {e.preventDefault();alert('Submitted. Our team will be in touch.');}} style={{ display: 'grid', gap: 12, marginTop: 20 }}>
+              <input placeholder="Name" style={inputStyle} />
+              <input placeholder="Email" type="email" style={inputStyle} />
+              <input placeholder="Subject" style={inputStyle} />
+              <textarea placeholder="Message" rows={5} style={{ ...inputStyle, resize: 'vertical', fontFamily: 'var(--font-sans)' }} />
+              <Button variant="primary">Submit</Button>
+            </form>
+            <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--border-1)', fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>
+
+            </div>
+          </Reveal>
+        </div>
+      </main>
+      <SiteFooter />
+    </div>);
+
+}
+
+const inputStyle = {
+  width: '100%', boxSizing: 'border-box',
+  background: 'var(--ample-graphite)', border: '1px solid var(--border-1)',
+  color: 'var(--fg-1)', borderRadius: 4, padding: '12px 14px',
+  fontFamily: 'var(--font-sans)', fontSize: 14, outline: 'none'
+};
+
+Object.assign(window, { CatalogPage, GoldStandardPage, StoryPage, ContactPage });

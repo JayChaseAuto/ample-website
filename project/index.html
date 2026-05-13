@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ample. Road-ready precision</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="styles/colors_and_type.css">
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  *, *::before, *::after { box-sizing: border-box; }
+  a { color: inherit; }
+  button { font-family: inherit; }
+  input, textarea { font-family: inherit; }
+  input:focus, textarea:focus { border-color: var(--ample-red) !important; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- Build tag — bump to bust browser cache for JSX scripts. -->
+<script>window.__BUILD__ = 'v6-' + Date.now();</script>
+<script src="image-slot.js"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=19"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=19"></script>
+<script type="text/babel" src="src/Animations.jsx?v=19"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=19"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=19"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=19"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=19"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=19"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=19"></script>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#E92024",
+  "theme": "dark",
+  "heroImage": "assets\/hero-79b6980d.webp",
+  "heroOverlay": 26,
+  "heroHeadline1": "oem+",
+  "heroHeadlineAccent": "brakes",
+  "heroHeadline2": "",
+  "showStats": true,
+  "stat1Value": "1M+",
+  "stat1Label": "Happy customers",
+  "stat2Value": "10K+",
+  "stat2Label": "SKUs in range",
+  "stat3Value": "20+",
+  "stat3Label": "years of experience",
+  "gridCols": 2,
+  "showGoldBanner": false,
+  "catalogEyebrow": "Our Inventory",
+  "catalogTitle": "Our Catalog.",
+  "catalogIntro": "A curated selection of our precision components, organized by system. For fitment, pricing, or availability on any part, get in touch.",
+  "catalogHeaderSize": 63,
+  "catalogLayout": "grouped",
+  "catalogFilter": "all",
+  "catalogSort": "category",
+  "catalogCardCols": 2,
+  "catalogCardRatio": "16\/9",
+  "cardImageFit": "contain",
+  "catalogShowBlurbs": true,
+  "categoryImages": {
+    "Braking": "assets\/cat-braking-b8e84dc7.webp",
+    "Cooling": "assets\/cat-cooling-711bfc91.webp",
+    "HVAC": "assets\/cat-hvac-81ac76a5.webp",
+    "Engine": "assets\/engine-parts-banner-raw.png",
+    "Electrical": "assets\/cat-electrical-16b4a8cc.webp",
+    "Lighting": "assets\/cat-lighting-e172da46.webp",
+    "Steering": "assets\/cat-steering-f5ec687b.webp",
+    "Service": "assets\/cat-service-c289f552.webp"
+  },
+  "catalogCardImages": {
+    "brake-pads": "assets\/brakepads.png",
+    "caliper-npc": "assets\/caliper_2.png",
+    "abs-sensor": "assets\/UCC.png",
+    "pad-sensor": "assets\/Sensors.png",
+    "water-pump-awn": "assets\/waterpump.png",
+    "compressor": "assets\/ac_comp.png",
+    "alternator": "assets\/alternator_2.png",
+    "starter": "assets\/Starter.png",
+    "ignition-coil": "assets\/coil.png",
+    "lighting": "assets\/Lightbulb.png",
+    "power-steering-pump": "assets\/power_steering.png",
+    "air-filter": "assets\/air_filters.png",
+    "cabin-filter": "assets\/cabin_filters.png",
+    "condenser": "assets\/card-condenser-769aa8e3.webp"
+  },
+  "productOverrides": {
+    "brake-pads": {
+      "heroBgImage": "assets\/product-brake-pads-hero-92eed4a8.webp"
+    },
+    "pad-sensor": {
+      "heroBgImage": "assets\/product-pad-sensor-hero-68318690.webp"
+    },
+    "starter": {
+      "heroBgImage": "assets\/product-starter-hero-ff47eda2.webp"
+    },
+    "cabin-filter": {
+      "heroBgImage": "assets\/product-cabin-filter-hero-7f3157c8.webp"
+    },
+    "air-filter": {
+      "heroBgImage": "assets\/product-air-filter-hero-c2dc97a7.webp"
+    },
+    "caliper-npc": {
+      "heroBgImage": "assets\/product-caliper-npc-hero-24c98b00.webp"
+    }
+  },
+  "atmosphere": "both",
+  "atmosphereGlow": 6,
+  "goldStandardMedia": "assets\/gold-dyno-094485be.mov",
+  "goldFeatureImages": {
+    "precision": "assets\/gold-precision-5968d80f.webp",
+    "material": "assets\/gold-material-2613d8c5.webp"
+  },
+  "storyImages": {
+    "2009": "assets\/history-2009-c7497883.webp",
+    "2019": "assets\/history-2024-c7497883.webp"
+  }
+}/*EDITMODE-END*/;
+
+// Photo assets available in /assets — surfaced in the Tweaks panel as
+// dropdown options for category banners + product hero backgrounds.
+// To add new photos: drop the file in ample-website/project/assets/ and
+// append { value: 'assets/yourfile.jpg', label: 'Your label' } below.
+const AVAILABLE_PHOTOS = [
+  { value: '', label: '(none, gradient)' },
+  { value: 'assets/brake-disc-caliper.jpg', label: 'Brake disc + caliper' },
+  { value: 'assets/brake-pad-hero.png', label: 'Brake pad' },
+  { value: 'assets/engine-parts-banner-raw.png', label: 'Engine parts banner' },
+  { value: 'assets/packaging-brake-pad-box.png', label: 'Packaging shot' }
+];
+
+const HERO_ASSET_OPTIONS = [
+  'brake-pads', 'caliper', 'radiator', 'water-pump', 'sensor',
+  'power-steering', 'starter', 'filter', 'oil-cooler', 'tensioner',
+  'blower-motor', 'lighting', 'ignition-coil', 'compressor', 'exhaust',
+  'gasket', 'rack-pinion', 'wiper-motor'
+];
+
+/* exportTweaksState — turns the in-memory tweak state into something
+   permanent on a static site:
+   1. Walks the tweak object looking for base64 data: URLs (= dropped images).
+   2. Triggers a browser download for each, using a stable, descriptive
+      filename (custom-hero.png, custom-cat-cooling.png, etc.).
+   3. Returns a clone of the state with each data URL replaced by the path
+      the file will live at in /assets/ — ready to paste into index.html
+      between the EDITMODE markers. */
+function exportTweaksState(t) {
+  const clone = JSON.parse(JSON.stringify(t));
+  const files = [];
+  const slugify = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                                  .replace(/^-+|-+$/g, '');
+  const extOf = (dataUrl) => {
+    const m = /^data:[a-z]+\/([a-z0-9-+.]+)/i.exec(dataUrl);
+    if (!m) return 'png';
+    return m[1].toLowerCase().replace('jpeg', 'jpg').replace('quicktime', 'mov');
+  };
+  // Also matches data:video/... — drop fallback can stage either media type.
+  const isData = (v) => typeof v === 'string' && /^data:(image|video)\//i.test(v);
+
+  const queue = (filename, dataUrl) => { files.push({ filename, dataUrl }); };
+
+  if (isData(clone.heroImage)) {
+    const fn = `custom-hero.${extOf(clone.heroImage)}`;
+    queue(fn, clone.heroImage);
+    clone.heroImage = `assets/${fn}`;
+  }
+  if (clone.categoryImages) {
+    for (const k of Object.keys(clone.categoryImages)) {
+      if (isData(clone.categoryImages[k])) {
+        const fn = `custom-cat-${slugify(k)}.${extOf(clone.categoryImages[k])}`;
+        queue(fn, clone.categoryImages[k]);
+        clone.categoryImages[k] = `assets/${fn}`;
+      }
+    }
+  }
+  if (clone.productOverrides) {
+    for (const slug of Object.keys(clone.productOverrides)) {
+      const o = clone.productOverrides[slug];
+      if (o && isData(o.heroBgImage)) {
+        const fn = `custom-product-${slugify(slug)}-hero.${extOf(o.heroBgImage)}`;
+        queue(fn, o.heroBgImage);
+        o.heroBgImage = `assets/${fn}`;
+      }
+    }
+  }
+  // Card images are per-product; useImageDrop already writes to assets/
+  // when permission is granted, but a fallback data URL can land here too.
+  if (clone.catalogCardImages) {
+    for (const k of Object.keys(clone.catalogCardImages)) {
+      if (isData(clone.catalogCardImages[k])) {
+        const fn = `custom-card-${slugify(k)}.${extOf(clone.catalogCardImages[k])}`;
+        queue(fn, clone.catalogCardImages[k]);
+        clone.catalogCardImages[k] = `assets/${fn}`;
+      }
+    }
+  }
+  if (clone.storyImages) {
+    for (const k of Object.keys(clone.storyImages)) {
+      if (isData(clone.storyImages[k])) {
+        const fn = `custom-history-${slugify(k)}.${extOf(clone.storyImages[k])}`;
+        queue(fn, clone.storyImages[k]);
+        clone.storyImages[k] = `assets/${fn}`;
+      }
+    }
+  }
+  if (isData(clone.goldStandardMedia)) {
+    const fn = `custom-gold-dyno.${extOf(clone.goldStandardMedia)}`;
+    queue(fn, clone.goldStandardMedia);
+    clone.goldStandardMedia = `assets/${fn}`;
+  }
+  if (clone.goldFeatureImages) {
+    for (const k of Object.keys(clone.goldFeatureImages)) {
+      if (isData(clone.goldFeatureImages[k])) {
+        const fn = `custom-gold-${slugify(k)}.${extOf(clone.goldFeatureImages[k])}`;
+        queue(fn, clone.goldFeatureImages[k]);
+        clone.goldFeatureImages[k] = `assets/${fn}`;
+      }
+    }
+  }
+
+  // Stagger downloads so Chrome doesn't flag a popup spam from one click.
+  files.forEach((f, i) => {
+    setTimeout(() => {
+      const a = document.createElement('a');
+      a.href = f.dataUrl;
+      a.download = f.filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }, i * 250);
+  });
+
+  // Format JSON to match the existing TWEAK_DEFAULTS style: 2-space indent,
+  // forward slashes escaped (matches what Claude Design writes back).
+  const json = JSON.stringify(clone, null, 2).replace(/\//g, '\\/');
+
+  // Best-effort clipboard copy. Works on localhost / https; user-gesture
+  // present (the Save button click) so no permission prompt.
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(json).catch(() => {});
+  }
+
+  return { json, files: files.map((f) => f.filename) };
+}
+
+/* saveTweaksToSource — bakes the current tweak state into the source file's
+   TWEAK_DEFAULTS block via the File System Access API. Resolves index.html
+   through the shared project directory handle (same handle useImageDrop uses
+   to write into assets/), so the picker appears once per session for both
+   flows. Anything left as a data: URL still falls through exportTweaksState,
+   which triggers a download + rewrites the JSON to point at assets/. */
+async function saveTweaksToSource(t) {
+  if (typeof window.ensureProjectDirHandle !== 'function') {
+    return { ok: false, error: 'File system helpers not loaded yet. Reload and try again.' };
+  }
+  try {
+    const dir = await window.ensureProjectDirHandle();
+    const fileHandle = await dir.getFileHandle('index.html');
+    const exported = exportTweaksState(t);
+    const original = await (await fileHandle.getFile()).text();
+    const replaced = original.replace(
+      /\/\*EDITMODE-BEGIN\*\/[\s\S]*?\/\*EDITMODE-END\*\//,
+      `/*EDITMODE-BEGIN*/${exported.json}/*EDITMODE-END*/`
+    );
+    if (replaced === original) {
+      return { ok: false, error: 'Could not find EDITMODE markers in index.html.' };
+    }
+    const writable = await fileHandle.createWritable();
+    await writable.write(replaced);
+    await writable.close();
+    return { ok: true, filename: 'index.html', files: exported.files };
+  } catch (e) {
+    if (e && e.name === 'AbortError') return { ok: false, error: 'Canceled.' };
+    return { ok: false, error: (e && e.message) || String(e) };
+  }
+}
+
+function useHashRoute() {
+  const get = () => (window.location.hash || '#/').slice(1);
+  const [path, setPath] = React.useState(get());
+  React.useEffect(() => {
+    const on = () => { setPath(get()); window.scrollTo(0, 0); };
+    window.addEventListener('hashchange', on);
+    return () => window.removeEventListener('hashchange', on);
+  }, []);
+  return path;
+}
+
+function applyTweaksToDOM(t) {
+  const root = document.documentElement;
+  root.style.setProperty('--ample-red', t.accentColor);
+  // derived hot/deep variants — slight lighten/darken via color-mix
+  root.style.setProperty('--ample-red-hot', `color-mix(in srgb, ${t.accentColor} 85%, white)`);
+  root.style.setProperty('--ample-red-deep', `color-mix(in srgb, ${t.accentColor} 78%, black)`);
+  root.style.setProperty('--accent', t.accentColor);
+  root.style.setProperty('--border-hot', t.accentColor);
+  root.setAttribute('data-theme', t.theme);
+}
+
+function App() {
+  const path = useHashRoute();
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  // Expose tweaks to other components via window, then apply to DOM
+  React.useEffect(() => {
+    window.__ampleTweaks = t;
+    window.__ampleSetTweak = (key, value) => setTweak(key, value);
+    window.__ampleSetCategoryImage = (label, dataUrl) => {
+      setTweak('categoryImages', { ...(t.categoryImages || {}), [label]: dataUrl });
+    };
+    window.__ampleSetProductTweak = (slug, key, value) => {
+      const overrides = t.productOverrides || {};
+      setTweak('productOverrides', {
+        ...overrides,
+        [slug]: { ...(overrides[slug] || {}), [key]: value }
+      });
+    };
+    applyTweaksToDOM(t);
+    // Force re-render of pages that read from window.__ampleTweaks
+    window.dispatchEvent(new Event('ample-tweaks-changed'));
+  }, [t]);
+  // Initial application before first paint
+  if (typeof window !== 'undefined' && !window.__ampleTweaks) {
+    window.__ampleTweaks = t;
+    applyTweaksToDOM(t);
+  }
+
+  // Subscribe to the bump event so every <App> child re-renders on tweak change
+  const [, setTick] = React.useState(0);
+  React.useEffect(() => {
+    const on = () => setTick(x => x + 1);
+    window.addEventListener('ample-tweaks-changed', on);
+    return () => window.removeEventListener('ample-tweaks-changed', on);
+  }, []);
+
+  let page;
+  let productSlug = null;
+  if (path === '/' || path === '') page = <HomePage />;
+  else if (path === '/catalog') page = <CatalogPage />;
+  else if (path.startsWith('/catalog/')) {
+    const cat = decodeURIComponent(path.slice('/catalog/'.length));
+    page = <CatalogPage filter={cat} />;
+  }
+  else if (path === '/gold') page = <GoldStandardPage />;
+  else if (path === '/story') page = <StoryPage />;
+  else if (path === '/contact') page = <ContactPage />;
+  else {
+    const m = path.match(/^\/product\/([a-z-]+)$/);
+    if (m) { productSlug = m[1]; page = <ProductDetailPage slug={m[1]} />; }
+    else page = <HomePage />;
+  }
+
+  // Helper: edit a single key on a per-product overrides bag without losing
+  // other products' edits. Initial PRODUCTS data stays untouched in source.
+  const setProductTweak = (slug, key, value) => {
+    const overrides = t.productOverrides || {};
+    const next = {
+      ...overrides,
+      [slug]: { ...(overrides[slug] || {}), [key]: value }
+    };
+    setTweak('productOverrides', next);
+  };
+
+  // Per-product effective values (defaults from PRODUCTS, overrides on top).
+  const productData = productSlug
+    ? { ...(window.PRODUCTS && window.PRODUCTS[productSlug]),
+        ...((t.productOverrides || {})[productSlug] || {}) }
+    : null;
+
+  // Photo dropdown options for category banners + product hero backgrounds.
+  const photoOpts = AVAILABLE_PHOTOS;
+  const heroAssetOpts = HERO_ASSET_OPTIONS;
+
+  // Atmosphere layer visibility.
+  const atm = t.atmosphere || 'both';
+  const showGrid = atm === 'grid' || atm === 'both';
+  const showNoise = atm === 'noise' || atm === 'both';
+  const glowOpacity = (t.atmosphereGlow != null ? t.atmosphereGlow : 6) / 100;
+
+  // Save flow — preserves dropped images + tweak values across refreshes by
+  // exporting them out of the in-memory state. See exportTweaksState above.
+  const [exportResult, setExportResult] = React.useState(null);
+  const handleExport = () => setExportResult(exportTweaksState(t));
+  // Direct-write flow — writes the current state into index.html's
+  // TWEAK_DEFAULTS block via the File System Access API. See saveTweaksToSource.
+  const [saveResult, setSaveResult] = React.useState(null);
+  const handleSave = async () => {
+    setSaveResult({ pending: true });
+    setSaveResult(await saveTweaksToSource(t));
+  };
+
+  return (
+    <div className="atm-host">
+      {showGrid && <div className="atm-layer atm-grid" aria-hidden="true" />}
+      {showNoise && <div className="atm-layer atm-noise" aria-hidden="true" />}
+      <div className="atm-layer atm-glow" aria-hidden="true"
+           style={{ opacity: glowOpacity }} />
+      {page}
+      <TweaksPanel title={
+        productSlug ? 'Product · Tweaks'
+        : (path === '/catalog' || path.startsWith('/catalog/')) ? 'Catalog · Tweaks'
+        : 'Tweaks'
+      }>
+        <TweakSection label="Brand" />
+        <TweakColor label="Accent color" value={t.accentColor}
+                    onChange={(v) => setTweak('accentColor', v)} />
+        <TweakRadio label="Theme" value={t.theme}
+                    options={['dark', 'light']}
+                    onChange={(v) => setTweak('theme', v)} />
+
+        {productSlug ? (
+          <>
+            <TweakSection label="Product · Identity" />
+            <TweakText label="Eyebrow"
+                       value={productData?.eyebrow || ''}
+                       onChange={(v) => setProductTweak(productSlug, 'eyebrow', v)} />
+            <TweakText label="Title line 1"
+                       value={productData?.title || ''}
+                       onChange={(v) => setProductTweak(productSlug, 'title', v)} />
+            <TweakText label="Title line 2"
+                       value={productData?.title2 || ''}
+                       onChange={(v) => setProductTweak(productSlug, 'title2', v)} />
+            <TweakTextarea label="Summary"
+                       rows={4}
+                       value={productData?.summary || ''}
+                       onChange={(v) => setProductTweak(productSlug, 'summary', v)} />
+
+            <TweakSection label="Product · Hero" />
+            <TweakSelect label="Illustration"
+                         value={productData?.heroAsset || 'caliper'}
+                         options={heroAssetOpts}
+                         onChange={(v) => setProductTweak(productSlug, 'heroAsset', v)} />
+            <TweakSelect label="Background photo"
+                         value={productData?.heroBgImage || ''}
+                         options={photoOpts}
+                         onChange={(v) => setProductTweak(productSlug, 'heroBgImage', v)} />
+          </>
+        ) : (path === '/catalog' || path.startsWith('/catalog/')) ? (
+          <>
+            <TweakSection label="Catalog · Header" />
+            <TweakText label="Eyebrow" value={t.catalogEyebrow}
+                       onChange={(v) => setTweak('catalogEyebrow', v)} />
+            <TweakText label="Title" value={t.catalogTitle}
+                       onChange={(v) => setTweak('catalogTitle', v)} />
+            <TweakText label="Intro copy" value={t.catalogIntro}
+                       onChange={(v) => setTweak('catalogIntro', v)} />
+            <TweakSlider label="Title size" value={t.catalogHeaderSize}
+                         min={48} max={120} unit="px"
+                         onChange={(v) => setTweak('catalogHeaderSize', v)} />
+
+            <TweakSection label="Catalog · Layout" />
+            <TweakRadio label="Layout" value={t.catalogLayout}
+                        options={[
+                          { value: 'grouped', label: 'By category' },
+                          { value: 'flat', label: 'All in one' },
+                        ]}
+                        onChange={(v) => setTweak('catalogLayout', v)} />
+            <TweakSelect label="Filter category" value={t.catalogFilter}
+                         options={[
+                           'all','Braking','Cooling','HVAC','Engine',
+                           'Electrical','Lighting','Steering','Wipers','Service'
+                         ]}
+                         onChange={(v) => setTweak('catalogFilter', v)} />
+            {t.catalogLayout === 'flat' && (
+              <TweakRadio label="Sort" value={t.catalogSort}
+                          options={[
+                            { value: 'category', label: 'Default' },
+                            { value: 'name', label: 'Name' },
+                            { value: 'gold', label: 'Gold' },
+                          ]}
+                          onChange={(v) => setTweak('catalogSort', v)} />
+            )}
+            <TweakRadio label="Card columns" value={t.catalogCardCols}
+                        options={[
+                          { value: 2, label: '2' },
+                          { value: 3, label: '3' },
+                          { value: 4, label: '4' },
+                        ]}
+                        onChange={(v) => setTweak('catalogCardCols', v)} />
+            <TweakRadio label="Image ratio" value={t.catalogCardRatio}
+                        options={[
+                          { value: '1/1', label: '1:1' },
+                          { value: '4/3', label: '4:3' },
+                          { value: '16/9', label: '16:9' },
+                        ]}
+                        onChange={(v) => setTweak('catalogCardRatio', v)} />
+            <TweakRadio label="Image fit" value={t.cardImageFit || 'contain'}
+                        options={[
+                          { value: 'contain', label: 'Fit' },
+                          { value: 'cover', label: 'Fill' },
+                        ]}
+                        onChange={(v) => setTweak('cardImageFit', v)} />
+
+            <TweakSection label="Catalog · Cards" />
+            <TweakToggle label="Show category blurbs"
+                         value={t.catalogShowBlurbs}
+                         onChange={(v) => setTweak('catalogShowBlurbs', v)} />
+
+            <TweakSection label="Catalog · Product images" />
+            {(window.PRODUCT_ORDER || []).map((slug) => {
+              const prod = (window.PRODUCTS || {})[slug] || {};
+              const labelText = `${prod.title || slug}${prod.title2 ? ' ' + prod.title2 : ''}`;
+              return (
+                <TweakText key={slug} label={labelText} placeholder={`assets/${slug}.png`}
+                           value={(t.catalogCardImages || {})[slug] || ''}
+                           onChange={(v) => setTweak('catalogCardImages',
+                             { ...(t.catalogCardImages || {}), [slug]: v })} />
+              );
+            })}
+          </>
+        ) : (
+          <>
+            <TweakSection label="Hero · Image" />
+            <TweakSelect label="Background"
+                         value={t.heroImage}
+                         options={[
+                           { value: 'assets/brake-disc-caliper.jpg', label: 'Brake disc + caliper' },
+                           { value: 'assets/brake-pad-hero.png', label: 'Brake pad' },
+                           { value: 'assets/engine-parts-banner-raw.png', label: 'Engine parts banner' },
+                           { value: 'assets/packaging-brake-pad-box.png', label: 'Packaging shot' },
+                         ]}
+                         onChange={(v) => setTweak('heroImage', v)} />
+            <TweakSlider label="Overlay darkness" value={t.heroOverlay}
+                         min={0} max={100} unit="%"
+                         onChange={(v) => setTweak('heroOverlay', v)} />
+
+            <TweakSection label="Hero · Headline" />
+            <TweakText label="Line 1" value={t.heroHeadline1}
+                       onChange={(v) => setTweak('heroHeadline1', v)} />
+            <TweakText label="Accent word" value={t.heroHeadlineAccent}
+                       onChange={(v) => setTweak('heroHeadlineAccent', v)} />
+            <TweakText label="Line 2" value={t.heroHeadline2}
+                       onChange={(v) => setTweak('heroHeadline2', v)} />
+
+            <TweakSection label="Hero · Stats" />
+            <TweakToggle label="Show stats" value={t.showStats}
+                         onChange={(v) => setTweak('showStats', v)} />
+            {t.showStats && (
+              <>
+                <TweakText label="Stat 1 value" value={t.stat1Value}
+                           onChange={(v) => setTweak('stat1Value', v)} />
+                <TweakText label="Stat 1 label" value={t.stat1Label}
+                           onChange={(v) => setTweak('stat1Label', v)} />
+                <TweakText label="Stat 2 value" value={t.stat2Value}
+                           onChange={(v) => setTweak('stat2Value', v)} />
+                <TweakText label="Stat 2 label" value={t.stat2Label}
+                           onChange={(v) => setTweak('stat2Label', v)} />
+                <TweakText label="Stat 3 value" value={t.stat3Value}
+                           onChange={(v) => setTweak('stat3Value', v)} />
+                <TweakText label="Stat 3 label" value={t.stat3Label}
+                           onChange={(v) => setTweak('stat3Label', v)} />
+              </>
+            )}
+
+            <TweakSection label="Layout" />
+            <TweakRadio label="Grid columns" value={t.gridCols}
+                        options={[
+                          { value: 2, label: '2' },
+                          { value: 3, label: '3' },
+                          { value: 4, label: '4' },
+                        ]}
+                        onChange={(v) => setTweak('gridCols', v)} />
+            <TweakToggle label="Gold Standard banner" value={t.showGoldBanner}
+                         onChange={(v) => setTweak('showGoldBanner', v)} />
+
+            <TweakSection label="Categories · Banners" />
+            {['Braking','Cooling','HVAC','Engine','Electrical','Lighting','Steering','Service'].map((cat) => (
+              <TweakSelect key={cat} label={cat}
+                           value={(t.categoryImages || {})[cat] || ''}
+                           options={photoOpts}
+                           onChange={(v) => setTweak('categoryImages',
+                             { ...(t.categoryImages || {}), [cat]: v })} />
+            ))}
+          </>
+        )}
+
+        <TweakSection label="Page · Atmosphere" />
+        <TweakRadio label="Background style" value={t.atmosphere || 'both'}
+                    options={[
+                      { value: 'none', label: 'None' },
+                      { value: 'grid', label: 'Grid' },
+                      { value: 'noise', label: 'Noise' },
+                      { value: 'both', label: 'Both' },
+                    ]}
+                    onChange={(v) => setTweak('atmosphere', v)} />
+        <TweakSlider label="Top glow"
+                     value={t.atmosphereGlow != null ? t.atmosphereGlow : 6}
+                     min={0} max={20} unit="%"
+                     onChange={(v) => setTweak('atmosphereGlow', v)} />
+
+        <TweakSection label="Save changes" />
+        <TweakButton label="Save & lock to source" onClick={handleSave} />
+        {saveResult && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+            {saveResult.pending ? (
+              <div style={{ fontSize: 11, color: 'rgba(41,38,27,.7)' }}>Saving…</div>
+            ) : saveResult.ok ? (
+              <div style={{ fontSize: 11, lineHeight: 1.5, color: 'rgba(41,38,27,.78)' }}>
+                <div style={{ fontWeight: 600 }}>Locked to <code style={{ fontSize: 10 }}>{saveResult.filename}</code></div>
+                {saveResult.files && saveResult.files.length > 0 && (
+                  <div style={{ marginTop: 4 }}>
+                    Also downloaded {saveResult.files.length} dropped image{saveResult.files.length === 1 ? '' : 's'}. Move into <code style={{ fontSize: 10 }}>assets/</code>:
+                    <div style={{ fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', fontSize: 10, color: 'rgba(41,38,27,.62)', marginTop: 2 }}>
+                      {saveResult.files.map((f) => <div key={f}>· {f}</div>)}
+                    </div>
+                  </div>
+                )}
+                <div style={{ marginTop: 4, color: 'rgba(41,38,27,.62)' }}>Refresh to see the locked-in defaults.</div>
+              </div>
+            ) : (
+              <div style={{ fontSize: 11, color: '#a13a2a' }}>{saveResult.error}</div>
+            )}
+          </div>
+        )}
+        <TweakButton label="Export & download images" secondary onClick={handleExport} />
+        {exportResult && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+            {exportResult.files.length > 0 ? (
+              <div style={{ fontSize: 11, lineHeight: 1.5, color: 'rgba(41,38,27,.78)' }}>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                  Downloaded {exportResult.files.length} image{exportResult.files.length === 1 ? '' : 's'}:
+                </div>
+                <div style={{ fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace', fontSize: 10, color: 'rgba(41,38,27,.62)' }}>
+                  {exportResult.files.map((f) => <div key={f}>· {f}</div>)}
+                </div>
+              </div>
+            ) : (
+              <div style={{ fontSize: 11, color: 'rgba(41,38,27,.62)' }}>No dropped images to download. Only tweak values exported.</div>
+            )}
+            <div style={{ fontSize: 10.5, lineHeight: 1.5, color: 'rgba(41,38,27,.7)' }}>
+              <strong>Steps:</strong>
+              {exportResult.files.length > 0 && (
+                <div>1. Move downloaded files into <code style={{ fontSize: 10 }}>ample-website/project/assets/</code></div>
+              )}
+              <div>{exportResult.files.length > 0 ? '2.' : '1.'} JSON copied to clipboard. Paste in <code style={{ fontSize: 10 }}>index.html</code> between <code style={{ fontSize: 10 }}>/*EDITMODE-BEGIN*/</code> and <code style={{ fontSize: 10 }}>/*EDITMODE-END*/</code></div>
+              <div>{exportResult.files.length > 0 ? '3.' : '2.'} Refresh the page</div>
+            </div>
+            <textarea readOnly value={exportResult.json}
+              style={{ width: '100%', height: 110, fontFamily: 'ui-monospace,SFMono-Regular,Menlo,monospace',
+                       fontSize: 10, lineHeight: 1.4, padding: 8, borderRadius: 7,
+                       border: '.5px solid rgba(0,0,0,.1)', background: 'rgba(255,255,255,.6)',
+                       color: 'inherit', outline: 'none', resize: 'vertical', boxSizing: 'border-box' }}
+              onFocus={(e) => e.target.select()} />
+            <TweakButton label="Copy JSON again"
+                         secondary
+                         onClick={() => navigator.clipboard?.writeText(exportResult.json)} />
+          </div>
+        )}
+      </TweaksPanel>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

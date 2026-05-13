@@ -1,0 +1,328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ample — Road-ready precision</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="ext-resource-dependency" content="assets/brake-disc-caliper.jpg" data-resource-id="hero_disc">
+<meta name="ext-resource-dependency" content="assets/brake-pad-hero.jpg" data-resource-id="hero_pad">
+<meta name="ext-resource-dependency" content="assets/engine-parts-banner-raw.jpg" data-resource-id="hero_engine">
+<meta name="ext-resource-dependency" content="assets/packaging-brake-pad-box.jpg" data-resource-id="hero_packaging">
+<meta name="ext-resource-dependency" content="assets/logo-red-transparent.png" data-resource-id="logo_red">
+<meta name="ext-resource-dependency" content="assets/logo-white-transparent.png" data-resource-id="logo_white">
+<link rel="stylesheet" href="styles/colors_and_type.css">
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+    <rect width="200" height="200" fill="#0a0a0b"/>
+    <g transform="translate(100 100)">
+      <circle r="46" fill="none" stroke="#E92024" stroke-width="6"/>
+      <circle r="14" fill="#E92024"/>
+      <g stroke="#E92024" stroke-width="4" stroke-linecap="round">
+        <line x1="0" y1="-46" x2="0" y2="-30"/>
+        <line x1="0" y1="46" x2="0" y2="30"/>
+        <line x1="-46" y1="0" x2="-30" y2="0"/>
+        <line x1="46" y1="0" x2="30" y2="0"/>
+      </g>
+    </g>
+    <text x="100" y="172" text-anchor="middle" fill="#E92024" font-family="ui-sans-serif,system-ui" font-weight="800" font-size="22" letter-spacing="6">AMPLE</text>
+  </svg>
+</template>
+<style>
+  html, body { margin: 0; background: var(--bg-0); }
+  *, *::before, *::after { box-sizing: border-box; }
+  a { color: inherit; }
+  button { font-family: inherit; }
+  input, textarea { font-family: inherit; }
+  input:focus, textarea:focus { border-color: var(--ample-red) !important; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="image-slot.js"></script>
+<script>
+  // Bundler shim: rewrite known asset paths to inlined data-URLs from
+  // window.__resources, so JS-referenced images survive the bundle.
+  (function () {
+    const map = {
+      'assets/brake-disc-caliper.jpg': 'hero_disc',
+      'assets/brake-pad-hero.png': 'hero_pad',
+      'assets/brake-pad-hero.jpg': 'hero_pad',
+      'assets/engine-parts-banner-raw.png': 'hero_engine',
+      'assets/engine-parts-banner-raw.jpg': 'hero_engine',
+      'assets/packaging-brake-pad-box.png': 'hero_packaging',
+      'assets/packaging-brake-pad-box.jpg': 'hero_packaging',
+      'assets/logo-red-transparent.png': 'logo_red',
+      'assets/logo-white-transparent.png': 'logo_white',
+    };
+    function resolve(p) {
+      if (!p) return p;
+      const id = map[p];
+      return (id && window.__resources && window.__resources[id]) || p;
+    }
+    window.__resolveAsset = resolve;
+  })();
+</script>
+<script type="text/babel" src="src/tweaks-panel.jsx"></script>
+<script type="text/babel" src="src/Primitives.jsx"></script>
+<script type="text/babel" src="src/Chrome.jsx"></script>
+<script type="text/babel" src="src/ProductData.jsx"></script>
+<script type="text/babel" src="src/ProductHero.jsx"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx"></script>
+<script type="text/babel" src="src/HomePage.jsx"></script>
+<script type="text/babel" src="src/OtherPages.jsx"></script>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "accentColor": "#E92024",
+  "theme": "dark",
+  "heroImage": "assets\/brake-pad-hero.png",
+  "heroOverlay": 18,
+  "heroHeadline1": "oem+",
+  "heroHeadlineAccent": "brakes",
+  "heroHeadline2": "",
+  "showStats": true,
+  "stat1Value": "1M+",
+  "stat1Label": "Happy customers",
+  "stat2Value": "10K+",
+  "stat2Label": "SKUs in range",
+  "stat3Value": "20+",
+  "stat3Label": "years of experience",
+  "gridCols": 2,
+  "showGoldBanner": false,
+  "catalogEyebrow": "Our Inventory",
+  "catalogTitle": "Our Catalog.",
+  "catalogIntro": "A curated selection of our precision components, organized by system. For fitment, pricing, or availability on any part, get in touch.",
+  "catalogHeaderSize": 63,
+  "catalogLayout": "grouped",
+  "catalogFilter": "all",
+  "catalogSort": "category",
+  "catalogCardCols": 2,
+  "catalogCardRatio": "16\/9",
+  "cardImageFit": "contain",
+  "catalogShowBlurbs": true,
+  "categoryImages": {
+    "Braking": "assets\/brake-disc-caliper.jpg",
+    "Cooling": "",
+    "HVAC": "",
+    "Engine": "assets\/engine-parts-banner-raw.png",
+    "Electrical": "",
+    "Lighting": "",
+    "Steering": "assets\/custom-cat-steering.png",
+    "Service": "assets\/packaging-brake-pad-box.png"
+  },
+  "catalogCardImages": {
+    "brake-pads": "assets\/brakepads.png",
+    "caliper-npc": "assets\/caliper_2.png",
+    "abs-sensor": "assets\/UCC.png",
+    "pad-sensor": "assets\/Sensors.png",
+    "water-pump-awn": "assets\/waterpump.png",
+    "compressor": "assets\/ac_comp.png",
+    "alternator": "assets\/alternator_2.png",
+    "starter": "assets\/Starter.png",
+    "ignition-coil": "assets\/coil.png",
+    "lighting": "assets\/Lightbulb.png",
+    "power-steering-pump": "assets\/power_steering.png",
+    "air-filter": "assets\/air_filters.png",
+    "cabin-filter": "assets\/cabin_filters.png"
+  },
+  "productOverrides": {},
+  "atmosphere": "both",
+  "atmosphereGlow": 6
+}/*EDITMODE-END*/;
+
+function useHashRoute() {
+  const get = () => (window.location.hash || '#/').slice(1);
+  const [path, setPath] = React.useState(get());
+  React.useEffect(() => {
+    const on = () => { setPath(get()); window.scrollTo(0, 0); };
+    window.addEventListener('hashchange', on);
+    return () => window.removeEventListener('hashchange', on);
+  }, []);
+  return path;
+}
+
+function applyTweaksToDOM(t) {
+  const root = document.documentElement;
+  root.style.setProperty('--ample-red', t.accentColor);
+  // derived hot/deep variants — slight lighten/darken via color-mix
+  root.style.setProperty('--ample-red-hot', `color-mix(in srgb, ${t.accentColor} 85%, white)`);
+  root.style.setProperty('--ample-red-deep', `color-mix(in srgb, ${t.accentColor} 78%, black)`);
+  root.style.setProperty('--accent', t.accentColor);
+  root.style.setProperty('--border-hot', t.accentColor);
+  root.setAttribute('data-theme', t.theme);
+}
+
+function App() {
+  const path = useHashRoute();
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  // Expose tweaks to other components via window, then apply to DOM
+  React.useEffect(() => {
+    window.__ampleTweaks = t;
+    applyTweaksToDOM(t);
+    // Force re-render of pages that read from window.__ampleTweaks
+    window.dispatchEvent(new Event('ample-tweaks-changed'));
+  }, [t]);
+  // Initial application before first paint
+  if (typeof window !== 'undefined' && !window.__ampleTweaks) {
+    window.__ampleTweaks = t;
+    applyTweaksToDOM(t);
+  }
+
+  // Subscribe to the bump event so every <App> child re-renders on tweak change
+  const [, setTick] = React.useState(0);
+  React.useEffect(() => {
+    const on = () => setTick(x => x + 1);
+    window.addEventListener('ample-tweaks-changed', on);
+    return () => window.removeEventListener('ample-tweaks-changed', on);
+  }, []);
+
+  let page;
+  if (path === '/' || path === '') page = <HomePage />;
+  else if (path === '/catalog') page = <CatalogPage />;
+  else if (path === '/gold') page = <GoldStandardPage />;
+  else if (path === '/story') page = <StoryPage />;
+  else if (path === '/contact') page = <ContactPage />;
+  else {
+    const m = path.match(/^\/product\/([a-z-]+)$/);
+    page = m ? <ProductDetailPage slug={m[1]} /> : <HomePage />;
+  }
+
+  return (
+    <>
+      {page}
+      <TweaksPanel title={path === '/catalog' ? 'Catalog · Tweaks' : 'Tweaks'}>
+        <TweakSection label="Brand" />
+        <TweakColor label="Accent color" value={t.accentColor}
+                    onChange={(v) => setTweak('accentColor', v)} />
+        <TweakRadio label="Theme" value={t.theme}
+                    options={['dark', 'light']}
+                    onChange={(v) => setTweak('theme', v)} />
+
+        {path === '/catalog' ? (
+          <>
+            <TweakSection label="Catalog · Header" />
+            <TweakText label="Eyebrow" value={t.catalogEyebrow}
+                       onChange={(v) => setTweak('catalogEyebrow', v)} />
+            <TweakText label="Title" value={t.catalogTitle}
+                       onChange={(v) => setTweak('catalogTitle', v)} />
+            <TweakText label="Intro copy" value={t.catalogIntro}
+                       onChange={(v) => setTweak('catalogIntro', v)} />
+            <TweakSlider label="Title size" value={t.catalogHeaderSize}
+                         min={48} max={120} unit="px"
+                         onChange={(v) => setTweak('catalogHeaderSize', v)} />
+
+            <TweakSection label="Catalog · Layout" />
+            <TweakRadio label="Layout" value={t.catalogLayout}
+                        options={[
+                          { value: 'grouped', label: 'By category' },
+                          { value: 'flat', label: 'All in one' },
+                        ]}
+                        onChange={(v) => setTweak('catalogLayout', v)} />
+            <TweakSelect label="Filter category" value={t.catalogFilter}
+                         options={[
+                           'all','Braking','Cooling','HVAC','Engine',
+                           'Electrical','Lighting','Steering','Wipers','Service'
+                         ]}
+                         onChange={(v) => setTweak('catalogFilter', v)} />
+            {t.catalogLayout === 'flat' && (
+              <TweakRadio label="Sort" value={t.catalogSort}
+                          options={[
+                            { value: 'category', label: 'Default' },
+                            { value: 'name', label: 'Name' },
+                            { value: 'gold', label: 'Gold' },
+                          ]}
+                          onChange={(v) => setTweak('catalogSort', v)} />
+            )}
+            <TweakRadio label="Card columns" value={t.catalogCardCols}
+                        options={[
+                          { value: 2, label: '2' },
+                          { value: 3, label: '3' },
+                          { value: 4, label: '4' },
+                        ]}
+                        onChange={(v) => setTweak('catalogCardCols', v)} />
+            <TweakRadio label="Image ratio" value={t.catalogCardRatio}
+                        options={[
+                          { value: '1/1', label: '1:1' },
+                          { value: '4/3', label: '4:3' },
+                          { value: '16/9', label: '16:9' },
+                        ]}
+                        onChange={(v) => setTweak('catalogCardRatio', v)} />
+
+            <TweakSection label="Catalog · Cards" />
+            <TweakToggle label="Show category blurbs"
+                         value={t.catalogShowBlurbs}
+                         onChange={(v) => setTweak('catalogShowBlurbs', v)} />
+            <TweakToggle label="Show fitment line"
+                         value={t.catalogShowCardFit}
+                         onChange={(v) => setTweak('catalogShowCardFit', v)} />
+          </>
+        ) : (
+          <>
+            <TweakSection label="Hero · Image" />
+            <TweakSelect label="Background"
+                         value={t.heroImage}
+                         options={[
+                           { value: 'assets/brake-disc-caliper.jpg', label: 'Brake disc + caliper' },
+                           { value: 'assets/brake-pad-hero.png', label: 'Brake pad' },
+                           { value: 'assets/engine-parts-banner-raw.png', label: 'Engine parts banner' },
+                           { value: 'assets/packaging-brake-pad-box.png', label: 'Packaging shot' },
+                         ]}
+                         onChange={(v) => setTweak('heroImage', v)} />
+            <TweakSlider label="Overlay darkness" value={t.heroOverlay}
+                         min={0} max={100} unit="%"
+                         onChange={(v) => setTweak('heroOverlay', v)} />
+
+            <TweakSection label="Hero · Headline" />
+            <TweakText label="Line 1" value={t.heroHeadline1}
+                       onChange={(v) => setTweak('heroHeadline1', v)} />
+            <TweakText label="Accent word" value={t.heroHeadlineAccent}
+                       onChange={(v) => setTweak('heroHeadlineAccent', v)} />
+            <TweakText label="Line 2" value={t.heroHeadline2}
+                       onChange={(v) => setTweak('heroHeadline2', v)} />
+
+            <TweakSection label="Hero · Stats" />
+            <TweakToggle label="Show stats" value={t.showStats}
+                         onChange={(v) => setTweak('showStats', v)} />
+            {t.showStats && (
+              <>
+                <TweakText label="Stat 1 value" value={t.stat1Value}
+                           onChange={(v) => setTweak('stat1Value', v)} />
+                <TweakText label="Stat 1 label" value={t.stat1Label}
+                           onChange={(v) => setTweak('stat1Label', v)} />
+                <TweakText label="Stat 2 value" value={t.stat2Value}
+                           onChange={(v) => setTweak('stat2Value', v)} />
+                <TweakText label="Stat 2 label" value={t.stat2Label}
+                           onChange={(v) => setTweak('stat2Label', v)} />
+                <TweakText label="Stat 3 value" value={t.stat3Value}
+                           onChange={(v) => setTweak('stat3Value', v)} />
+                <TweakText label="Stat 3 label" value={t.stat3Label}
+                           onChange={(v) => setTweak('stat3Label', v)} />
+              </>
+            )}
+
+            <TweakSection label="Layout" />
+            <TweakRadio label="Grid columns" value={t.gridCols}
+                        options={[
+                          { value: 2, label: '2' },
+                          { value: 3, label: '3' },
+                          { value: 4, label: '4' },
+                        ]}
+                        onChange={(v) => setTweak('gridCols', v)} />
+            <TweakToggle label="Gold Standard banner" value={t.showGoldBanner}
+                         onChange={(v) => setTweak('showGoldBanner', v)} />
+          </>
+        )}
+      </TweaksPanel>
+    </>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
