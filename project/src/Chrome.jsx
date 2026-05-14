@@ -1,4 +1,6 @@
-/* Ample — Header, Footer, Navigation shared across all pages */
+/* Ample — Header, Footer, Navigation shared across all pages.
+   All layout/breakpoint styling lives in colors_and_type.css under the
+   .site-header / .site-nav rules. JSX is just structure + active state. */
 
 const NAV_LINKS = [
   { id: 'home', label: 'Home', href: '#/' },
@@ -9,30 +11,42 @@ const NAV_LINKS = [
 ];
 
 function SiteHeader({ active }) {
+  const [open, setOpen] = React.useState(false);
+  // Close the menu on hash change (link tap) and on Escape.
+  React.useEffect(() => {
+    if (!open) return;
+    const close = () => setOpen(false);
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    window.addEventListener('hashchange', close);
+    window.addEventListener('keydown', onKey);
+    return () => {
+      window.removeEventListener('hashchange', close);
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [open]);
+
   return (
-    <header style={{
-      position: 'sticky', top: 0, zIndex: 50,
-      background: 'rgba(11,11,13,0.82)',
-      backdropFilter: 'blur(12px) saturate(140%)',
-      WebkitBackdropFilter: 'blur(12px) saturate(140%)',
-      borderBottom: '1px solid var(--border-1)',
-    }}>
-      <div style={{ height: 64, display: 'flex', alignItems: 'center', padding: '0 40px', gap: 40, maxWidth: 1440, margin: '0 auto' }}>
-        <a href="#/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
-          <img src="assets/logo-red-transparent.png" alt="ample" style={{ height: 22, display: 'block' }} />
+    <header className="site-header">
+      <div className="site-header-inner">
+        <a className="site-logo" href="#/" aria-label="Ample home">
+          <img src="assets/logo-red-transparent.png" alt="ample" />
         </a>
-        <nav style={{ display: 'flex', gap: 28, flex: 1 }}>
-          {NAV_LINKS.map(l => (
-            <a key={l.id} href={l.href} style={{
-              fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700,
-              textTransform: 'uppercase', letterSpacing: '0.16em',
-              color: active === l.id ? 'var(--ample-red)' : 'var(--fg-1)',
-              textDecoration: 'none',
-              borderBottom: active === l.id ? '2px solid var(--ample-red)' : '2px solid transparent',
-              paddingBottom: 4,
-              transition: 'color 120ms',
-              textAlign: 'left',
-            }}>{l.label}</a>
+        <button
+          type="button"
+          className={open ? 'site-burger is-open' : 'site-burger'}
+          aria-label={open ? 'Close menu' : 'Open menu'}
+          aria-expanded={open}
+          aria-controls="site-nav"
+          onClick={() => setOpen((o) => !o)}>
+          <span /><span /><span />
+        </button>
+        <nav id="site-nav" className={open ? 'site-nav is-open' : 'site-nav'}>
+          {NAV_LINKS.map((l) => (
+            <a key={l.id} href={l.href}
+               className={active === l.id ? 'site-nav-link is-active' : 'site-nav-link'}
+               aria-current={active === l.id ? 'page' : undefined}>
+              {l.label}
+            </a>
           ))}
         </nav>
       </div>
@@ -40,30 +54,22 @@ function SiteHeader({ active }) {
   );
 }
 
-function SiteFooter({ variant = 'dark' }) {
+function SiteFooter() {
   return (
-    <footer style={{ background: '#000', borderTop: '1px solid var(--border-1)' }}>
-      <div style={{ maxWidth: 1440, margin: '0 auto', padding: '28px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40 }}>
-        <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
-          <a href="#/" style={footerLinkStyle}>Home</a>
-          <a href="#/story" style={footerLinkStyle}>Our Story</a>
-          <a href="#/contact" style={footerLinkStyle}>Contact Us</a>
+    <footer className="site-footer">
+      <div className="site-footer-row">
+        <div className="site-footer-links">
+          <a href="#/" className="site-footer-link">Home</a>
+          <a href="#/story" className="site-footer-link">Our Story</a>
+          <a href="#/contact" className="site-footer-link">Contact Us</a>
         </div>
-        <div style={{ fontFamily: 'var(--font-product)', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--fg-1)' }}>
-          Global Partnerships
-        </div>
+        <div className="site-footer-tagline">Global Partnerships</div>
       </div>
-      <div style={{ borderTop: '1px solid var(--border-1)', padding: '14px 40px', maxWidth: 1440, margin: '0 auto', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', letterSpacing: '0.06em', textAlign: 'right' }}>
+      <div className="site-footer-fine">
         Global network of physical partners and service centers.
       </div>
     </footer>
   );
 }
-
-const footerLinkStyle = {
-  fontFamily: 'var(--font-product)', fontSize: 10, fontWeight: 700,
-  letterSpacing: '0.2em', textTransform: 'uppercase',
-  color: 'var(--fg-1)', textDecoration: 'none',
-};
 
 Object.assign(window, { SiteHeader, SiteFooter, NAV_LINKS });

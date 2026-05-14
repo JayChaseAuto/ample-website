@@ -46,9 +46,9 @@ function CatalogPage({ filter: filterProp } = {}) {
   return (
     <div style={{ background: 'var(--bg-0)', minHeight: '100vh' }}>
       <SiteHeader active="catalog" />
-      <main style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px 80px' }} data-screen-label="Catalog">
+      <main style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(56px, 9vw, 80px)' }} data-screen-label="Catalog">
         <Reveal><Eyebrow>{eyebrow}</Eyebrow></Reveal>
-        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: headerSize, textTransform: 'uppercase', margin: '10px 0 0', letterSpacing: '-0.02em', lineHeight: 0.95 }}>{title}</Reveal>
+        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: `clamp(40px, 8vw, ${headerSize}px)`, textTransform: 'uppercase', margin: '10px 0 0', letterSpacing: '-0.02em', lineHeight: 0.95 }}>{title}</Reveal>
         <Reveal as="p" delay={2} style={{ color: 'var(--fg-2)', fontSize: 15, lineHeight: 1.6, marginTop: 18, maxWidth: 640 }}>
           {intro}
         </Reveal>
@@ -58,10 +58,10 @@ function CatalogPage({ filter: filterProp } = {}) {
             <Reveal style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 20, borderBottom: '1px solid var(--border-1)', paddingBottom: 14 }}>
               <div>
                 <Eyebrow color="red">{flatSlugs.length} {flatSlugs.length === 1 ? 'product' : 'products'}</Eyebrow>
-                <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 44, textTransform: 'uppercase', margin: '8px 0 0', letterSpacing: '-0.01em' }}>{filter === 'all' ? 'All Products.' : filter + '.'}</h2>
+                <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(28px, 5.5vw, 44px)', textTransform: 'uppercase', margin: '8px 0 0', letterSpacing: '-0.01em' }}>{filter === 'all' ? 'All Products.' : filter + '.'}</h2>
               </div>
             </Reveal>
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cardCols}, 1fr)`, gap: 16 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 260px), 1fr))`, gap: 16 }}>
               {flatSlugs.map((slug, idx) => (
                 <Reveal key={slug} delay={idx % 4}>
                   <CatalogCard slug={slug} ratio={cardImgRatio} />
@@ -76,13 +76,13 @@ function CatalogPage({ filter: filterProp } = {}) {
                 <Reveal style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 20, borderBottom: '1px solid var(--border-1)', paddingBottom: 14 }}>
                   <div>
                     <Eyebrow color="red">{grouped[cat].length} {grouped[cat].length === 1 ? 'product' : 'products'}</Eyebrow>
-                    <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 44, textTransform: 'uppercase', margin: '8px 0 0', letterSpacing: '-0.01em' }}>{{ Braking: 'Ample Brakes', Cooling: 'Ample Cooling', HVAC: 'Ample AC', Engine: 'Ample Engine', Electrical: 'Ample Electrical', Lighting: 'Ample Lighting', Steering: 'Ample Steering Parts', Wipers: 'Ample Wipers', Service: 'Ample Filters' }[cat] || cat}</h2>
+                    <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(28px, 5.5vw, 44px)', textTransform: 'uppercase', margin: '8px 0 0', letterSpacing: '-0.01em' }}>{{ Braking: 'Ample Brakes', Cooling: 'Ample Cooling', HVAC: 'Ample AC', Engine: 'Ample Engine', Electrical: 'Ample Electrical', Lighting: 'Ample Lighting', Steering: 'Ample Steering Parts', Wipers: 'Ample Wipers', Service: 'Ample Filters' }[cat] || cat}</h2>
                   </div>
                   {showBlurbs &&
               <p style={{ color: 'var(--fg-3)', fontSize: 13, lineHeight: 1.6, margin: 0, maxWidth: 420, textAlign: 'right' }}>{categoryBlurbs[cat]}</p>
               }
                 </Reveal>
-                <div style={{ display: 'grid', gridTemplateColumns: `repeat(${cardCols}, 1fr)`, gap: 16 }}>
+                <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 260px), 1fr))`, gap: 16 }}>
                   {grouped[cat].map((slug, idx) => (
                     <Reveal key={slug} delay={idx % 4}>
                       <CatalogCard slug={slug} ratio={cardImgRatio} />
@@ -114,17 +114,14 @@ function CatalogCard({ slug, ratio = '4/3' }) {
   return (
     <div
       ref={dropRef}
-      className="catalog-card drop-target"
+      className="catalog-card drop-target card-hover"
       style={{
         position: 'relative',
         background: 'var(--ample-coal)',
         border: '1px solid var(--border-1)',
         borderRadius: 4,
         overflow: 'hidden',
-        transition: 'all 120ms var(--ease-sharp)'
-      }}
-      onMouseEnter={(e) => {e.currentTarget.style.transform = 'translateY(-2px)';e.currentTarget.style.boxShadow = 'var(--e-2)';e.currentTarget.style.borderColor = 'var(--border-2)';}}
-      onMouseLeave={(e) => {e.currentTarget.style.transform = 'none';e.currentTarget.style.boxShadow = 'none';e.currentTarget.style.borderColor = 'var(--border-1)';}}>
+      }}>
       <div className="drop-hint">Drop image for {p.title} {p.title2 || ''}</div>
       {p.goldStandard &&
       <span style={{ position: 'absolute', top: 10, right: 10, zIndex: 4, background: 'var(--ample-gold)', color: '#17110a', fontFamily: 'var(--font-product)', fontSize: 9, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 999, pointerEvents: 'none' }}>★ Gold</span>
@@ -191,7 +188,7 @@ function LabMediaBox() {
 /* ---------- Gold Standard · Precision + Material feature cards ---------- */
 const GOLD_FEATURES = [
   { key: 'precision', t: 'Precision Engineering', b: 'Our machining partners hold ±5 µm tolerances across the whole catalog, verified per-batch on a CMM.', bg: 'linear-gradient(135deg, #2a2d33 0%, #0a0b0d 100%)' },
-  { key: 'material',  t: 'Material Sourcing',     b: 'Metallurgy-traceable billet stock. Every critical part ships with a material certificate on request.',  bg: 'linear-gradient(135deg, #1a1b1e 0%, #000 100%)' },
+  { key: 'material',  t: 'Team of Professionals', b: 'Our dedicated experts enforce rigorous quality assurance protocols at every stage of the supply chain, ensuring excellence from sourcing to final delivery.', bg: 'linear-gradient(135deg, #1a1b1e 0%, #000 100%)' },
 ];
 
 function GoldFeatureCard({ feature, delay }) {
@@ -229,11 +226,11 @@ function GoldStandardPage() {
     <div style={{ background: '#000', minHeight: '100vh' }}>
       <SiteHeader active="gold" />
       <main data-screen-label="Gold Standard">
-        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px 32px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 48, alignItems: 'start' }}>
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(24px, 5vw, 32px)' }}>
+          <div className="stack-on-mobile" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 'clamp(24px, 5vw, 48px)', alignItems: 'start' }}>
             <Reveal>
               <Eyebrow color="gold">The Standard</Eyebrow>
-              <h1 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 88, lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: '-0.02em', margin: '12px 0 0' }}>
+              <h1 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(48px, 9vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: '-0.02em', margin: '12px 0 0' }}>
                 <span style={{ color: 'var(--ample-gold)' }}>The Gold Standard.</span><br />
                 Uncompromising<br />quality assurance.
               </h1>
@@ -245,8 +242,8 @@ function GoldStandardPage() {
         </section>
 
         {/* Rigorous testing block */}
-        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '24px 40px 40px' }}>
-          <Reveal style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(20px, 4vw, 24px) clamp(16px, 4vw, 40px) clamp(28px, 6vw, 40px)' }}>
+          <Reveal className="stack-on-mobile" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
             <LabMediaBox />
             <div style={{ padding: '32px 8px' }}>
               <Eyebrow>Rigorous Testing</Eyebrow>
@@ -254,17 +251,13 @@ function GoldStandardPage() {
               <p style={{ color: 'var(--fg-2)', fontSize: 15, lineHeight: 1.6, maxWidth: 520 }}>
                 Our high-inertia friction dyno runs each Gold Standard batch to failure. Thermally, mechanically, then in duty cycle. Nothing leaves the lab on a spec sheet alone.
               </p>
-              <div style={{ background: 'var(--ample-coal)', border: '1px solid var(--ample-gold)', padding: 20, marginTop: 22, display: 'inline-block', boxShadow: 'var(--glow-gold)' }}>
-                <div style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 40, color: 'var(--ample-gold)', lineHeight: 1 }}>800 °C</div>
-                <div style={{ fontFamily: 'var(--font-product)', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--fg-3)', marginTop: 8 }}>Brake fade ceiling · verified</div>
-              </div>
             </div>
           </Reveal>
         </section>
 
         {/* Precision + Material row */}
-        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '20px 40px 40px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(16px, 4vw, 20px) clamp(16px, 4vw, 40px) clamp(28px, 6vw, 40px)' }}>
+          <div className="stack-on-mobile" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
             {GOLD_FEATURES.map((c, i) => (
               <GoldFeatureCard key={c.key} feature={c} delay={i % 4} />
             ))}
@@ -274,9 +267,9 @@ function GoldStandardPage() {
         {/* Warranty band */}
         <section style={{ borderTop: '1px solid var(--border-1)', borderBottom: '1px solid var(--border-1)', background: '#000' }}>
           <Stripes color="gold" height={6} />
-          <Reveal style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px', textAlign: 'center' }}>
+          <Reveal style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px)', textAlign: 'center' }}>
             <Eyebrow color="gold">Service Promise</Eyebrow>
-            <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 56, textTransform: 'uppercase', margin: '14px 0 0', lineHeight: 0.95 }}>
+            <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(32px, 6vw, 56px)', textTransform: 'uppercase', margin: '14px 0 0', lineHeight: 0.95 }}>
               We stand behind every part.<br /><span style={{ color: 'var(--ample-gold)' }}>Trusted by professionals.</span>
             </h2>
           </Reveal>
@@ -305,7 +298,7 @@ function TimelineEntry({ entry, delay }) {
       { ...(window.__ampleTweaks?.storyImages || {}), [entry.key]: path });
   }, { namePrefix: `history-${entry.key}` });
   return (
-    <Reveal delay={delay} style={{ display: 'grid', gridTemplateColumns: '170px 60px 1fr', gap: 0, marginBottom: 32, alignItems: 'start' }}>
+    <Reveal delay={delay} className="story-entry" style={{ display: 'grid', gridTemplateColumns: '170px 60px 1fr', gap: 0, marginBottom: 32, alignItems: 'start' }}>
       <div
         ref={dropRef}
         className="drop-target"
@@ -329,14 +322,14 @@ function StoryPage() {
   return (
     <div style={{ background: '#000', minHeight: '100vh' }}>
       <SiteHeader active="story" />
-      <main style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px 64px' }} data-screen-label="Our Story">
+      <main style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(48px, 8vw, 64px)' }} data-screen-label="Our Story">
         <Reveal><Eyebrow>History · Timeline</Eyebrow></Reveal>
-        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 84, textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 48px' }}>
+        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(44px, 8.5vw, 84px)', textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 48px' }}>
           Our Story.
         </Reveal>
 
         <div style={{ position: 'relative', maxWidth: 920 }}>
-          <div style={{ position: 'absolute', left: 200, top: 24, bottom: 24, width: 1, background: 'var(--border-2)' }} />
+          <div className="story-rail" style={{ position: 'absolute', left: 200, top: 24, bottom: 24, width: 1, background: 'var(--border-2)' }} />
           {STORY_ENTRIES.map((e, i) => (
             <TimelineEntry key={e.key} entry={e} delay={i % 4} />
           ))}
@@ -345,7 +338,7 @@ function StoryPage() {
         {/* Bottom big slogan */}
         <Reveal style={{ marginTop: 80, borderTop: '1px solid var(--border-1)', paddingTop: 40 }}>
           <Eyebrow>Features · Now Driving</Eyebrow>
-          <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 64, textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 0' }}>
+          <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(36px, 6.5vw, 64px)', textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 0' }}>
             Built for the road, <br /><span style={{ color: 'var(--ample-red)' }}>not the shelf.</span>
           </h2>
         </Reveal>
@@ -360,13 +353,13 @@ function ContactPage() {
   return (
     <div style={{ background: '#000', minHeight: '100vh' }}>
       <SiteHeader active="contact" />
-      <main style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px 64px' }} data-screen-label="Contact Us">
+      <main style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(48px, 8vw, 64px)' }} data-screen-label="Contact Us">
         <Reveal><Eyebrow>Get In Touch</Eyebrow></Reveal>
-        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 84, textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 48px' }}>
+        <Reveal as="h1" delay={1} style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(44px, 8.5vw, 84px)', textTransform: 'uppercase', letterSpacing: '-0.02em', lineHeight: 0.95, margin: '10px 0 48px' }}>
           Contact Us.
         </Reveal>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64, alignItems: 'start' }}>
+        <div className="stack-on-mobile" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'clamp(28px, 6vw, 64px)', alignItems: 'start' }}>
           {/* Contact details */}
           <Reveal delay={1}>
             <Eyebrow>Reach The Team</Eyebrow>

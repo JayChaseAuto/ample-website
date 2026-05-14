@@ -348,12 +348,14 @@ html.lenis, html.lenis body { height: auto; }
   color: inherit;
   min-height: 360px;
 }
-.cat-card:hover {
-  border-color: var(--border-2);
-  border-left: 3px solid var(--ample-red);
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .cat-card:hover {
+    border-color: var(--border-2);
+    border-left: 3px solid var(--ample-red);
+    transform: translateY(-2px);
+  }
+  .cat-card:hover .cat-photo { transform: scale(1.04); }
 }
-.cat-card:hover .cat-photo { transform: scale(1.04); }
 
 .cat-photo {
   position: absolute;
@@ -429,8 +431,8 @@ html.lenis, html.lenis body { height: auto; }
   padding-bottom: 2px;
   transition: border-color 200ms var(--ease-sharp);
 }
-.cat-card:hover .cat-cta {
-  border-bottom-color: var(--ample-red);
+@media (hover: hover) {
+  .cat-card:hover .cat-cta { border-bottom-color: var(--ample-red); }
 }
 
 /* Drop target — element accepts a dragged image file. The ring + hint
@@ -569,4 +571,175 @@ html.lenis, html.lenis body { height: auto; }
 .atm-host > div:not(.atm-layer):not(.twk-panel) {
   position: relative;
   z-index: 2;
+}
+
+/* ==========================================================================
+   Site header + nav. Desktop: horizontal row. Mobile: logo + hamburger,
+   nav drawer slides down when the burger is .is-open.
+   ========================================================================== */
+.site-header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(11, 11, 13, 0.82);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  border-bottom: 1px solid var(--border-1);
+}
+.site-header-inner {
+  height: 64px;
+  display: flex; align-items: center;
+  padding: 0 clamp(16px, 4vw, 40px);
+  gap: clamp(16px, 3vw, 40px);
+  max-width: 1440px; margin: 0 auto;
+}
+.site-logo { display: inline-flex; align-items: center; text-decoration: none; }
+.site-logo img { height: 22px; display: block; }
+
+.site-nav { display: flex; gap: 28px; flex: 1; }
+.site-nav-link {
+  font-family: var(--font-product);
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.16em;
+  color: var(--fg-1);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  padding: 6px 0;
+  transition: color 120ms;
+  /* Touch target — keeps the link >=44px tall on mobile without bloating
+     the bar on desktop (header is 64px). */
+  display: inline-flex; align-items: center;
+}
+.site-nav-link.is-active {
+  color: var(--ample-red);
+  border-bottom-color: var(--ample-red);
+}
+
+.site-burger {
+  display: none;
+  appearance: none;
+  border: 0; background: transparent; color: var(--fg-1);
+  width: 44px; height: 44px;
+  flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px;
+  cursor: pointer; padding: 0;
+  margin-left: auto;
+}
+.site-burger span {
+  display: block;
+  width: 22px; height: 2px;
+  background: currentColor;
+  transition: transform 160ms var(--ease-sharp), opacity 160ms;
+}
+.site-burger.is-open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.site-burger.is-open span:nth-child(2) { opacity: 0; }
+.site-burger.is-open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+@media (max-width: 720px) {
+  .site-burger { display: inline-flex; }
+  .site-nav {
+    position: fixed;
+    top: 64px; left: 0; right: 0;
+    flex-direction: column;
+    gap: 0;
+    background: rgba(11, 11, 13, 0.96);
+    -webkit-backdrop-filter: blur(12px) saturate(140%);
+    backdrop-filter: blur(12px) saturate(140%);
+    border-bottom: 1px solid var(--border-1);
+    transform: translateY(-110%);
+    transition: transform 200ms var(--ease-sharp);
+    padding: 8px 0;
+  }
+  .site-nav.is-open { transform: translateY(0); }
+  .site-nav-link {
+    padding: 14px clamp(16px, 4vw, 40px);
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-1);
+  }
+  .site-nav-link.is-active { background: rgba(255,255,255,0.03); }
+}
+
+/* ==========================================================================
+   Site footer.
+   ========================================================================== */
+.site-footer { background: #000; border-top: 1px solid var(--border-1); }
+.site-footer-row {
+  max-width: 1440px; margin: 0 auto;
+  padding: 28px clamp(16px, 4vw, 40px);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 24px; flex-wrap: wrap;
+}
+.site-footer-links { display: flex; gap: 28px; align-items: center; flex-wrap: wrap; }
+.site-footer-link {
+  font-family: var(--font-product); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--fg-1); text-decoration: none;
+}
+.site-footer-tagline {
+  font-family: var(--font-product); font-size: 10px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-1);
+}
+.site-footer-fine {
+  border-top: 1px solid var(--border-1);
+  padding: 14px clamp(16px, 4vw, 40px);
+  max-width: 1440px; margin: 0 auto;
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--fg-3); letter-spacing: 0.06em; text-align: right;
+}
+
+/* ==========================================================================
+   Editor-only drop affordances. The dashed ring, drop-hint and any
+   editor cursors are hidden completely for non-editor visitors.
+   ========================================================================== */
+html:not([data-editor="1"]) .drop-target::after,
+html:not([data-editor="1"]) .drop-target .drop-hint,
+html:not([data-editor="1"]) .product-hero-placeholder {
+  display: none !important;
+}
+html:not([data-editor="1"]) .drop-target { cursor: inherit !important; }
+
+/* ==========================================================================
+   Card hover affordances — only on devices that can actually hover.
+   Touch devices skip these so the first tap navigates instead of being
+   eaten by an unwanted hover-on-touch handler.
+   ========================================================================== */
+@media (hover: hover) {
+  .card-hover { transition: transform 160ms var(--ease-sharp), box-shadow 160ms; }
+  .card-hover:hover { transform: translateY(-2px); box-shadow: var(--e-2); }
+  .card-hover.card-hover-red:hover { border-color: var(--ample-red); }
+}
+
+/* ==========================================================================
+   Generic mobile layout pass. Things that were `repeat(N, 1fr)` or
+   `1.4fr 1fr` get stacked to single column under 720px.
+   ========================================================================== */
+@media (max-width: 720px) {
+  /* Most page sections use inline `padding: 'NNpx 40px'`. Override the
+     horizontal padding via class so authors don't have to update each one. */
+  .stack-on-mobile { grid-template-columns: 1fr !important; }
+
+  /* Product detail bremsenbrakes-style callout grid: stack to 1 column with
+     image first, then the four numbered features below. */
+  .callout-grid {
+    grid-template-columns: 1fr !important;
+    row-gap: 28px !important;
+  }
+  .callout-grid > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+  /* Benefits 2x2 grid → single column with horizontal dividers. */
+  .benefits-2x2 { grid-template-columns: 1fr !important; }
+  .benefits-2x2 > * {
+    border-right: 0 !important;
+    border-top: 1px solid var(--border-1) !important;
+  }
+  .benefits-2x2 > *:first-child { border-top: 0 !important; }
+
+  /* Story timeline: drop the marker rail column and stack image above text. */
+  .story-entry {
+    grid-template-columns: 1fr !important;
+    row-gap: 12px !important;
+    margin-bottom: 28px !important;
+  }
+  .story-entry > *:nth-child(2) { display: none !important; }
+  .story-rail { display: none !important; }
 }

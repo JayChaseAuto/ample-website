@@ -338,6 +338,10 @@ function useImageDrop(ref, onDrop, opts) {
   React.useEffect(() => {
     const node = ref.current;
     if (!node) return;
+    // Editor-only feature. Visitors don't get drag-drop on any device
+    // (including the touch fallback path), and the dashed ring stays hidden
+    // via CSS (the .drop-target class is gated on data-editor on <html>).
+    if (typeof window !== 'undefined' && !window.__ampleEditor) return;
     const hasMedia = (dt) => {
       if (!dt) return false;
       const types = Array.from(dt.types || []);

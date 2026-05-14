@@ -63,6 +63,22 @@ const PRODUCTS = {
       'Drop-in fitment with the bracket list. No hose mods, no bracket mods.',
       'Ceramic pad compound bedded at the factory. Ready out of the box.',
     ],
+    intro: 'Our six-piston performance caliper is built for the corner you have not taken yet. Forged 7075-T6 monobloc body, floating 330 × 30 mm rotor, stainless braided lines. Bedded ceramic pads in the box and a bracket list that covers most chassis. Engineered above stock spec and verified on the dyno before it ships.',
+    numberedFeatures: [
+      { title: 'Six Pistons',     body: 'Even pressure across all six pistons. The pedal answers before the wheel does.' },
+      { title: 'Forged Monobloc', body: 'Forged 7075-T6 body. 40% stiffer than stock under load.' },
+      { title: 'Floating Rotor',  body: '330 × 30 mm floating rotor. Survives heat cycling without warping.' },
+      { title: 'Braided Lines',   body: 'Stainless braided lines included. Pedal feel that does not swell when it is hot.' },
+    ],
+    closing: 'Bedded ceramic pad compound in the box. Bracket list covers most chassis. Drop-in fitment with no hose mods and no bracket mods, so the third lap feels like the first.',
+    benefitsTitle: 'Engineered Above Stock',
+    benefits: [
+      { icon: 'activity',         body: 'Linear bite from the first millimeter of pedal travel.' },
+      { icon: 'thermometer-sun',  body: 'Third lap feels like the first. No fade, no glaze.' },
+      { icon: 'shield',           body: 'Drop-in fitment with the bracket list, no hose mods.' },
+      { icon: 'sparkles',         body: 'Low-dust ceramic compound. Wheels stay clean between washes.' },
+    ],
+    outro: 'ABE + ECE R90 certified. Inspection and insurance friendly. Verified on our high-inertia friction dyno before it ships, the same QC program that backs every Gold Standard SKU.',
   },
 
   'radiators': {
@@ -118,7 +134,7 @@ const PRODUCTS = {
    instead of falling back to the generic boilerplate.
 ---------------------------------------------------------------------------- */
 
-function makeProduct({ slug, category, eyebrow, title, title2, summary, heroAsset, bullets, features }) {
+function makeProduct({ slug, category, eyebrow, title, title2, summary, heroAsset, bullets, features, ...rest }) {
   return {
     slug, category, eyebrow: eyebrow || category,
     title, title2: title2 || '',
@@ -133,6 +149,10 @@ function makeProduct({ slug, category, eyebrow, title, title2, summary, heroAsse
       'Catalogued under our quality program. Full traceability.',
       'Engineered, sourced and verified by the ample team.',
     ],
+    // Optional richer-layout fields (intro, numberedFeatures, closing,
+    // benefitsTitle, benefits, outro) are passed through verbatim so a
+    // product detail page can opt into the callout/benefits redesign.
+    ...rest,
   };
 }
 
@@ -256,16 +276,32 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'caliper-npc',
-    category: 'Braking', eyebrow: 'Braking · Rebuild',
+    category: 'Braking', eyebrow: 'Braking · OE Spec',
     title: 'Brake', title2: 'Caliper.',
     heroAsset: 'caliper',
-    summary: 'When the OEM caliper drags but the bracket’s still good. Single-piston rebuild with new seals, new boot, new finish. Drop-in for the part it replaces.',
+    summary: 'Brand-new single-piston caliper with fresh seals, new boot, new pins, and a corrosion-resistant finish. Drop-in fit for the part it replaces, no bracket mods.',
     bullets: [
-      'Re-manufactured OEM caliper. Single-piston floating design.',
+      'Brand-new OEM-spec caliper. Single-piston floating design.',
       'New seals, new boot, slide pins greased.',
       'Cadmium-plated finish. Won’t rust through.',
       'OEM bracket compatible. No bracket mods.',
     ],
+    intro: 'Our brand-new brake calipers offer a very high degree of corrosion resistance, verified through salt-spray and cyclic corrosion testing. New pistons, fresh slide pins, new seals and a pre-fitted bleeder mean an easier, quicker, safer install and no core return. Built to match OE standards and subject to rigorous QC testing for the life of the vehicle.',
+    numberedFeatures: [
+      { title: 'Bleeder Valve',    body: 'Pre-fitted bleeder valve ensures proper hydraulic pressure and clean flushing during service.' },
+      { title: 'Premium Grease',   body: 'High quality grease on the slider pins prevents premature jams and binding.' },
+      { title: 'Double Ribbed',    body: 'Double-ribbed seal carrier on the slider bushings for longer service life.' },
+      { title: 'Hardware Included',body: 'Banjo bolts, copper washers, slide pins and boots in the box where applicable.' },
+    ],
+    closing: 'Designed with high-quality materials and treated with a water-based protective coating to prevent rust and corrosion. Developed in response to stricter environmental standards, this coating is used worldwide on over 40 million brake components every year.',
+    benefitsTitle: 'The Benefits of Our Coating',
+    benefits: [
+      { icon: 'car',             body: 'Prevents rust, ultimately making your vehicle look better' },
+      { icon: 'activity',        body: 'Unaltered braking performance equal to or better than the original' },
+      { icon: 'thermometer-sun', body: 'High-temperature resistance through repeated heat cycles' },
+      { icon: 'leaf',            body: 'Environmentally conscious, water-based, no chromium' },
+    ],
+    outro: 'It is not greasy, forms a very thin layer, and does not compromise braking performance. The coating withstands temperatures up to 400 °C (750 °F), maintaining its protective qualities through heat cycling without crystallization or organic resin buildup. Applied in a closed system that recycles leftover liquids, making it a sustainable choice for high-performance brake calipers.',
   }),
   makeProduct({
     slug: 'compressor',
@@ -386,12 +422,12 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'rack-pinion',
-    category: 'Steering', eyebrow: 'Steering · Rebuild',
+    category: 'Steering', eyebrow: 'Steering · OE Spec',
     title: 'Rack', title2: '& Pinion.',
     heroAsset: 'rack-pinion',
-    summary: 'Re-manufactured rack with new bushings and new seals. OEM geometry. The steering feel you remember from when the car was new.',
+    summary: 'Brand-new rack with fresh bushings and seals. OEM geometry. The steering feel you remember from when the car was new.',
     bullets: [
-      'Re-manufactured OEM unit. OE-geometry preserved.',
+      'Brand-new OEM-spec unit. OE-geometry preserved.',
       'New bushings and seals throughout.',
       'Bench-tested before shipping.',
       'OEM mounting points and tie-rod fitment.',

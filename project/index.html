@@ -23,22 +23,42 @@
 
 <!-- Build tag — bump to bust browser cache for JSX scripts. -->
 <script>window.__BUILD__ = 'v6-' + Date.now();</script>
+<!-- Editor mode gate. The whole drag-drop + Tweaks panel only renders when
+     this flag is true. Visitors never see authoring affordances.
+     Enable: visit any URL with ?edit=1 (persists to localStorage).
+     Disable: visit with ?edit=0.
+     Default: on for localhost / 127.0.0.1 / file://; off everywhere else. -->
+<script>
+(function () {
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var flag = params.get('edit');
+    if (flag === '1') localStorage.setItem('__ampleEditor', '1');
+    if (flag === '0') localStorage.removeItem('__ampleEditor');
+    var stored = localStorage.getItem('__ampleEditor') === '1';
+    var host = window.location.hostname;
+    var isLocal = !host || host === 'localhost' || host === '127.0.0.1';
+    window.__ampleEditor = flag === '1' || stored || (isLocal && flag !== '0');
+  } catch (e) { window.__ampleEditor = false; }
+  if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
+})();
+</script>
 <script src="image-slot.js"></script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=19"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=19"></script>
-<script type="text/babel" src="src/Animations.jsx?v=19"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=19"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=19"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=19"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=19"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=19"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=19"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=25"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=25"></script>
+<script type="text/babel" src="src/Animations.jsx?v=25"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=25"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=25"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=25"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=25"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=25"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=25"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accentColor": "#E92024",
   "theme": "dark",
-  "heroImage": "assets\/hero-79b6980d.webp",
+  "heroImage": "assets\/hero-f6747fe0.webp",
   "heroOverlay": 26,
   "heroHeadline1": "oem+",
   "heroHeadlineAccent": "brakes",
@@ -94,7 +114,12 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroBgImage": "assets\/product-brake-pads-hero-92eed4a8.webp"
     },
     "pad-sensor": {
-      "heroBgImage": "assets\/product-pad-sensor-hero-68318690.webp"
+      "heroBgImage": "assets\/product-pad-sensor-hero-68318690.webp",
+      "bullets": [
+        "Loop-break circuit. Fails open, lights the dash.",
+        "Front-axle universal.",
+        "OEM connector. No harness mods"
+      ]
     },
     "starter": {
       "heroBgImage": "assets\/product-starter-hero-ff47eda2.webp"
@@ -106,19 +131,22 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroBgImage": "assets\/product-air-filter-hero-c2dc97a7.webp"
     },
     "caliper-npc": {
-      "heroBgImage": "assets\/product-caliper-npc-hero-24c98b00.webp"
+      "heroBgImage": "",
+      "heroAsset": "radiator",
+      "outro": "It is not greasy, forms a very thin layer, and does not compromise braking performance. The coating withstands temperatures up to 400 °C (750 °F), maintaining its protective qualities through heat cycling without crystallization or organic resin buildup. Applied in a closed system that recycles leftover liquids, making it a sustainable choice for high-performance brake calipers.",
+      "calloutImageScale": 2.5
     }
   },
-  "atmosphere": "both",
+  "atmosphere": "grid",
   "atmosphereGlow": 6,
   "goldStandardMedia": "assets\/gold-dyno-094485be.mov",
   "goldFeatureImages": {
-    "precision": "assets\/gold-precision-5968d80f.webp",
+    "precision": "assets\/gold-precision-dbb15b8f.webp",
     "material": "assets\/gold-material-2613d8c5.webp"
   },
   "storyImages": {
     "2009": "assets\/history-2009-c7497883.webp",
-    "2019": "assets\/history-2024-c7497883.webp"
+    "2024": "assets\/history-2024-c7497883.webp"
   }
 }/*EDITMODE-END*/;
 
@@ -439,6 +467,90 @@ function App() {
                          value={productData?.heroBgImage || ''}
                          options={photoOpts}
                          onChange={(v) => setProductTweak(productSlug, 'heroBgImage', v)} />
+
+            {/* Engineering summary bullets — one per line. Available for
+                every product. Empty lines are stripped on save; the array
+                is stored verbatim in productOverrides[slug].bullets. */}
+            <TweakSection label="Product · Engineering summary" />
+            <TweakTextarea label="Bullets (one per line)" rows={8}
+                       value={(productData?.bullets || []).join('\n')}
+                       onChange={(v) => setProductTweak(productSlug, 'bullets',
+                         v.split(/\r?\n/).map((s) => s.trim()).filter(Boolean))} />
+
+            {/* Rich layout copy — surfaced only when this product opts in via
+                `numberedFeatures`. Edits write into productOverrides[slug]
+                and merge over the base data on next render. */}
+            {productData?.numberedFeatures && (
+              <>
+                <TweakSection label="Product · Callout image" />
+                <TweakSlider label="Image scale"
+                             value={productData?.calloutImageScale != null ? productData.calloutImageScale : 1.0}
+                             min={0.5} max={1.6} step={0.05}
+                             onChange={(v) => setProductTweak(productSlug, 'calloutImageScale', v)} />
+
+                <TweakSection label="Product · Intro paragraph" />
+                <TweakTextarea label="Intro" rows={4}
+                               value={productData?.intro || ''}
+                               onChange={(v) => setProductTweak(productSlug, 'intro', v)} />
+
+                <TweakSection label="Product · Numbered callouts" />
+                {[0, 1, 2, 3].map((i) => {
+                  const items = productData?.numberedFeatures || [];
+                  const item = items[i] || { title: '', body: '' };
+                  const setItem = (patch) => {
+                    const next = items.slice();
+                    while (next.length < 4) next.push({ title: '', body: '' });
+                    next[i] = { ...next[i], ...patch };
+                    setProductTweak(productSlug, 'numberedFeatures', next);
+                  };
+                  return (
+                    <React.Fragment key={`nf-${i}`}>
+                      <TweakText label={`${i + 1}. Title`}
+                                 value={item.title || ''}
+                                 onChange={(v) => setItem({ title: v })} />
+                      <TweakTextarea label={`${i + 1}. Body`} rows={2}
+                                 value={item.body || ''}
+                                 onChange={(v) => setItem({ body: v })} />
+                    </React.Fragment>
+                  );
+                })}
+
+                <TweakSection label="Product · Closing paragraph" />
+                <TweakTextarea label="Closing" rows={3}
+                               value={productData?.closing || ''}
+                               onChange={(v) => setProductTweak(productSlug, 'closing', v)} />
+
+                <TweakSection label="Product · Benefits grid" />
+                <TweakText label="Heading"
+                           value={productData?.benefitsTitle || ''}
+                           onChange={(v) => setProductTweak(productSlug, 'benefitsTitle', v)} />
+                {[0, 1, 2, 3].map((i) => {
+                  const items = productData?.benefits || [];
+                  const item = items[i] || { icon: '', body: '' };
+                  const setItem = (patch) => {
+                    const next = items.slice();
+                    while (next.length < 4) next.push({ icon: '', body: '' });
+                    next[i] = { ...next[i], ...patch };
+                    setProductTweak(productSlug, 'benefits', next);
+                  };
+                  return (
+                    <React.Fragment key={`bn-${i}`}>
+                      <TweakText label={`${i + 1}. Icon (lucide name)`}
+                                 value={item.icon || ''}
+                                 onChange={(v) => setItem({ icon: v })} />
+                      <TweakTextarea label={`${i + 1}. Text`} rows={2}
+                                 value={item.body || ''}
+                                 onChange={(v) => setItem({ body: v })} />
+                    </React.Fragment>
+                  );
+                })}
+
+                <TweakSection label="Product · Outro paragraph" />
+                <TweakTextarea label="Outro" rows={4}
+                               value={productData?.outro || ''}
+                               onChange={(v) => setProductTweak(productSlug, 'outro', v)} />
+              </>
+            )}
           </>
         ) : (path === '/catalog' || path.startsWith('/catalog/')) ? (
           <>

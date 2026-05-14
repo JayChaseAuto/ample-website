@@ -191,6 +191,9 @@ function useTweaks(defaults) {
 // flips off in lockstep; the host echoes __deactivate_edit_mode back which
 // is what actually hides the panel.
 function TweaksPanel({ title = 'Tweaks', children }) {
+  // Editor-only — visitors never see the launcher or the panel. Bail before
+  // any state/effects so we don't run drag listeners, message bus, etc.
+  if (typeof window !== 'undefined' && !window.__ampleEditor) return null;
   const [open, setOpen] = React.useState(false);
   const dragRef = React.useRef(null);
   const offsetRef = React.useRef({ x: 16, y: 16 });

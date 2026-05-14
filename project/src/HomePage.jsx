@@ -50,7 +50,9 @@ function HomePage() {
             position: 'absolute', inset: 0,
             background: `linear-gradient(to right, rgba(0,0,0,0.97) 0%, rgba(0,0,0,${(heroOverlay / 100).toFixed(2)}) 40%, transparent 70%)`
           }} />
-          <div style={{ position: 'relative', maxWidth: 1440, margin: '0 auto', padding: '90px 40px 100px', minHeight: 520 }}>
+          <div style={{ position: 'relative', maxWidth: 1440, margin: '0 auto',
+                        padding: 'clamp(56px, 9vw, 90px) clamp(16px, 4vw, 40px) clamp(64px, 10vw, 100px)',
+                        minHeight: 'clamp(360px, 60vh, 520px)' }}>
             <Reveal as="h1" style={{
               fontFamily: 'var(--font-product)', fontWeight: 800,
               fontSize: 'clamp(56px, 7vw, 104px)', lineHeight: 0.92,
@@ -71,12 +73,14 @@ function HomePage() {
         </section>
 
         {/* Explore categories */}
-        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '60px 40px 80px' }} data-screen-label="Homepage · Categories">
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 8vw, 60px) clamp(16px, 4vw, 40px) clamp(48px, 9vw, 80px)' }} data-screen-label="Homepage · Categories">
           <Reveal style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24 }}>
             <Eyebrow color="white">Explore Categories</Eyebrow>
             <a href="#/catalog" style={{ fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'var(--ample-red)', textDecoration: 'none' }}>Explore our catalog ›</a>
           </Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: 16 }}>
+          <div style={{ display: 'grid',
+                        gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 260px), 1fr))`,
+                        gap: 16 }}>
             {CATEGORY_CARDS.map((c, idx) => (
               <Reveal key={c.label} delay={idx % 4}>
                 <CategoryCard card={c} tweaks={tweaks} />
@@ -86,7 +90,7 @@ function HomePage() {
         </section>
 
         {/* Featured products rail */}
-        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '0 40px 80px' }}>
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: '0 clamp(16px, 4vw, 40px) clamp(48px, 9vw, 80px)' }}>
           <Reveal style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: 24 }}>
             <div>
               <Eyebrow>Featured · OEM+ Catalog</Eyebrow>
@@ -94,7 +98,9 @@ function HomePage() {
             </div>
             <a href="#/catalog" style={{ fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'var(--ample-red)', textDecoration: 'none' }}>BROWSE ALL ›</a>
           </Reveal>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${gridCols}, 1fr)`, gap: 16 }}>
+          <div style={{ display: 'grid',
+                        gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 260px), 1fr))`,
+                        gap: 16 }}>
             {PRODUCT_ORDER.slice(0, gridCols).map((slug, idx) => (
               <Reveal key={slug} delay={idx % 4} style={{ display: 'block' }}>
                 <FeaturedCard slug={slug} />
@@ -111,10 +117,64 @@ function HomePage() {
 
 }
 
+/* Parse stat strings like '1M+', '10K+', '20+', '1.5K' into a numeric
+   target. Anything we can't parse stays static — the display falls back to
+   the original string. */
+function parseStatTarget(s) {
+  const m = String(s).match(/^(\d+(?:\.\d+)?)([KMB])?(\+?)\s*$/i);
+  if (!m) return null;
+  const mul = m[2] ? { K: 1e3, M: 1e6, B: 1e9 }[m[2].toUpperCase()] : 1;
+  return { target: parseFloat(m[1]) * mul, plus: m[3] || '' };
+}
+
+/* Format a count-up frame as 'NM+', 'NK+', 'N+' — so a 1M+ counter
+   sweeps through 999K, 1M and the suffix transitions feel dynamic. */
+function formatStat(n, plus) {
+  const round = (x) => Math.floor(x);
+  if (n >= 1e9) return round(n / 1e9) + 'B' + plus;
+  if (n >= 1e6) return round(n / 1e6) + 'M' + plus;
+  if (n >= 1e3) return round(n / 1e3) + 'K' + plus;
+  return round(n) + plus;
+}
+
 function Stat({ k, v }) {
+  const parsed = parseStatTarget(k);
+  const [display, setDisplay] = React.useState(() => parsed ? '0' + (parsed.plus || '') : k);
+  const ref = React.useRef(null);
+  const startedRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!parsed || !ref.current) { setDisplay(k); return; }
+    if (startedRef.current) return;
+    // IO so the count fires when the hero scrolls into view — covers nav-back
+    // from another route, not just the initial mount.
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (!e.isIntersecting || startedRef.current) continue;
+        startedRef.current = true;
+        const duration = 1600;
+        const start = performance.now();
+        let raf;
+        const tick = (now) => {
+          const t = Math.min(1, (now - start) / duration);
+          // easeOutCubic — fast start, settles into the final value
+          const eased = 1 - Math.pow(1 - t, 3);
+          setDisplay(formatStat(eased * parsed.target, parsed.plus));
+          if (t < 1) raf = requestAnimationFrame(tick);
+          else setDisplay(k); // snap to the exact author-formatted value at end
+        };
+        raf = requestAnimationFrame(tick);
+        io.disconnect();
+        return;
+      }
+    }, { threshold: 0.4 });
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, [k]);
+
   return (
-    <div>
-      <div style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 44, color: 'var(--fg-1)', letterSpacing: '-0.02em', lineHeight: 1 }}>{k}</div>
+    <div ref={ref}>
+      <div style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 44, color: 'var(--fg-1)', letterSpacing: '-0.02em', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{display}</div>
       <div style={{ fontFamily: 'var(--font-product)', fontSize: 10, fontWeight: 700, letterSpacing: '0.22em', textTransform: 'uppercase', color: 'var(--fg-3)', marginTop: 10 }}>{v}</div>
     </div>);
 
@@ -133,14 +193,12 @@ function FeaturedCard({ slug }) {
   }, { namePrefix: `card-${slug}` });
 
   return (
-    <a ref={dropRef} href={`#/product/${slug}`} className="drop-target" style={{
+    <a ref={dropRef} href={`#/product/${slug}`} className="drop-target card-hover" style={{
       textDecoration: 'none', color: 'inherit',
       background: 'var(--ample-coal)', border: '1px solid var(--border-1)', borderRadius: 4,
-      overflow: 'hidden', display: 'block', transition: 'all 120ms var(--ease-sharp)',
+      overflow: 'hidden', display: 'block',
       position: 'relative'
-    }}
-    onMouseEnter={(e) => {e.currentTarget.style.transform = 'translateY(-2px)';e.currentTarget.style.boxShadow = 'var(--e-2)';}}
-    onMouseLeave={(e) => {e.currentTarget.style.transform = 'none';e.currentTarget.style.boxShadow = 'none';}}>
+    }}>
       <div className="drop-hint">Drop image for {p.title} {p.title2 || ''}</div>
 
       {p.goldStandard &&

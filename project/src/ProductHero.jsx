@@ -538,7 +538,7 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
   );
 
   if (override) {
-    return (<><img src={override} alt="" style={imgStyle} />{overlay}</>);
+    return (<><img src={override} alt="" loading="lazy" decoding="async" style={imgStyle} />{overlay}</>);
   }
 
   if (conventionFailed) {
@@ -556,6 +556,8 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
       key={extIdx}
       src={`assets/${slug}.${conventionalExts[extIdx]}`}
       alt=""
+      loading="lazy"
+      decoding="async"
       onError={() => {
         if (extIdx + 1 >= conventionalExts.length) setConventionFailed(true);
         else setExtIdx(extIdx + 1);
