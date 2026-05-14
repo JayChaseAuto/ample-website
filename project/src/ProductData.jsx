@@ -38,6 +38,25 @@ const PRODUCTS = {
       'Drop-in fitment. Shim, chamfer, and bedding done at the factory.',
       'ABE + ECE R90 certified. Inspection and insurance happy.',
     ],
+    /* Rich callout layout (same shape as caliper-npc). Numbered features
+       and benefits are the user-facing "why" panel; intro/closing/outro
+       wrap the centered product shot with paragraph context. */
+    intro: 'Premium ceramic brake pads built with Dupont components and produced on automatic hot-press lines. They meet or exceed OE friction specs and ship installation-ready with hardware in the box. Multi-layer nitrile rubber shims and edge chamfering keep noise and vibration off the pedal.',
+    numberedFeatures: [
+      { title: 'OE Fit & Quality', body: 'Meets or exceeds OE specs. Hardware in the box, install-ready out of the carton.' },
+      { title: 'Chamfered',        body: 'Edge-chamfered for less noise and even pad wear from the first stop.' },
+      { title: 'Slotted',          body: '100% slotted compound for NVH control. Quiet at the curb, predictable in the corner.' },
+      { title: 'Ceramic Formula',  body: 'Ceramic friction layer for extended pad life and low brake dust.' },
+    ],
+    closing: 'From the morning commute to the canyon road, the bite stays linear and the pedal stays consistent. Drop-in fitment with shim, chamfer and bedding done at the factory means the install takes minutes, not an afternoon.',
+    benefitsTitle: 'Engineered Above Stock',
+    benefits: [
+      { icon: 'activity',         body: 'Linear bite from the first millimeter of pedal travel.' },
+      { icon: 'sparkles',         body: 'Low-dust compound. Wheels stay clean between washes.' },
+      { icon: 'thermometer-sun',  body: 'Holds shape past 800 °C. No fade, no glaze, no surprises.' },
+      { icon: 'shield',           body: 'ABE + ECE R90 certified. Inspection and insurance friendly.' },
+    ],
+    outro: 'Verified through repeated bedding cycles against OE friction curves, then salt-spray and cyclic corrosion tested batch by batch — the same QC program that backs every Gold Standard SKU in the range.',
   },
 
   'calipers': {

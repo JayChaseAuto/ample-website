@@ -44,15 +44,15 @@
 })();
 </script>
 <script src="image-slot.js"></script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=25"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=25"></script>
-<script type="text/babel" src="src/Animations.jsx?v=25"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=25"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=25"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=25"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=25"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=25"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=25"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=29"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=29"></script>
+<script type="text/babel" src="src/Animations.jsx?v=29"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=29"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=29"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=29"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=29"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=29"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=29"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -111,7 +111,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   },
   "productOverrides": {
     "brake-pads": {
-      "heroBgImage": "assets\/product-brake-pads-hero-92eed4a8.webp"
+      "heroBgImage": "assets\/product-brake-pads-hero-2658a817.webp",
+      "heroAsset": "brake-pads"
     },
     "pad-sensor": {
       "heroBgImage": "assets\/product-pad-sensor-hero-68318690.webp",
@@ -404,6 +405,33 @@ function App() {
   const photoOpts = AVAILABLE_PHOTOS;
   const heroAssetOpts = HERO_ASSET_OPTIONS;
 
+  // Product hero photo options: static catalog photos + every hero image
+  // currently set across products + the current selection if it's not
+  // already in either bucket. As you drop new images on one product page,
+  // they show up in every other product's dropdown.
+  const productHeroPhotoOpts = React.useMemo(() => {
+    const seen = new Set();
+    const out = [{ value: '', label: '(none, gradient)' }];
+    for (const p of AVAILABLE_PHOTOS) {
+      if (p.value && !seen.has(p.value)) { seen.add(p.value); out.push(p); }
+    }
+    const all = t.productOverrides || {};
+    for (const slug of Object.keys(all)) {
+      const u = all[slug] && all[slug].heroBgImage;
+      if (u && !seen.has(u)) {
+        seen.add(u);
+        const file = u.split('/').pop();
+        const niceSlug = slug.replace(/-/g, ' ');
+        out.push({ value: u, label: `${niceSlug} hero — ${file}` });
+      }
+    }
+    const cur = productData?.heroBgImage;
+    if (cur && !seen.has(cur)) {
+      out.push({ value: cur, label: cur.split('/').pop() });
+    }
+    return out;
+  }, [t.productOverrides, productData?.heroBgImage]);
+
   // Atmosphere layer visibility.
   const atm = t.atmosphere || 'both';
   const showGrid = atm === 'grid' || atm === 'both';
@@ -465,8 +493,35 @@ function App() {
                          onChange={(v) => setProductTweak(productSlug, 'heroAsset', v)} />
             <TweakSelect label="Background photo"
                          value={productData?.heroBgImage || ''}
-                         options={photoOpts}
+                         options={productHeroPhotoOpts}
                          onChange={(v) => setProductTweak(productSlug, 'heroBgImage', v)} />
+            <TweakSlider label="Height"
+                         value={productData?.heroHeight != null ? productData.heroHeight : 480}
+                         min={320} max={720} step={20} unit="px"
+                         onChange={(v) => setProductTweak(productSlug, 'heroHeight', v)} />
+            {productData?.heroBgImage && (
+              <>
+                <TweakSlider label="Overlay darkness"
+                             value={productData?.heroOverlay != null ? productData.heroOverlay : 0}
+                             min={0} max={100} unit="%"
+                             onChange={(v) => setProductTweak(productSlug, 'heroOverlay', v)} />
+                <TweakRadio label="Image fit"
+                            value={productData?.heroImageFit || 'cover'}
+                            options={[
+                              { value: 'cover', label: 'Fill' },
+                              { value: 'contain', label: 'Fit' },
+                            ]}
+                            onChange={(v) => setProductTweak(productSlug, 'heroImageFit', v)} />
+                <TweakRadio label="Image position"
+                            value={productData?.heroImagePosition || 'center'}
+                            options={[
+                              { value: 'top', label: 'Top' },
+                              { value: 'center', label: 'Center' },
+                              { value: 'bottom', label: 'Bottom' },
+                            ]}
+                            onChange={(v) => setProductTweak(productSlug, 'heroImagePosition', v)} />
+              </>
+            )}
 
             {/* Engineering summary bullets — one per line. Available for
                 every product. Empty lines are stripped on save; the array
@@ -483,6 +538,13 @@ function App() {
             {productData?.numberedFeatures && (
               <>
                 <TweakSection label="Product · Callout image" />
+                <TweakRadio label="Image fit"
+                            value={productData?.calloutImageFit || 'contain'}
+                            options={[
+                              { value: 'contain', label: 'Fit' },
+                              { value: 'cover', label: 'Fill' },
+                            ]}
+                            onChange={(v) => setProductTweak(productSlug, 'calloutImageFit', v)} />
                 <TweakSlider label="Image scale"
                              value={productData?.calloutImageScale != null ? productData.calloutImageScale : 1.0}
                              min={0.5} max={1.6} step={0.05}

@@ -8,9 +8,14 @@ function ProductDetailPage({ slug }) {
   const base = PRODUCTS[slug] || PRODUCTS['brake-pads'];
   const p = { ...base };
   for (const k of ['eyebrow', 'title', 'title2', 'summary', 'heroAsset',
-                   'intro', 'closing', 'benefitsTitle', 'outro']) {
+                   'intro', 'closing', 'benefitsTitle', 'outro',
+                   'heroImageFit', 'heroImagePosition', 'calloutImageFit']) {
     if (overrides[k] != null && overrides[k] !== '') p[k] = overrides[k];
   }
+  // Numeric hero knobs — 0 is a valid value (no overlay) so gate on type,
+  // not truthiness.
+  if (typeof overrides.heroOverlay === 'number') p.heroOverlay = overrides.heroOverlay;
+  if (typeof overrides.heroHeight === 'number') p.heroHeight = overrides.heroHeight;
   // Arrays: replace whole-list when an override exists; falsy/empty means
   // "use base". The tweaks panel always sends a 4-item array.
   if (Array.isArray(overrides.numberedFeatures) && overrides.numberedFeatures.length) {
@@ -46,25 +51,27 @@ function ProductDetailPage({ slug }) {
     <div style={{ background: '#000', minHeight: '100vh', color: 'var(--fg-1)' }}>
       <SiteHeader active="gold" />
       <main style={{ maxWidth: 1440, margin: '0 auto', padding: '0 clamp(16px, 4vw, 40px)' }}>
-        {/* Hero section */}
-        <section style={{ position: 'relative', padding: '48px 0 40px' }} data-screen-label={`Product · ${p.slug}`}>
-          {/* Top row: eyebrow + title + gold medallion */}
-          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 40 }}>
-            <Reveal style={{ flex: 1 }}>
+        {/* Hero section. Left-aligned eyebrow + title + summary on the
+            left, optional gold medallion on the right. Wraps on narrow
+            screens so the medallion drops below the text instead of
+            squishing. */}
+        <section style={{ position: 'relative', padding: 'clamp(32px, 6vw, 48px) 0 clamp(28px, 5vw, 40px)' }} data-screen-label={`Product · ${p.slug}`}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 40, flexWrap: 'wrap' }}>
+            <Reveal style={{ flex: '1 1 320px', minWidth: 0 }}>
               <Eyebrow>{p.eyebrow}</Eyebrow>
               <h1 style={{
                 fontFamily: 'var(--font-product)', fontWeight: 800,
-                fontSize: 'clamp(48px, 6vw, 84px)', lineHeight: 0.92,
+                fontSize: 'clamp(40px, 6vw, 84px)', lineHeight: 0.92,
                 textTransform: 'uppercase', letterSpacing: '-0.02em',
                 margin: '14px 0 0',
               }}>
-                {p.title}<br />{p.title2}
+                {p.title}{p.title2 ? <><br />{p.title2}</> : null}
               </h1>
-              <p style={{
-                color: 'var(--fg-2)', fontSize: 15, maxWidth: 540, lineHeight: 1.6, marginTop: 18,
-              }}>
-                {p.summary}
-              </p>
+              {p.summary && (
+                <p style={{
+                  color: 'var(--fg-2)', fontSize: 15, maxWidth: 540, lineHeight: 1.6, marginTop: 18,
+                }}>{p.summary}</p>
+              )}
             </Reveal>
             {p.goldStandard && (
               <Reveal delay={2} style={{ paddingTop: 8 }}>
@@ -78,11 +85,25 @@ function ProductDetailPage({ slug }) {
               callouts already show a centered product shot. */}
           {!usesRichLayout && (
             <Reveal delay={2}>
-              <div ref={heroDropRef} className="drop-target product-hero">
+              <div ref={heroDropRef} className="drop-target product-hero"
+                   style={p.heroHeight ? { minHeight: p.heroHeight } : undefined}>
                 <div className="drop-hint">Drop image to set product hero</div>
                 {p.heroBgImage ? (
-                  <div className="product-hero-image"
-                       style={{ backgroundImage: `url(${p.heroBgImage})` }} />
+                  <>
+                    <div className="product-hero-image"
+                         style={{
+                           backgroundImage: `url(${p.heroBgImage})`,
+                           backgroundSize: p.heroImageFit || 'cover',
+                           backgroundPosition: p.heroImagePosition || 'center',
+                         }} />
+                    {p.heroOverlay > 0 && (
+                      <div aria-hidden="true" style={{
+                        position: 'absolute', inset: 0,
+                        background: `rgba(0,0,0,${(p.heroOverlay / 100).toFixed(2)})`,
+                        pointerEvents: 'none',
+                      }} />
+                    )}
+                  </>
                 ) : (
                   <div className="product-hero-placeholder">
                     <div className="product-hero-placeholder-frame">▢</div>
@@ -202,11 +223,13 @@ function BenefitsBlock({ title, items }) {
             fontFamily: 'var(--font-product)', fontWeight: 800,
             fontSize: 18, marginBottom: 16, color: 'var(--fg-1)',
             textTransform: 'uppercase', letterSpacing: '0.02em',
+            textAlign: 'center',
           }}>{title}</div>
         )}
         <div className="benefits-2x2" style={{
           display: 'grid', gridTemplateColumns: '1fr 1fr',
           border: '1px solid var(--border-1)', maxWidth: 1100,
+          margin: '0 auto',
         }}>
           {items.map((b, i) => (
             <div key={i} style={{
@@ -230,6 +253,16 @@ function CalloutLayout({ slug, p, calloutImage }) {
   const items = p.numberedFeatures || [];
   // Pad to 4 so layout placement is stable even if a product ships fewer.
   while (items.length < 4) items.push({ title: '', body: '' });
+
+  // Drag-drop on the center callout image. Writes to catalogCardImages[slug]
+  // — the same field the catalog/featured cards read — so a drop here
+  // also updates the homepage rail and catalog grid.
+  const calloutDropRef = React.useRef(null);
+  useImageDrop(calloutDropRef, (path) => {
+    window.__ampleSetTweak && window.__ampleSetTweak('catalogCardImages',
+      { ...(window.__ampleTweaks?.catalogCardImages || {}), [slug]: path });
+  }, { namePrefix: `card-${slug}` });
+
   return (
     <>
       <section style={{ padding: '40px 0 24px', borderTop: '1px solid var(--border-1)' }}>
@@ -253,7 +286,7 @@ function CalloutLayout({ slug, p, calloutImage }) {
           <Reveal style={{ gridColumn: 3, gridRow: 1 }} delay={1}>
             <CalloutItem num="2" align="left" title={items[1].title} body={items[1].body} />
           </Reveal>
-          <div style={{
+          <div ref={calloutDropRef} className="drop-target" style={{
             gridColumn: 2, gridRow: '1 / span 2',
             position: 'relative',
             aspectRatio: '1/1',
@@ -261,6 +294,7 @@ function CalloutLayout({ slug, p, calloutImage }) {
             overflow: 'hidden', borderRadius: 4,
             border: '1px solid var(--border-1)',
           }}>
+            <div className="drop-hint">Drop image to set product photo</div>
             {/* Wrapper applies the callout image scale — wraps the absolute
                 <img> ProductCardMedia renders so the transform applies. */}
             <div style={{
@@ -269,7 +303,8 @@ function CalloutLayout({ slug, p, calloutImage }) {
               transformOrigin: 'center',
             }}>
               <ProductCardMedia slug={slug} heroAsset={p.heroAsset}
-                fit="contain" size={280} override={calloutImage} padding={28} />
+                fit={p.calloutImageFit || 'contain'}
+                size={280} override={calloutImage} padding={28} />
             </div>
           </div>
           <Reveal style={{ gridColumn: 1, gridRow: 2 }} delay={2}>
@@ -283,7 +318,8 @@ function CalloutLayout({ slug, p, calloutImage }) {
       {p.closing && (
         <section style={{ padding: '8px 0 24px' }}>
           <Reveal>
-            <p style={{ color: 'var(--fg-2)', fontSize: 14, lineHeight: 1.7, maxWidth: 920, margin: 0 }}>{p.closing}</p>
+            <p style={{ color: 'var(--fg-2)', fontSize: 14, lineHeight: 1.7,
+                        maxWidth: 820, margin: '0 auto', textAlign: 'center' }}>{p.closing}</p>
           </Reveal>
         </section>
       )}
@@ -291,7 +327,8 @@ function CalloutLayout({ slug, p, calloutImage }) {
       {p.outro && (
         <section style={{ padding: '0 0 32px' }}>
           <Reveal>
-            <p style={{ color: 'var(--fg-3)', fontSize: 13, lineHeight: 1.7, maxWidth: 920, margin: 0 }}>{p.outro}</p>
+            <p style={{ color: 'var(--fg-3)', fontSize: 13, lineHeight: 1.7,
+                        maxWidth: 820, margin: '0 auto', textAlign: 'center' }}>{p.outro}</p>
           </Reveal>
         </section>
       )}
