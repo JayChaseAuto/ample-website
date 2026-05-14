@@ -248,11 +248,33 @@ const NEW_PRODUCTS = [
     heroAsset: 'water-pump',
     summary: 'OEM housing, forged impeller, factory-spec output. The straightforward replacement when the original goes plastic.',
     bullets: [
-      'Forged impeller. Survives high rpm without cavitation.',
+      'Forged steel impeller. Survives high rpm without cavitation.',
       'OEM housing footprint. No hose changes.',
-      'Mechanical seal, lifetime-rated.',
+      'Carbon-faced mechanical seal on a ceramic mating face.',
+      'Double-row sealed bearing, lifetime-rated.',
       'Gasket and bolts included.',
+      'Pressure-tested for leak-down before shipping.',
     ],
+    /* Rich callout layout. Common OE water-pump emphasis: steel-vs-plastic
+       impeller failure mode, carbon mechanical seal, sealed-for-life
+       bearing, cavitation resistance at high rpm. Same template shape as
+       compressor, caliper-npc, brake-pads. No em dashes anywhere. */
+    intro: 'Our OEM-spec water pump pairs a forged steel impeller with a sealed bearing and a carbon-faced mechanical seal. Pulls the same coolant volume the original did, takes the same belt path, fits the same gasket footprint. Pressure-tested at the line before it leaves the box.',
+    numberedFeatures: [
+      { title: 'Forged Steel Impeller', body: 'Steel impeller, not plastic. Holds shape under sustained high-rpm flow without cavitating or shedding vanes into the loop.' },
+      { title: 'Carbon-Faced Seal',     body: 'Carbon mechanical seal running on a ceramic mating face. Holds pressure across heat cycles, no weep at the weep hole.' },
+      { title: 'Sealed Bearing',        body: 'Double-row sealed bearing, no grease point, no service interval. Quiet at every rpm, dry at the shaft.' },
+      { title: 'OEM Footprint',         body: 'Same housing, same gasket, same bolt pattern, same pulley alignment. No bracket mods, no hose mods.' },
+    ],
+    closing: 'Plastic impellers crack at the hub when the engine cycles hot to cold. The signature failure is a slow temp rise that nobody notices until the gauge hits red and the gasket lets go. Steel impeller, steel hub, steel shaft. The signature failure does not happen here.',
+    benefitsTitle: 'Built to Outlast the Loop',
+    benefits: [
+      { icon: 'thermometer-sun', body: 'Sustained flow at temperature. No cavitation, no airlock, no surprise overheat in traffic.' },
+      { icon: 'shield',          body: 'Sealed bearing, lifetime-rated. No grease point, no service interval, no shaft play.' },
+      { icon: 'activity',        body: 'Quiet at every rpm. No bearing whine, no shaft chatter into the cabin.' },
+      { icon: 'sparkles',        body: 'Gasket and bolts in the box. Drop in, fill, bleed, drive.' },
+    ],
+    outro: 'Each pump is dry-spun for balance and pressure-tested for leak-down at the seal and the housing before it leaves the line. Cast and machined to OE drawings, sampled batch by batch, the same QC program that backs every Gold Standard SKU in the range.',
   }),
   makeProduct({
     slug: 'blower-motor',
@@ -333,7 +355,29 @@ const NEW_PRODUCTS = [
       'R134a refrigerant compatible.',
       'Sealed magnetic clutch. Quiet at idle.',
       'OEM bracket and connector.',
+      'PAG oil dosed to OE spec at fill.',
+      'ISO/TS-certified manufacturing line.',
     ],
+    /* Rich callout layout (same shape as caliper-npc and brake-pads).
+       Copy cadence borrowed from Denso OE compressor literature: PAG
+       precharge, magnetic clutch durability, OE-equivalent fitment.
+       No em dashes anywhere in this block. */
+    intro: 'Our six-cylinder swash-plate compressor delivers OEM-equivalent cooling under sustained heat-soak loads. Each unit ships pre-charged with the correct PAG oil viscosity, paired with a sealed magnetic clutch and validated through full-cycle bench testing. Drops into the bracket the original used, takes the same electrical connector, runs on the same refrigerant.',
+    numberedFeatures: [
+      { title: 'Six-Cylinder Swash-Plate', body: 'Rotary swash-plate design with six pistons. Smooth engagement at every cycle, no clutch shock to the accessory drive.' },
+      { title: 'Pre-Charged PAG Oil',      body: 'Correct viscosity oil dosed to OE spec at the factory. Vacuum the system, charge it, drive away.' },
+      { title: 'Sealed Magnetic Clutch',   body: 'Double-row bearing, sealed for life. Quiet at idle, no rattle on heat soak, no metal in the lines.' },
+      { title: 'OEM Fitment',              body: 'Same bracket, same connector, same belt path, same refrigerant. No harness, hose or mount modifications.' },
+    ],
+    closing: 'Compressors fail the same way every summer. The bearing screams, the clutch slips, the lines fill with metal and the cabin runs warm. This one is built so that does not happen. Each unit is bench-tested at temperature and pressure before it leaves the line.',
+    benefitsTitle: 'Engineered for the Heat',
+    benefits: [
+      { icon: 'thermometer-snowflake', body: 'Sustained cooling under heat soak. No pull-down loss in traffic, no warm air at idle.' },
+      { icon: 'activity',              body: 'Smooth engagement at every cycle. No clutch shock, no surge into the belt.' },
+      { icon: 'shield',                body: 'Sealed bearing and clutch. Quiet at every rpm, dry at every gasket.' },
+      { icon: 'sparkles',              body: 'Pre-charged with the correct PAG oil. Drop in, vacuum, charge, done.' },
+    ],
+    outro: 'Magnetic clutch torque-tested through 200 engagement cycles. Refrigerant ports pressure-tested for leak-down at 25 bar before shipping. Built on an ISO/TS-certified manufacturing line and sampled batch by batch, the same QC program that backs every Gold Standard SKU in the range.',
   }),
   makeProduct({
     slug: 'exhaust',
@@ -483,14 +527,15 @@ const NEW_PRODUCTS = [
 NEW_PRODUCTS.forEach(p => { PRODUCTS[p.slug] = p; });
 
 const PRODUCT_ORDER = [
-  // 'calipers' intentionally omitted — kept in PRODUCTS so a direct URL
-  // (#/product/calipers) still renders, but hidden from catalog + featured.
+  // 'calipers', 'wiper-linkage', 'exhaust' intentionally omitted — kept in
+  // PRODUCTS so a direct URL (#/product/<slug>) still renders, but hidden
+  // from catalog + featured listings.
   'brake-pads', 'caliper-npc', 'abs-sensor', 'pad-sensor',
   'radiators', 'radiator-urk', 'water-pump-awn', 'oil-cooler',
   'compressor', 'condenser', 'heater-core', 'blower-motor',
   'alternator', 'starter', 'ignition-coil', 'lighting',
-  'wiper-motor', 'wiper-linkage',
-  'tensioner', 'exhaust', 'gasket',
+  'wiper-motor',
+  'tensioner', 'gasket',
   'power-steering-pump', 'rack-pinion',
   'air-filter', 'cabin-filter',
 ];

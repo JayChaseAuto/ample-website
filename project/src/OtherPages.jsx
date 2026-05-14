@@ -288,7 +288,14 @@ const STORY_ENTRIES = [
   { key: '2019', year: '2019 to present', t: 'THE AMPLE STANDARD', b: "Ample was born to bridge that gap. Today, we manage over 10,000 SKUs all strictly certified to OEM or OEM+ specifications ensuring that \"aftermarket\" never means a compromise in performance.", img: 'assets/history_2024_1778520797001.png' },
 ];
 
-function TimelineEntry({ entry, delay }) {
+/* StoryTimeline — horizontal 3-column layout on desktop, vertical on mobile.
+   Single IntersectionObserver toggles an `.is-visible` class on the wrapper
+   which then drives three coordinated CSS animations:
+     1. The connecting rail draws (scaleX on desktop, scaleY on mobile).
+     2. Dots light from cool grey to ample-red at staggered delays.
+     3. Each card fades up with a 150ms stagger between cards.
+   prefers-reduced-motion bails to the final state on mount. */
+function StoryCard({ entry, idx }) {
   const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
   const override = (tweaks.storyImages || {})[entry.key];
   const img = override || entry.img;
@@ -298,23 +305,46 @@ function TimelineEntry({ entry, delay }) {
       { ...(window.__ampleTweaks?.storyImages || {}), [entry.key]: path });
   }, { namePrefix: `history-${entry.key}` });
   return (
-    <Reveal delay={delay} className="story-entry" style={{ display: 'grid', gridTemplateColumns: '170px 60px 1fr', gap: 0, marginBottom: 32, alignItems: 'start' }}>
-      <div
-        ref={dropRef}
-        className="drop-target"
-        style={{ background: `url(${img}) center / cover no-repeat`, aspectRatio: '4/3', borderRadius: 2, border: '1px solid var(--border-1)', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 60%, rgba(11,11,13,0.7) 100%)' }} />
-        <div style={{ position: 'absolute', bottom: 8, left: 10, fontFamily: 'var(--font-mono)', fontSize: 9, color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em', zIndex: 2 }}>ARCHIVE · {entry.key}</div>
-        <div className="drop-hint">Drop image for {entry.year}</div>
+    <div className="story-card" data-idx={idx}>
+      <div className="story-card-inner">
+        <span className="story-dot" aria-hidden="true" />
+        <div className="story-year">{entry.year}</div>
+        <div ref={dropRef} className="story-img drop-target"
+             style={{ backgroundImage: `url(${img})` }}>
+          <div className="story-img-shade" aria-hidden="true" />
+          <div className="story-img-tag">ARCHIVE · {entry.key}</div>
+          <div className="drop-hint">Drop image for {entry.year}</div>
+        </div>
+        <h3 className="story-title">{entry.t}</h3>
+        <p className="story-body">{entry.b}</p>
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 60 }}>
-        <div style={{ width: 14, height: 14, borderRadius: 7, background: 'var(--ample-red)', border: '3px solid #000', boxShadow: '0 0 0 1px var(--ample-red)' }} />
-      </div>
-      <div style={{ paddingTop: 4 }}>
-        <div style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 22, textTransform: 'uppercase' }}>{entry.t} <span style={{ color: 'var(--fg-3)', fontWeight: 500 }}>({entry.year})</span></div>
-        <p style={{ color: 'var(--fg-2)', fontSize: 13, lineHeight: 1.6, marginTop: 8, maxWidth: 380 }}>{entry.b}</p>
-      </div>
-    </Reveal>
+    </div>
+  );
+}
+
+function StoryTimeline() {
+  const ref = React.useRef(null);
+  const [visible, setVisible] = React.useState(false);
+  React.useEffect(() => {
+    if (!ref.current) return;
+    const prefersReduced = typeof window !== 'undefined' && window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) { setVisible(true); return; }
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) { setVisible(true); io.disconnect(); break; }
+      }
+    }, { threshold: 0.2 });
+    io.observe(ref.current);
+    return () => io.disconnect();
+  }, []);
+  return (
+    <div ref={ref} className={'story-grid' + (visible ? ' is-visible' : '')}>
+      <div className="story-rail" aria-hidden="true" />
+      {STORY_ENTRIES.map((e, i) => (
+        <StoryCard key={e.key} entry={e} idx={i} />
+      ))}
+    </div>
   );
 }
 
@@ -328,12 +358,7 @@ function StoryPage() {
           Our Story.
         </Reveal>
 
-        <div style={{ position: 'relative', maxWidth: 920 }}>
-          <div className="story-rail" style={{ position: 'absolute', left: 200, top: 24, bottom: 24, width: 1, background: 'var(--border-2)' }} />
-          {STORY_ENTRIES.map((e, i) => (
-            <TimelineEntry key={e.key} entry={e} delay={i % 4} />
-          ))}
-        </div>
+        <StoryTimeline />
 
         {/* Bottom big slogan */}
         <Reveal style={{ marginTop: 80, borderTop: '1px solid var(--border-1)', paddingTop: 40 }}>
