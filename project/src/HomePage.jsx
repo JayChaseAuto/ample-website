@@ -185,6 +185,15 @@ function FeaturedCard({ slug }) {
   const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
   const cardImage = (tweaks.catalogCardImages || {})[slug];
   const imageFit = tweaks.cardImageFit || 'contain';
+  // Per-product overrides win over the global card defaults. Falls back to
+  // 1.0 / 16 if neither is set so existing cards render unchanged.
+  const overrides = (tweaks.productOverrides || {})[slug] || {};
+  const cardScale = typeof overrides.cardScale === 'number'
+    ? overrides.cardScale
+    : (typeof tweaks.catalogCardScale === 'number' ? tweaks.catalogCardScale : 1);
+  const cardPadding = typeof overrides.cardPadding === 'number'
+    ? overrides.cardPadding
+    : (typeof tweaks.catalogCardPadding === 'number' ? tweaks.catalogCardPadding : 16);
 
   const dropRef = React.useRef(null);
   useImageDrop(dropRef, (path) => {
@@ -206,8 +215,8 @@ function FeaturedCard({ slug }) {
         background: 'var(--ample-gold)', color: '#17110a', fontFamily: 'var(--font-product)', fontSize: 9, fontWeight: 800,
         letterSpacing: '0.16em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 999, pointerEvents: 'none' }}>★ Gold Standard</span>
       }
-      <div style={{ position: 'relative', aspectRatio: '4/3', background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', padding: 16, overflow: 'hidden' }}>
-        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240} override={cardImage} />
+      <div style={{ position: 'relative', aspectRatio: '4/3', background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', padding: cardPadding, overflow: 'hidden' }}>
+        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240} override={cardImage} scale={cardScale} />
       </div>
       <div style={{ padding: '14px 16px 16px', borderTop: '1px solid var(--border-1)' }}>
         <Eyebrow color={p.goldStandard ? 'gold' : 'red'} style={{ fontSize: 10 }}>{p.category}</Eyebrow>

@@ -513,7 +513,7 @@ const HERO_RENDERERS = {
 
    `fit` controls object-fit (contain = whole image visible, cover = fills card).
 */
-function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, override, padding = 16 }) {
+function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, override, padding = 16, scale = 1 }) {
   const conventionalExts = ['png', 'jpg'];
   const [extIdx, setExtIdx] = React.useState(0);
   const [conventionFailed, setConventionFailed] = React.useState(false);
@@ -525,9 +525,16 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
     setConventionFailed(false);
   }, [probeKey]);
 
+  // `scale` zooms the visible image inside the card frame without changing
+  // the frame size. Useful for tightening up product shots that ship with
+  // a lot of transparent margin baked in. Clamped to a safe range so a
+  // misconfigured tweak can't blow the image past the card chrome.
+  const safeScale = Math.max(0.5, Math.min(2, Number(scale) || 1));
   const imgStyle = {
     position: 'absolute', inset: 0, width: '100%', height: '100%',
     objectFit: fit, objectPosition: 'center', zIndex: 1, display: 'block',
+    transform: safeScale !== 1 ? `scale(${safeScale})` : undefined,
+    transformOrigin: 'center',
   };
   const overlay = fit === 'cover' && (
     <div aria-hidden="true" style={{
@@ -544,8 +551,10 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
   if (conventionFailed) {
     return (
       <div style={{
-        position: 'absolute', inset: padding, display: 'flex',
+        position: 'absolute', inset: 0, display: 'flex',
         alignItems: 'center', justifyContent: 'center', zIndex: 1,
+        transform: safeScale !== 1 ? `scale(${safeScale})` : undefined,
+        transformOrigin: 'center',
       }}>
         <ProductHero type={heroAsset} size={size} />
       </div>);

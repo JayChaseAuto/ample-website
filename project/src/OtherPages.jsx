@@ -104,6 +104,14 @@ function CatalogCard({ slug, ratio = '4/3' }) {
   const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
   const cardImage = (tweaks.catalogCardImages || {})[slug];
   const imageFit = tweaks.cardImageFit || 'contain';
+  // Per-product overrides win over the global card defaults.
+  const overrides = (tweaks.productOverrides || {})[slug] || {};
+  const cardScale = typeof overrides.cardScale === 'number'
+    ? overrides.cardScale
+    : (typeof tweaks.catalogCardScale === 'number' ? tweaks.catalogCardScale : 1);
+  const cardPadding = typeof overrides.cardPadding === 'number'
+    ? overrides.cardPadding
+    : (typeof tweaks.catalogCardPadding === 'number' ? tweaks.catalogCardPadding : 16);
 
   const dropRef = React.useRef(null);
   useImageDrop(dropRef, (path) => {
@@ -126,8 +134,8 @@ function CatalogCard({ slug, ratio = '4/3' }) {
       {p.goldStandard &&
       <span style={{ position: 'absolute', top: 10, right: 10, zIndex: 4, background: 'var(--ample-gold)', color: '#17110a', fontFamily: 'var(--font-product)', fontSize: 9, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 999, pointerEvents: 'none' }}>★ Gold</span>
       }
-      <div style={{ position: 'relative', aspectRatio: ratio, background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', padding: 16, overflow: 'hidden' }}>
-        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240} override={cardImage} />
+      <div style={{ position: 'relative', aspectRatio: ratio, background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', padding: cardPadding, overflow: 'hidden' }}>
+        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240} override={cardImage} scale={cardScale} />
       </div>
       <a href={`#/product/${slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block', padding: '14px 18px 18px', borderTop: '1px solid var(--border-1)' }}>
         <Eyebrow color={p.goldStandard ? 'gold' : 'red'} style={{ fontSize: 10 }}>{p.category}</Eyebrow>

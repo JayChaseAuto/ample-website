@@ -55,7 +55,8 @@ const __TWEAKS_STYLE = `
     width:22px;height:22px;border-radius:6px;cursor:default;font-size:13px;line-height:1}
   .twk-x:hover{background:rgba(0,0,0,.06);color:#29261b}
   .twk-body{padding:2px 14px 14px;display:flex;flex-direction:column;gap:10px;
-    overflow-y:auto;overflow-x:hidden;min-height:0;
+    flex:1 1 auto;overflow-y:auto;overflow-x:hidden;min-height:0;
+    overscroll-behavior:contain;
     scrollbar-width:thin;scrollbar-color:rgba(0,0,0,.15) transparent}
   .twk-body::-webkit-scrollbar{width:8px}
   .twk-body::-webkit-scrollbar-track{background:transparent;margin:2px}

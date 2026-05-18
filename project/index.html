@@ -44,15 +44,15 @@
 })();
 </script>
 <script src="image-slot.js"></script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=33"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=33"></script>
-<script type="text/babel" src="src/Animations.jsx?v=33"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=33"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=33"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=33"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=33"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=33"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=33"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=36"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=36"></script>
+<script type="text/babel" src="src/Animations.jsx?v=36"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=36"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=36"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=36"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=36"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=36"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=36"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -375,9 +375,88 @@ function applyTweaksToDOM(t) {
   root.setAttribute('data-theme', t.theme);
 }
 
+/* PreviewToggle — editor-only segmented control top-right. Lets you flip
+   the whole rendered page into a 390x844 iframe so CSS media queries fire
+   at mobile width. Hidden on the published site (non-editor) and inside
+   the iframe child so it doesn't recurse. */
+function PreviewToggle({ mode, onChange }) {
+  const btn = (m, label) => (
+    <button type="button" onClick={() => onChange(m)} style={{
+      appearance: 'none', border: 0, cursor: 'pointer',
+      background: mode === m ? 'var(--ample-red)' : 'transparent',
+      color: '#fff',
+      fontSize: 10.5, fontWeight: 700,
+      letterSpacing: '0.14em', textTransform: 'uppercase',
+      padding: '6px 14px', borderRadius: 999,
+      fontFamily: 'ui-sans-serif,system-ui,-apple-system,sans-serif',
+      transition: 'background 120ms',
+    }}>{label}</button>
+  );
+  return (
+    <div data-noncommentable="" style={{
+      position: 'fixed', top: 12, right: 12, zIndex: 2147483645,
+      display: 'flex', gap: 2,
+      background: 'rgba(11,11,13,0.88)',
+      border: '1px solid rgba(255,255,255,0.14)',
+      borderRadius: 999, padding: 3,
+      WebkitBackdropFilter: 'blur(12px) saturate(140%)',
+      backdropFilter: 'blur(12px) saturate(140%)',
+      boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+    }}>
+      {btn('desktop', 'Desktop')}
+      {btn('mobile', 'Mobile')}
+    </div>
+  );
+}
+
+/* MobilePreviewFrame — renders the same URL inside a 390x844 iframe with
+   a phone-style frame. The iframe child detects window.self !== window.top
+   and skips its own toggle so we don't infinite-recurse. */
+function MobilePreviewFrame() {
+  return (
+    <div style={{
+      minHeight: '100vh', background: '#0a0b0d',
+      display: 'flex', flexDirection: 'column',
+      alignItems: 'center', justifyContent: 'flex-start',
+      padding: '64px 16px 32px',
+    }}>
+      <div style={{
+        width: 390, maxWidth: '100%', height: 844,
+        borderRadius: 28, padding: 8,
+        background: 'linear-gradient(180deg, #1a1b1e 0%, #0a0b0d 100%)',
+        border: '1px solid rgba(255,255,255,0.08)',
+        boxShadow: '0 30px 80px rgba(0,0,0,0.6)',
+      }}>
+        <iframe
+          src={window.location.href}
+          title="Mobile preview"
+          style={{
+            width: '100%', height: '100%',
+            border: 'none', borderRadius: 20,
+            background: '#000', display: 'block',
+          }}
+        />
+      </div>
+      <div style={{
+        marginTop: 18, fontFamily: 'var(--font-mono)', fontSize: 11,
+        color: 'rgba(255,255,255,0.4)', letterSpacing: '0.08em',
+      }}>
+        390 × 844 · iPhone 14 Pro
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const path = useHashRoute();
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  // Preview mode: 'desktop' is normal full-page render, 'mobile' shows the
+  // page inside a 390-wide iframe. Toggle only renders for editors at the
+  // top window — inside the iframe we always render the normal page.
+  const isInIframe = typeof window !== 'undefined' && window.self !== window.top;
+  const showPreviewToggle = typeof window !== 'undefined' && window.__ampleEditor && !isInIframe;
+  const [previewMode, setPreviewMode] = React.useState('desktop');
 
   // Expose tweaks to other components via window, then apply to DOM
   React.useEffect(() => {
@@ -494,7 +573,22 @@ function App() {
     setSaveResult(await saveTweaksToSource(t));
   };
 
+  // Mobile preview mode: replace the page render with an iframe that
+  // loads the same URL at 390px wide. The iframe child renders normally
+  // (toggle is hidden inside iframes) so what you see in the frame is
+  // exactly what a phone visitor would see.
+  if (previewMode === 'mobile' && !isInIframe) {
+    return (
+      <>
+        <PreviewToggle mode={previewMode} onChange={setPreviewMode} />
+        <MobilePreviewFrame />
+      </>
+    );
+  }
+
   return (
+    <>
+      {showPreviewToggle && <PreviewToggle mode={previewMode} onChange={setPreviewMode} />}
     <div className="atm-host">
       {showGrid && <div className="atm-layer atm-grid" aria-hidden="true" />}
       {showNoise && <div className="atm-layer atm-noise" aria-hidden="true" />}
@@ -566,6 +660,25 @@ function App() {
                             onChange={(v) => setProductTweak(productSlug, 'heroImagePosition', v)} />
               </>
             )}
+
+            {/* Per-product catalog-card image controls. Override the
+                global catalogCardScale / catalogCardPadding for this one
+                product. Useful when most cards look right at the global
+                default but one product photo was shot tighter or with
+                less margin. */}
+            <TweakSection label="Product · Card image" />
+            <TweakSlider label="Scale"
+                         value={typeof productData?.cardScale === 'number'
+                           ? productData.cardScale
+                           : (typeof t.catalogCardScale === 'number' ? t.catalogCardScale : 1)}
+                         min={0.5} max={1.5} step={0.05}
+                         onChange={(v) => setProductTweak(productSlug, 'cardScale', v)} />
+            <TweakSlider label="Padding"
+                         value={typeof productData?.cardPadding === 'number'
+                           ? productData.cardPadding
+                           : (typeof t.catalogCardPadding === 'number' ? t.catalogCardPadding : 16)}
+                         min={0} max={40} step={2} unit="px"
+                         onChange={(v) => setProductTweak(productSlug, 'cardPadding', v)} />
 
             {/* Engineering summary bullets — one per line. Available for
                 every product. Empty lines are stripped on save; the array
@@ -713,6 +826,14 @@ function App() {
                           { value: 'cover', label: 'Fill' },
                         ]}
                         onChange={(v) => setTweak('cardImageFit', v)} />
+            <TweakSlider label="Image scale"
+                         value={typeof t.catalogCardScale === 'number' ? t.catalogCardScale : 1}
+                         min={0.5} max={1.5} step={0.05}
+                         onChange={(v) => setTweak('catalogCardScale', v)} />
+            <TweakSlider label="Image padding"
+                         value={typeof t.catalogCardPadding === 'number' ? t.catalogCardPadding : 16}
+                         min={0} max={40} step={2} unit="px"
+                         onChange={(v) => setTweak('catalogCardPadding', v)} />
 
             <TweakSection label="Catalog · Cards" />
             <TweakToggle label="Show category blurbs"
@@ -871,6 +992,7 @@ function App() {
         )}
       </TweaksPanel>
     </div>
+    </>
   );
 }
 

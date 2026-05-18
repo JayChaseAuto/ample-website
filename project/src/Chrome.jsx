@@ -17,14 +17,29 @@ function SiteHeader({ active }) {
       WebkitBackdropFilter: 'blur(12px) saturate(140%)',
       borderBottom: '1px solid var(--border-1)',
     }}>
-      <div style={{ height: 64, display: 'flex', alignItems: 'center', padding: '0 40px', gap: 40, maxWidth: 1440, margin: '0 auto' }}>
-        <a href="#/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
+      <div style={{
+        height: 64, display: 'flex', alignItems: 'center',
+        padding: '0 clamp(16px, 4vw, 40px)',
+        gap: 'clamp(12px, 3vw, 40px)',
+        maxWidth: 1440, margin: '0 auto',
+      }}>
+        <a href="#/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}>
           <img src="assets/logo-red-transparent.png" alt="ample" style={{ height: 22, display: 'block' }} />
         </a>
-        <nav style={{ display: 'flex', gap: 28, flex: 1 }}>
+        {/* Nav scrolls horizontally on narrow screens; .nav-scroll hides the
+            scrollbar so the row looks clean. Items keep whiteSpace: nowrap
+            so they don't wrap mid-label ("Gold / Standard"). */}
+        <nav className="nav-scroll" style={{
+          display: 'flex',
+          gap: 'clamp(14px, 3vw, 28px)',
+          flex: 1, minWidth: 0,
+          overflowX: 'auto', overflowY: 'hidden',
+        }}>
           {NAV_LINKS.map(l => (
             <a key={l.id} href={l.href} style={{
-              fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700,
+              fontFamily: 'var(--font-product)',
+              fontSize: 'clamp(10px, 2.4vw, 11px)',
+              fontWeight: 700,
               textTransform: 'uppercase', letterSpacing: '0.16em',
               color: active === l.id ? 'var(--ample-red)' : 'var(--fg-1)',
               textDecoration: 'none',
@@ -32,6 +47,8 @@ function SiteHeader({ active }) {
               paddingBottom: 4,
               transition: 'color 120ms',
               textAlign: 'left',
+              whiteSpace: 'nowrap',
+              flexShrink: 0,
             }}>{l.label}</a>
           ))}
         </nav>
@@ -43,8 +60,13 @@ function SiteHeader({ active }) {
 function SiteFooter({ variant = 'dark' }) {
   return (
     <footer style={{ background: '#000', borderTop: '1px solid var(--border-1)' }}>
-      <div style={{ maxWidth: 1440, margin: '0 auto', padding: '28px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 40 }}>
-        <div style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+      <div style={{
+        maxWidth: 1440, margin: '0 auto',
+        padding: '28px clamp(16px, 4vw, 40px)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        gap: 24, flexWrap: 'wrap',
+      }}>
+        <div style={{ display: 'flex', gap: 'clamp(14px, 3vw, 28px)', alignItems: 'center', flexWrap: 'wrap' }}>
           <a href="#/" style={footerLinkStyle}>Home</a>
           <a href="#/story" style={footerLinkStyle}>Our Story</a>
           <a href="#/contact" style={footerLinkStyle}>Contact Us</a>
@@ -53,7 +75,13 @@ function SiteFooter({ variant = 'dark' }) {
           Global Partnerships
         </div>
       </div>
-      <div style={{ borderTop: '1px solid var(--border-1)', padding: '14px 40px', maxWidth: 1440, margin: '0 auto', fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)', letterSpacing: '0.06em', textAlign: 'right' }}>
+      <div style={{
+        borderTop: '1px solid var(--border-1)',
+        padding: '14px clamp(16px, 4vw, 40px)',
+        maxWidth: 1440, margin: '0 auto',
+        fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--fg-3)',
+        letterSpacing: '0.06em', textAlign: 'right',
+      }}>
         Global network of physical partners and service centers.
       </div>
     </footer>

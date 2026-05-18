@@ -686,6 +686,15 @@ html.lenis, html.lenis body { height: auto; }
 }
 
 /* ==========================================================================
+   Site nav — hide the horizontal-scroll scrollbar on narrow viewports so
+   the row reads as a clean strip even when the nav items overflow. The
+   scroll still works (touch + trackpad + arrow keys), the bar is just
+   visually suppressed.
+   ========================================================================== */
+.nav-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+.nav-scroll::-webkit-scrollbar { display: none; }
+
+/* ==========================================================================
    Editor-only drop affordances. The dashed ring, drop-hint and any
    editor cursors are hidden completely for non-editor visitors.
    ========================================================================== */
