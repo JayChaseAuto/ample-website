@@ -44,15 +44,15 @@
 })();
 </script>
 <script src="image-slot.js"></script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=36"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=36"></script>
-<script type="text/babel" src="src/Animations.jsx?v=36"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=36"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=36"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=36"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=36"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=36"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=36"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=37"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=37"></script>
+<script type="text/babel" src="src/Animations.jsx?v=37"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=37"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=37"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=37"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=37"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=37"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=37"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -100,22 +100,26 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "pad-sensor": "assets\/Sensors.png",
     "water-pump-awn": "assets\/card-water-pump-awn-fdc31b04.webp",
     "compressor": "assets\/card-compressor-986b1f7c.webp",
-    "alternator": "assets\/alternator_2.png",
-    "starter": "assets\/Starter.png",
+    "alternator": "assets\/card-alternator-f4863997.webp",
+    "starter": "assets\/card-starter-d6e6c7e7.webp",
     "ignition-coil": "assets\/card-ignition-coil-6032b902.webp",
     "lighting": "assets\/Lightbulb.png",
     "power-steering-pump": "assets\/power_steering.png",
     "air-filter": "assets\/air_filters.png",
     "cabin-filter": "assets\/cabin_filters.png",
     "condenser": "assets\/card-condenser-7561733b.webp",
-    "wiper-motor": "assets\/card-wiper-motor-6c803b45.webp",
+    "wiper-motor": "assets\/card-wiper-motor-75502ff2.webp",
     "heater-core": "assets\/card-heater-core-33e5d57a.webp",
-    "gasket": "assets\/card-gasket-555019aa.webp"
+    "gasket": "assets\/card-gasket-555019aa.webp",
+    "radiator-urk": "assets\/card-radiator-urk-38252b47.webp"
   },
   "productOverrides": {
     "brake-pads": {
       "heroBgImage": "assets\/product-brake-pads-hero-2658a817.webp",
-      "heroAsset": "brake-pads"
+      "heroAsset": "brake-pads",
+      "cardScale": 1.1,
+      "calloutImageFit": "contain",
+      "calloutImageScale": 1.25
     },
     "pad-sensor": {
       "heroBgImage": "assets\/product-pad-sensor-hero-68318690.webp",
@@ -141,7 +145,9 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroBgImage": "",
       "heroAsset": "radiator",
       "outro": "It is not greasy, forms a very thin layer, and does not compromise braking performance. The coating withstands temperatures up to 400 °C (750 °F), maintaining its protective qualities through heat cycling without crystallization or organic resin buildup. Applied in a closed system that recycles leftover liquids, making it a sustainable choice for high-performance brake calipers.",
-      "calloutImageScale": 2.5
+      "calloutImageScale": 2.5,
+      "cardScale": 1.3,
+      "calloutImageFit": "cover"
     },
     "lighting": {
       "heroBgImage": "assets\/product-lighting-hero-d63a17b8.webp",
@@ -175,15 +181,30 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     },
     "abs-sensor": {
       "heroBgImage": "assets\/product-abs-sensor-hero-ca125d58.webp",
-      "heroImageFit": "contain"
+      "heroImageFit": "contain",
+      "cardScale": 1.1
     },
     "water-pump-awn": {
       "heroBgImage": "assets\/product-water-pump-awn-hero-fdc31b04.webp",
       "heroImageFit": "contain"
+    },
+    "alternator": {
+      "heroBgImage": "assets\/product-alternator-hero-75502ff2.webp",
+      "cardPadding": 16,
+      "cardScale": 0.9
+    },
+    "wiper-motor": {
+      "cardScale": 0.9,
+      "heroBgImage": "assets\/product-wiper-motor-hero-187ce69b.webp",
+      "heroImageFit": "contain"
+    },
+    "radiator-urk": {
+      "heroBgImage": "assets\/product-radiator-urk-hero-0edb3edc.webp",
+      "heroImageFit": "contain"
     }
   },
   "atmosphere": "grid",
-  "atmosphereGlow": 6,
+  "atmosphereGlow": 9,
   "goldStandardMedia": "assets\/gold-dyno-094485be.mov",
   "goldFeatureImages": {
     "precision": "assets\/gold-precision-dbb15b8f.webp",
@@ -594,6 +615,11 @@ function App() {
       {showNoise && <div className="atm-layer atm-noise" aria-hidden="true" />}
       <div className="atm-layer atm-glow" aria-hidden="true"
            style={{ opacity: glowOpacity }} />
+      {/* Animated atmosphere canvas. Tied to the same enable/disable as the
+          static grid: if atmosphere is 'none', no canvas. Otherwise the
+          canvas runs at 24fps capped, mobile-tuned, with a static frame
+          when prefers-reduced-motion is on. */}
+      {atm !== 'none' && <AtmosphereCanvas />}
       {page}
       <TweaksPanel title={
         productSlug ? 'Product · Tweaks'

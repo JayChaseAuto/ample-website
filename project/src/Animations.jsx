@@ -396,7 +396,180 @@ function useImageDrop(ref, onDrop, opts) {
   }, [ref]);
 }
 
+/* ---------- AtmosphereCanvas ---------- */
+/* Fixed-position canvas behind the page. Pre-renders a faint grid + (desktop
+   only) a few drifting "circuit trace" lines to an offscreen buffer ONCE,
+   then blits + draws an amber sweep beam over it on each frame.
+
+   Mobile concessions:
+     - DPR capped to 1 (smaller backing buffer, less GPU work)
+     - Sweep beam skipped — only the static grid blit each frame
+     - Circuit traces omitted from the offscreen pre-render
+   Performance guards (desktop + mobile):
+     - 24fps cap via frame-skip counter
+     - Boots inside requestIdleCallback so React paints first
+     - Pauses on document.visibilitychange (tab hidden) and on resize
+     - prefers-reduced-motion -> render one static frame and stop */
+function AtmosphereCanvas() {
+  const ref = React.useRef(null);
+  React.useEffect(() => {
+    const canvas = ref.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    const isMobile = window.matchMedia('(max-width: 720px)').matches;
+    const dpr = Math.min(isMobile ? 1 : 2, window.devicePixelRatio || 1);
+
+    let w = 0, h = 0;
+    let raf = 0;
+    let frame = 0;
+    let prerendered = null;
+    let resizeTimer = 0;
+
+    const buildPrerendered = () => {
+      const off = document.createElement('canvas');
+      off.width = w * dpr;
+      off.height = h * dpr;
+      const octx = off.getContext('2d');
+      if (!octx) return null;
+      octx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Faint grid
+      octx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+      octx.lineWidth = 1;
+      const step = 32;
+      for (let x = step; x < w; x += step) {
+        octx.beginPath();
+        octx.moveTo(x + 0.5, 0);
+        octx.lineTo(x + 0.5, h);
+        octx.stroke();
+      }
+      for (let y = step; y < h; y += step) {
+        octx.beginPath();
+        octx.moveTo(0, y + 0.5);
+        octx.lineTo(w, y + 0.5);
+        octx.stroke();
+      }
+
+      // Circuit traces — desktop only. Deterministic step pattern so we
+      // don't burn entropy on Math.random per resize.
+      if (!isMobile) {
+        octx.strokeStyle = 'rgba(233, 32, 36, 0.05)';
+        octx.lineWidth = 1;
+        for (let i = 0; i < 4; i++) {
+          let x = 0;
+          let y = (i + 0.5) * h / 4;
+          octx.beginPath();
+          octx.moveTo(x, y);
+          while (x < w) {
+            const seg = 40 + ((i * 53 + Math.floor(x / 7)) % 80);
+            x += seg;
+            octx.lineTo(x, y);
+            if (x < w && (Math.floor(x / 31) + i) % 3 === 0) {
+              const dy = (Math.floor(x / 41) + i) % 2 === 0 ? -18 : 18;
+              octx.lineTo(x, y + dy);
+              y += dy;
+              x += 10;
+              octx.lineTo(x, y);
+            }
+          }
+          octx.stroke();
+        }
+      }
+
+      return off;
+    };
+
+    const setup = () => {
+      w = window.innerWidth;
+      h = window.innerHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      prerendered = buildPrerendered();
+    };
+
+    const drawSweep = (t) => {
+      if (isMobile) return;
+      const period = 30000;
+      const p = (t % period) / period;
+      const x = p * (w + 600) - 300;
+      const grad = ctx.createLinearGradient(x - 200, 0, x + 200, 0);
+      grad.addColorStop(0, 'rgba(255, 168, 50, 0)');
+      grad.addColorStop(0.5, 'rgba(255, 168, 50, 0.05)');
+      grad.addColorStop(1, 'rgba(255, 168, 50, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x - 200, 0, 400, h);
+    };
+
+    const tick = (t) => {
+      frame++;
+      if (frame % 2 !== 0) { raf = requestAnimationFrame(tick); return; }
+      ctx.clearRect(0, 0, w, h);
+      if (prerendered) ctx.drawImage(prerendered, 0, 0, w, h);
+      drawSweep(t);
+      raf = requestAnimationFrame(tick);
+    };
+
+    const start = () => {
+      setup();
+      if (PREFERS_REDUCED_MOTION) {
+        ctx.clearRect(0, 0, w, h);
+        if (prerendered) ctx.drawImage(prerendered, 0, 0, w, h);
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    const stop = () => {
+      if (raf) { cancelAnimationFrame(raf); raf = 0; }
+    };
+
+    const onVisibilityChange = () => {
+      if (document.hidden) stop();
+      else if (!raf && !PREFERS_REDUCED_MOTION) raf = requestAnimationFrame(tick);
+    };
+
+    const onResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => { stop(); start(); }, 200);
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('resize', onResize, { passive: true });
+
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(start, { timeout: 800 });
+    } else {
+      setTimeout(start, 200);
+    }
+
+    return () => {
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('resize', onResize);
+      clearTimeout(resizeTimer);
+      stop();
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={ref}
+      aria-hidden="true"
+      style={{
+        position: 'fixed', top: 0, left: 0,
+        width: '100vw', height: '100vh',
+        pointerEvents: 'none', zIndex: 0,
+        opacity: 0.65,
+      }}
+    />
+  );
+}
+
 Object.assign(window, {
-  Reveal, useParallax, useImageDrop, getLenis,
+  Reveal, useParallax, useImageDrop, getLenis, AtmosphereCanvas,
   ensureProjectDirHandle, writeImageToAssets, resolveDraggedToBlob,
 });

@@ -695,6 +695,62 @@ html.lenis, html.lenis body { height: auto; }
 .nav-scroll::-webkit-scrollbar { display: none; }
 
 /* ==========================================================================
+   Callout stage refinements. The product photo at the center of the
+   rich-layout grid gets a lifted shadow + hover red-ring. The reflection
+   underlay is desktop-only because filter:blur is the most expensive
+   compositing operation on mobile.
+   ========================================================================== */
+.callout-stage {
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+  transition: box-shadow 220ms var(--ease-sharp);
+}
+@media (hover: hover) {
+  .callout-stage:hover {
+    box-shadow:
+      0 0 0 1px rgba(233, 32, 36, 0.5),
+      0 0 32px rgba(233, 32, 36, 0.2),
+      0 30px 60px rgba(0, 0, 0, 0.6);
+  }
+}
+.callout-stage-reflection {
+  position: absolute;
+  left: 10%; right: 10%;
+  bottom: -32%; height: 32%;
+  background: radial-gradient(ellipse at top, rgba(233, 32, 36, 0.14), transparent 70%);
+  z-index: -1;
+  pointer-events: none;
+}
+/* Mobile: keep the radial reflection but skip the blur (real blur during
+   scroll causes jank on phones). Desktop gets a touch of blur. */
+@media (min-width: 721px) and (hover: hover) {
+  .callout-stage-reflection {
+    filter: blur(16px);
+    bottom: -36%;
+    height: 36%;
+  }
+}
+
+/* Numbered circles on the callouts — gain a red ring on hover. */
+.callout-num {
+  transition: box-shadow 220ms, border-color 220ms;
+}
+@media (hover: hover) {
+  .callout-card:hover .callout-num {
+    border-color: var(--ample-red);
+    box-shadow: 0 0 0 4px rgba(233, 32, 36, 0.16);
+  }
+}
+
+/* Product detail hero <h1> red glow. Desktop only — text-shadow blur
+   costs measurable paint time on phones, and the effect doesn't carry
+   at smaller font sizes anyway. */
+@media (min-width: 721px) {
+  .product-hero-title {
+    text-shadow: 0 0 32px rgba(233, 32, 36, 0.22);
+  }
+}
+
+/* ==========================================================================
    Editor-only drop affordances. The dashed ring, drop-hint and any
    editor cursors are hidden completely for non-editor visitors.
    ========================================================================== */

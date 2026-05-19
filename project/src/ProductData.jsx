@@ -121,6 +121,22 @@ const PRODUCTS = {
       'Drop-in fitment. No bracketry, no core-support cuts.',
       'Silicone hoses included. One box, one weekend, full system.',
     ],
+    intro: 'Our core radiator holds more coolant than stock, sheds heat faster under sustained load, and uses bar-and-plate construction that survives the heat cycles that crack plastic-tank designs. TIG-welded aluminium end tanks, dual-pass core, drop-in to the original mounts.',
+    numberedFeatures: [
+      { title: 'Larger Core Volume', body: '32% more coolant capacity than the stock unit. Slower to heat, faster to recover after sustained load.' },
+      { title: 'Bar-and-Plate Core', body: 'Dual-pass bar-and-plate construction. More surface area, lower flow restriction across the rpm range.' },
+      { title: 'TIG-Welded Tanks',   body: 'Aluminium end tanks, TIG-welded throughout. No plastic to fatigue, no crimp seal to leak after heat cycles.' },
+      { title: 'Drop-In Fitment',    body: 'OEM mount points and hose nipples. Silicone hoses in the box. No bracketry changes, no core-support cuts.' },
+    ],
+    closing: 'Plastic-tank radiators fail the same way every summer. The crimp at the tank opens up, coolant drips down the front of the engine, and the temp gauge climbs in traffic. This one is built so the crimp is not there to fail.',
+    benefitsTitle: 'Built for the Long Climb',
+    benefits: [
+      { icon: 'thermometer-sun', body: 'Sustained delta-T under track load. No heat-soak fade.' },
+      { icon: 'shield',          body: 'All-aluminium construction. No plastic tank to crack.' },
+      { icon: 'activity',        body: 'Lower restriction. Pump flows easier, idle temps drop.' },
+      { icon: 'sparkles',        body: 'Silicone hoses included. One box, full system, one weekend.' },
+    ],
+    outro: 'Each radiator is pressure-tested at 2 bar and dye-checked at every weld before shipping. Built on the line that supplies our OE cooling program, the same QC standard that backs every Gold Standard SKU in the range.',
   },
 
   'alternator': {
@@ -144,6 +160,22 @@ const PRODUCTS = {
       'Sealed bearings. Quiet at any rpm, no whine into the cabin.',
       'OEM bracket and connector. Drop-in for the part it replaces.',
     ],
+    intro: 'Our high-output alternator delivers full charge at idle, holds rated voltage across the rpm band, and shrugs off the thermal cycles that ruin cheaper rebuilds. Hardened slip rings, sealed bearings, copper-rich windings, all built to a tighter spec than the rebuild it replaces.',
+    numberedFeatures: [
+      { title: 'High Idle Output',    body: 'Full rated current at 800 rpm. Heated seats, defroster, fans, audio all on, battery still gains.' },
+      { title: 'Internal Regulator',  body: 'Tight voltage envelope across temperature and rpm. No overcharge, no field flutter on long highway pulls.' },
+      { title: 'Hardened Slip Rings', body: 'Forged slip rings on the rotor. Brush wear pattern stays even, service interval extends well past stock.' },
+      { title: 'OEM Interface',       body: 'Same bracket, same connector, same belt path. No harness mods, no pulley swap, no reflash.' },
+    ],
+    closing: 'Cheap rebuilds fail in two ways. Both end with a no-start morning and a tow. The bearing dies around the first major service and the brushes go flat not long after. This one is built so that morning does not happen.',
+    benefitsTitle: 'Built for Long Hauls',
+    benefits: [
+      { icon: 'zap',             body: 'Full charge at idle. Battery gains in traffic, not just on the highway.' },
+      { icon: 'thermometer-sun', body: 'Tolerates heat soak under the hood without voltage drift.' },
+      { icon: 'shield',          body: 'Sealed bearings, lifetime-rated. No grease point, no service interval.' },
+      { icon: 'activity',        body: 'Clean voltage curve. No flicker at the lights, no whine in the radio.' },
+    ],
+    outro: 'Each alternator is dyno-tested for output across the rpm range and thermal-shock validated batch by batch. Built on the line that supplies our OE contracts, the same QC program that backs every Gold Standard SKU in the range.',
   },
 };
 
@@ -188,6 +220,7 @@ const NEW_PRODUCTS = [
       'New bushings and bearings. Eliminates the rattle at speed.',
       'Quiet at the bottom of the stroke. No groan into the cabin.',
     ],
+    /* Wiper-linkage stays simple — not in PRODUCT_ORDER, no rich layout needed. */
   }),
   makeProduct({
     slug: 'wiper-motor',
@@ -201,6 +234,22 @@ const NEW_PRODUCTS = [
       'Sealed against the spray it lives under.',
       'Quiet at low speed. No motor whine through the firewall.',
     ],
+    intro: 'Our wiper motor sweeps both arms in step, parks them at the correct position every time, and stays quiet against the bottom of the stroke. Two-speed drive, sealed against the spray it lives under, OEM bracket and connector.',
+    numberedFeatures: [
+      { title: 'Two-Speed Drive',   body: 'Reliable low and high speed selection with a defined park position. No missing speeds, no failure to park.' },
+      { title: 'Sealed Housing',    body: 'Sealed against the water that pools in the cowl. Lifetime-rated against the spray it lives under.' },
+      { title: 'OEM Mount',         body: 'Same bracket bolts, same linkage pickup, same harness. No bracket modifications, no linkage refit.' },
+      { title: 'Quiet at Park',     body: 'Engineered for low-noise park engagement. No groan at the bottom of the stroke, no thump into the cowl.' },
+    ],
+    closing: 'When the wiper motor fails, it fails at the worst possible moment. A heavy rain, a stop in traffic, blades freeze mid-sweep with the windshield half cleared. This one is built so that moment does not arrive.',
+    benefitsTitle: 'Built for the Downpour',
+    benefits: [
+      { icon: 'wind',     body: 'Two-speed sweep with reliable park position.' },
+      { icon: 'shield',   body: 'Sealed against water and freeze cycles.' },
+      { icon: 'activity', body: 'Quiet at park. No groan into the cowl.' },
+      { icon: 'sparkles', body: 'OE bracket, connector and mount.' },
+    ],
+    outro: 'Each motor is bench-tested for park reliability and current draw across the temperature range. Built on the line that supplies our OE wiper program, the same QC standard that backs every wiper SKU in the ample range.',
   }),
   makeProduct({
     slug: 'oil-cooler',
@@ -214,6 +263,22 @@ const NEW_PRODUCTS = [
       'Aluminium throughout. No plastic, no rubber bypass to fail.',
       'Standard −10 AN connections, mounting hardware in the box.',
     ],
+    intro: 'Our stacked-plate oil cooler keeps engine oil out of the temperature range where it stops being lubricant and starts being solvent. Thermostatic bypass holds full flow until oil is up to temperature, then opens to dump heat. No restriction at warmup, full cooling under load.',
+    numberedFeatures: [
+      { title: 'Stacked-Plate Core',   body: 'High surface area, low pressure drop. More cooling capacity per cubic inch than a tube-and-fin design.' },
+      { title: 'Thermostatic Bypass',  body: 'Full flow bypass until oil hits operating temperature. Zero drag at warmup, full cooling once the thermostat opens.' },
+      { title: 'All Aluminium',        body: 'No plastic bypass valve to crack, no rubber to fail under heat. Aluminium plate stack throughout.' },
+      { title: 'Standard Fittings',    body: 'Standard −10 AN inlet and outlet. Mounting hardware and adapter to OE filter sandwich plate included.' },
+    ],
+    closing: 'Oil hotter than 130 °C breaks down faster than the service interval can keep up with. Bearings wear, varnish builds, the next teardown costs a short block. This cooler keeps oil below the threshold where any of that starts.',
+    benefitsTitle: 'Built for the Heat',
+    benefits: [
+      { icon: 'thermometer-sun', body: 'Sustained oil-temp control under track load.' },
+      { icon: 'shield',          body: 'No plastic, no rubber. All-aluminium plate stack.' },
+      { icon: 'activity',        body: 'Thermostatic bypass. No drag at warmup.' },
+      { icon: 'sparkles',        body: 'AN fittings and adapter plate in the box.' },
+    ],
+    outro: 'Each cooler is pressure-tested at 8 bar before shipping, well above any operating pressure it will ever see. Built on the line that supplies our OE program, the same QC standard that backs every Gold Standard SKU in the range.',
   }),
   makeProduct({
     slug: 'tensioner',

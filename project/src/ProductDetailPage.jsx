@@ -59,7 +59,7 @@ function ProductDetailPage({ slug }) {
           <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 40, flexWrap: 'wrap' }}>
             <Reveal style={{ flex: '1 1 320px', minWidth: 0 }}>
               <Eyebrow>{p.eyebrow}</Eyebrow>
-              <h1 style={{
+              <h1 className="product-hero-title" style={{
                 fontFamily: 'var(--font-product)', fontWeight: 800,
                 fontSize: 'clamp(40px, 6vw, 84px)', lineHeight: 0.92,
                 textTransform: 'uppercase', letterSpacing: '-0.02em',
@@ -186,14 +186,14 @@ function FeatureCard({ icon, title, body, image }) {
 function CalloutItem({ num, title, body, align = 'left' }) {
   const isRight = align === 'right';
   return (
-    <div style={{
+    <div className="callout-card" style={{
       display: 'flex',
       flexDirection: isRight ? 'row-reverse' : 'row',
       alignItems: 'center',
       gap: 18,
       textAlign: 'center',
     }}>
-      <div style={{
+      <div className="callout-num" style={{
         width: 40, height: 40, borderRadius: 999,
         background: 'var(--ample-coal)', border: '1px solid var(--border-1)',
         color: 'var(--fg-2)',
@@ -286,7 +286,7 @@ function CalloutLayout({ slug, p, calloutImage }) {
           <Reveal style={{ gridColumn: 3, gridRow: 1 }} delay={1}>
             <CalloutItem num="2" align="left" title={items[1].title} body={items[1].body} />
           </Reveal>
-          <div ref={calloutDropRef} className="drop-target" style={{
+          <div ref={calloutDropRef} className="drop-target callout-stage" style={{
             gridColumn: 2, gridRow: '1 / span 2',
             position: 'relative',
             aspectRatio: '1/1',
@@ -294,6 +294,7 @@ function CalloutLayout({ slug, p, calloutImage }) {
             overflow: 'hidden', borderRadius: 4,
             border: '1px solid var(--border-1)',
           }}>
+            <div className="callout-stage-reflection" aria-hidden="true" />
             <div className="drop-hint">Drop image to set product photo</div>
             {/* Wrapper applies the callout image scale — wraps the absolute
                 <img> ProductCardMedia renders so the transform applies. */}
