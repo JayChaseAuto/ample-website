@@ -305,6 +305,22 @@ const NEW_PRODUCTS = [
       'Heat-shielded solenoid. Survives headers-close installs.',
       'Two-year replacement warranty.',
     ],
+    intro: 'Our gear-reduction starter motor pulls 2.4 kW at peak crank, fires on the first turn in subzero conditions, and survives the heat-shielded environment near modern headers. Hardened pinion, sealed solenoid, OEM bracket and electrical interface.',
+    numberedFeatures: [
+      { title: 'Gear-Reduction Drive',   body: 'Compact gear-reduction architecture with 2.4 kW peak output. Cranks faster than a direct-drive at the same battery state.' },
+      { title: 'Heat-Shielded Solenoid', body: 'Sealed solenoid with a thermal jacket. Survives installs near catalysts and short headers without contact drift.' },
+      { title: 'Hardened Pinion',        body: 'Forged Bendix pinion with hardened teeth. No premature wear against the ring gear after thousands of start cycles.' },
+      { title: 'OEM Interface',          body: 'Same bolt pattern, same connector, same engagement geometry. No engine mount changes, no harness modification.' },
+    ],
+    closing: 'Cheap starters fail two ways. Both end with a click and no crank. The solenoid contacts pit after 50,000 cycles, or the pinion teeth wear into the flywheel. This one is built so neither happens.',
+    benefitsTitle: 'Built to Crank',
+    benefits: [
+      { icon: 'zap',             body: 'Cranks fast in subzero conditions.' },
+      { icon: 'thermometer-sun', body: 'Heat-shielded solenoid. Survives header-close installs.' },
+      { icon: 'shield',          body: 'Hardened pinion. No flywheel wear.' },
+      { icon: 'activity',        body: 'Two-year replacement warranty.' },
+    ],
+    outro: 'Each starter is bench-tested at temperature for engagement reliability and held-current draw. Built on the line that supplies our OE replacement program, the same QC standard that backs every electrical SKU in the ample range.',
   }),
   makeProduct({
     slug: 'water-pump-awn',
