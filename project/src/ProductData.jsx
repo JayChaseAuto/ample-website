@@ -608,11 +608,11 @@ const NEW_PRODUCTS = [
 NEW_PRODUCTS.forEach(p => { PRODUCTS[p.slug] = p; });
 
 const PRODUCT_ORDER = [
-  // 'calipers', 'wiper-linkage', 'exhaust' intentionally omitted — kept in
-  // PRODUCTS so a direct URL (#/product/<slug>) still renders, but hidden
-  // from catalog + featured listings.
+  // 'calipers', 'wiper-linkage', 'exhaust', 'radiators' intentionally omitted —
+  // kept in PRODUCTS so a direct URL (#/product/<slug>) still renders, but
+  // hidden from catalog + featured listings.
   'brake-pads', 'caliper-npc', 'abs-sensor', 'pad-sensor',
-  'radiators', 'radiator-urk', 'water-pump-awn', 'oil-cooler',
+  'radiator-urk', 'water-pump-awn', 'oil-cooler',
   'compressor', 'condenser', 'heater-core', 'blower-motor',
   'alternator', 'starter', 'ignition-coil', 'lighting',
   'wiper-motor',
