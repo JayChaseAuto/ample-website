@@ -234,16 +234,16 @@ function GoldStandardPage() {
     <div style={{ background: '#000', minHeight: '100vh' }}>
       <SiteHeader active="gold" />
       <main data-screen-label="Gold Standard">
-        <section style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(24px, 5vw, 32px)' }}>
-          <div className="stack-on-mobile" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 'clamp(24px, 5vw, 48px)', alignItems: 'start' }}>
-            <Reveal>
+        <section style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(20px, 4vw, 40px) clamp(24px, 5vw, 32px)' }}>
+          <div className="stack-on-mobile gold-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 'clamp(24px, 5vw, 48px)', alignItems: 'start' }}>
+            <Reveal className="gold-hero-copy">
               <Eyebrow color="gold">The Standard</Eyebrow>
-              <h1 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(48px, 9vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: '-0.02em', margin: '12px 0 0' }}>
+              <h1 className="gold-hero-title" style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(34px, 8.5vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: '-0.02em', margin: '12px 0 0', overflowWrap: 'anywhere' }}>
                 <span style={{ color: 'var(--ample-gold)' }}>The Gold Standard.</span><br />
                 Uncompromising<br />quality assurance.
               </h1>
             </Reveal>
-            <Reveal delay={2} style={{ display: 'flex', justifyContent: 'center', paddingTop: 40 }}>
+            <Reveal delay={2} className="gold-hero-medallion" style={{ display: 'flex', justifyContent: 'center', paddingTop: 40 }}>
               <GoldMedallion size={200} />
             </Reveal>
           </div>

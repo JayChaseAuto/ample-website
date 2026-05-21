@@ -799,6 +799,21 @@ html:not([data-editor="1"]) .drop-target { cursor: inherit !important; }
   }
   .benefits-2x2 > *:first-child { border-top: 0 !important; }
 
+  /* Gold Standard hero — when the 1.4fr/1fr grid stacks, the headline column
+     was left-aligned while the medallion column stayed centered. Center both
+     so the stack reads as one column, and drop the desktop-only paddingTop
+     that becomes dead space once stacked. */
+  .gold-hero-grid { gap: 20px !important; }
+  .gold-hero-copy { text-align: center; }
+  .gold-hero-title { word-break: break-word; }
+  .gold-hero-medallion { padding-top: 4px !important; }
+}
+
+/* Tighter typography for the smallest screens. The 8.5vw multiplier hits
+   ~28px at 320px width, which keeps "UNCOMPROMISING" inside the viewport
+   on iPhone SE class devices. */
+@media (max-width: 380px) {
+  .gold-hero-title { font-size: clamp(28px, 8.5vw, 40px) !important; }
 }
 
 /* ==========================================================================
