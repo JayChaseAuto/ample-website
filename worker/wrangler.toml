@@ -1,0 +1,16 @@
+# Cloudflare Worker config for the ample contact form backend.
+# Deploy with `wrangler deploy` from this directory.
+
+name = "ample-contact"
+main = "src/worker.js"
+compatibility_date = "2025-01-01"
+
+# Workers.dev preview URL is enabled by default after first deploy:
+#   https://ample-contact.<your-cloudflare-account>.workers.dev
+#
+# For a branded URL (api.ampleproducts.ca), add a custom domain in the
+# Cloudflare dashboard: Workers & Pages → ample-contact → Settings →
+# Triggers → Add Custom Domain.
+#
+# Secrets are not stored here. Set them with:
+#   wrangler secret put RESEND_API_KEY

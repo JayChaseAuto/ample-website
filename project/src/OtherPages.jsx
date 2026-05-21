@@ -382,6 +382,136 @@ function StoryPage() {
 }
 
 /* ---------- Contact Us page ---------- */
+/* Contact form endpoint. After deploying the Cloudflare Worker in worker/
+   (see worker/README.md), replace this with your live worker URL — either
+   the workers.dev preview URL or the custom domain (api.ampleproducts.ca).
+   Until it's set to a real URL, the form will fail with a clear error. */
+const CONTACT_ENDPOINT = 'https://ample-contact.YOUR-ACCOUNT.workers.dev';
+
+function ContactForm() {
+  const [form, setForm] = React.useState({
+    name: '', email: '', subject: '', message: '',
+    _ample_referral_url: '', // honeypot — must stay blank, obscure name avoids autofill
+  });
+  const [status, setStatus] = React.useState({ state: 'idle', message: '' });
+
+  const setField = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }));
+  const submitting = status.state === 'submitting';
+  // Disabled inputs visually dim so users can see the form is in flight.
+  const disabledFieldStyle = submitting
+    ? { opacity: 0.55, cursor: 'not-allowed' }
+    : null;
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    if (submitting) return;
+
+    // Detect the placeholder endpoint and fail fast with a developer-
+    // friendly message instead of confusing "could not reach the server".
+    if (CONTACT_ENDPOINT.includes('YOUR-ACCOUNT')) {
+      setStatus({
+        state: 'error',
+        message: 'Contact form not yet configured. Deploy the worker (see worker/README.md) and update CONTACT_ENDPOINT.',
+      });
+      return;
+    }
+
+    // Client-side guard so we don't bother the worker with obviously
+    // empty submissions. Worker validates again server-side.
+    if (!form.name.trim() || !form.email.trim() || !form.subject.trim() || !form.message.trim()) {
+      setStatus({ state: 'error', message: 'Please fill in every field before submitting.' });
+      return;
+    }
+
+    setStatus({ state: 'submitting', message: '' });
+
+    try {
+      const res = await fetch(CONTACT_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      let data = {};
+      try { data = await res.json(); } catch { /* non-JSON response */ }
+
+      if (res.ok && data.ok) {
+        setStatus({
+          state: 'success',
+          message: "Thanks. We've received your message and will reply within two business days.",
+        });
+        setForm({ name: '', email: '', subject: '', message: '', _ample_referral_url: '' });
+      } else {
+        setStatus({
+          state: 'error',
+          message: data.error || 'Something went wrong. Please try again or email us directly.',
+        });
+      }
+    } catch (err) {
+      setStatus({
+        state: 'error',
+        message: 'Could not reach the server. Check your connection and try again.',
+      });
+    }
+  };
+
+  return (
+    <form onSubmit={onSubmit} style={{ display: 'grid', gap: 12, marginTop: 20 }} noValidate>
+      <input
+        placeholder="Name" style={{ ...inputStyle, ...disabledFieldStyle }}
+        value={form.name} onChange={setField('name')}
+        maxLength={100} required autoComplete="name"
+        disabled={submitting} />
+      <input
+        placeholder="Email" type="email" style={{ ...inputStyle, ...disabledFieldStyle }}
+        value={form.email} onChange={setField('email')}
+        maxLength={200} required autoComplete="email"
+        disabled={submitting} />
+      <input
+        placeholder="Subject" style={{ ...inputStyle, ...disabledFieldStyle }}
+        value={form.subject} onChange={setField('subject')}
+        maxLength={200} required
+        disabled={submitting} />
+      <textarea
+        placeholder="Message" rows={5}
+        style={{ ...inputStyle, ...disabledFieldStyle, resize: 'vertical', fontFamily: 'var(--font-sans)' }}
+        value={form.message} onChange={setField('message')}
+        maxLength={5000} required
+        disabled={submitting} />
+
+      {/* Honeypot. Off-screen + aria-hidden + tabIndex -1 so real users
+          never see or focus it. Obscure field name (_ample_referral_url)
+          avoids both browser autofill and the common "website" name that
+          spam-bot training sets recognize. */}
+      <input
+        type="text" name="_ample_referral_url" tabIndex={-1} autoComplete="off"
+        value={form._ample_referral_url} onChange={setField('_ample_referral_url')}
+        aria-hidden="true"
+        style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }} />
+
+      <Button variant="primary" type="submit" disabled={submitting}>
+        {submitting ? 'Sending…' : 'Submit'}
+      </Button>
+
+      {status.state === 'success' && (
+        <div role="status" style={{
+          padding: '12px 14px', marginTop: 4,
+          background: 'rgba(56, 189, 124, 0.08)',
+          border: '1px solid rgba(56, 189, 124, 0.3)',
+          color: '#a4e8c5', fontSize: 13, lineHeight: 1.5, borderRadius: 4,
+        }}>{status.message}</div>
+      )}
+      {status.state === 'error' && (
+        <div role="alert" style={{
+          padding: '12px 14px', marginTop: 4,
+          background: 'rgba(233, 32, 36, 0.08)',
+          border: '1px solid rgba(233, 32, 36, 0.35)',
+          color: '#ffb3b5', fontSize: 13, lineHeight: 1.5, borderRadius: 4,
+        }}>{status.message}</div>
+      )}
+    </form>
+  );
+}
+
 function ContactPage() {
   return (
     <div style={{ background: '#000', minHeight: '100vh' }}>
@@ -420,13 +550,7 @@ function ContactPage() {
             <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 40, textTransform: 'uppercase', margin: 0 }}>Send a message</h2>
             <div style={{ fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--fg-3)', marginTop: 4 }}></div>
             <p style={{ color: 'var(--fg-2)', fontSize: 14, marginTop: 16, lineHeight: 1.6 }}>We'll respond within two business days</p>
-            <form onSubmit={(e) => {e.preventDefault();alert('Submitted. Our team will be in touch.');}} style={{ display: 'grid', gap: 12, marginTop: 20 }}>
-              <input placeholder="Name" style={inputStyle} />
-              <input placeholder="Email" type="email" style={inputStyle} />
-              <input placeholder="Subject" style={inputStyle} />
-              <textarea placeholder="Message" rows={5} style={{ ...inputStyle, resize: 'vertical', fontFamily: 'var(--font-sans)' }} />
-              <Button variant="primary">Submit</Button>
-            </form>
+            <ContactForm />
             <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--border-1)', fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>
 
             </div>

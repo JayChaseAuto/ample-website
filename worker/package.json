@@ -1,0 +1,15 @@
+{
+  "name": "ample-contact-worker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cloudflare Worker backend for the ample contact form.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "tail": "wrangler tail",
+    "secret:resend": "wrangler secret put RESEND_API_KEY"
+  },
+  "devDependencies": {
+    "wrangler": "^3.80.0"
+  }
+}
