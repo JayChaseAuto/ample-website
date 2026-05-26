@@ -31,7 +31,7 @@ function HomePage() {
   }, { namePrefix: 'hero' });
 
   return (
-    <div style={{ background: 'var(--bg-0)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <SiteHeader active="home" />
       <main>
         {/* Hero */}
