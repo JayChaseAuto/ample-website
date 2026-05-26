@@ -20,6 +20,19 @@ function SiteHeader({ active }) {
   useImageDrop(logoRef, (path, opts) => {
     setTweak('siteLogo', path, opts);
   }, { namePrefix: 'site-logo' });
+
+  // Mobile hamburger state. Desktop renders the same nav inline; CSS
+  // (@media max-width: 720px) hides the nav off-screen until .is-open
+  // and reveals the burger button. Close on Escape and on route-link
+  // click so the sheet doesn't linger after navigation.
+  const [navOpen, setNavOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (!navOpen) return;
+    const onKey = (e) => { if (e.key === 'Escape') setNavOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [navOpen]);
+
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 50,
@@ -41,32 +54,45 @@ function SiteHeader({ active }) {
           <div className="drop-hint">Drop logo image</div>
           <img src={logoSrc} alt="ample" style={{ height: logoHeight, display: 'block' }} />
         </a>
-        {/* Nav scrolls horizontally on narrow screens; .nav-scroll hides the
-            scrollbar so the row looks clean. Items keep whiteSpace: nowrap
-            so they don't wrap mid-label ("Gold / Standard"). */}
-        <nav className="nav-scroll" style={{
+        {/* Nav. Desktop: inline flex strip via inline styles + .nav-scroll.
+            Mobile (≤720px): @media block in CSS fixes-position it under
+            the header bar, transforms off-screen until .is-open, and
+            restyles links as full-width tap targets via .site-nav-link. */}
+        <nav className={'site-nav nav-scroll' + (navOpen ? ' is-open' : '')} style={{
           display: 'flex',
           gap: 'clamp(14px, 3vw, 28px)',
           flex: 1, minWidth: 0,
           overflowX: 'auto', overflowY: 'hidden',
         }}>
           {NAV_LINKS.map(l => (
-            <a key={l.id} href={l.href} style={{
-              fontFamily: 'var(--font-product)',
-              fontSize: 'clamp(10px, 2.4vw, 11px)',
-              fontWeight: 700,
-              textTransform: 'uppercase', letterSpacing: '0.16em',
-              color: active === l.id ? 'var(--ample-red)' : 'var(--fg-1)',
-              textDecoration: 'none',
-              borderBottom: active === l.id ? '2px solid var(--ample-red)' : '2px solid transparent',
-              paddingBottom: 4,
-              transition: 'color 120ms',
-              textAlign: 'left',
-              whiteSpace: 'nowrap',
-              flexShrink: 0,
-            }}>{l.label}</a>
+            <a key={l.id} href={l.href}
+               className={'site-nav-link' + (active === l.id ? ' is-active' : '')}
+               onClick={() => setNavOpen(false)}
+               style={{
+                 fontFamily: 'var(--font-product)',
+                 fontWeight: 700,
+                 textTransform: 'uppercase', letterSpacing: '0.16em',
+                 color: active === l.id ? 'var(--ample-red)' : 'var(--fg-1)',
+                 textDecoration: 'none',
+                 borderBottom: active === l.id ? '2px solid var(--ample-red)' : '2px solid transparent',
+                 paddingBottom: 4,
+                 transition: 'color 120ms',
+                 textAlign: 'left',
+                 whiteSpace: 'nowrap',
+                 flexShrink: 0,
+               }}>{l.label}</a>
           ))}
         </nav>
+        {/* Hamburger — display:none on desktop, inline-flex on mobile via
+            CSS. Three spans morph into an X when .is-open via the
+            existing .site-burger keyframes. */}
+        <button type="button"
+                className={'site-burger' + (navOpen ? ' is-open' : '')}
+                aria-label={navOpen ? 'Close menu' : 'Open menu'}
+                aria-expanded={navOpen}
+                onClick={() => setNavOpen((v) => !v)}>
+          <span /><span /><span />
+        </button>
       </div>
     </header>
   );

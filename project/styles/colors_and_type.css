@@ -694,6 +694,11 @@ html.lenis, html.lenis body { height: auto; }
 .nav-scroll { scrollbar-width: none; -ms-overflow-style: none; }
 .nav-scroll::-webkit-scrollbar { display: none; }
 
+/* Desktop nav link sizing — tight chips that sit beside the logo. On
+   mobile the inline strip is hidden entirely; .site-nav-link styles in
+   the @media block below take over for the slide-down sheet. */
+.site-nav-link { font-size: clamp(10px, 2.4vw, 11px); }
+
 /* ==========================================================================
    Callout stage refinements. The product photo at the center of the
    rich-layout grid gets a lifted shadow + hover red-ring. The reflection

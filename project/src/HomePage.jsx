@@ -55,7 +55,7 @@ function HomePage() {
                         minHeight: 'clamp(360px, 60vh, 520px)' }}>
             <Reveal as="h1" style={{
               fontFamily: 'var(--font-product)', fontWeight: 800,
-              fontSize: 'clamp(56px, 7vw, 104px)', lineHeight: 0.92,
+              fontSize: 'clamp(48px, 6vw, 88px)', lineHeight: 0.94,
               textTransform: 'uppercase', letterSpacing: '-0.02em',
               margin: 0, maxWidth: 820
             }}>
