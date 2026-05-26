@@ -199,14 +199,19 @@ const __TWEAKS_STYLE = `
 // Single source of truth for tweak values. setTweak persists via the host
 // (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
 
-// Recursively drop any string value that's a data: image/video URL. Used to
-// keep base64 blobs out of localStorage — they bloat the 5MB quota, silently
-// fail to persist when over, and (worst) shadow Save & lock's freshly written
-// defaults across refreshes. Per-session state lives in React; cross-session
-// state lives in source via Save & lock.
+// Recursively drop string values that won't survive a page reload:
+//   - data:image/* and data:video/* URLs: bloat localStorage past 5MB
+//   - blob:* URLs: revoked when the page unloads, so they're dead the
+//     next time the page hydrates. If a useImageDrop upload failed
+//     mid-way, the blob: URL would otherwise persist and render as a
+//     broken image (visible as a black/empty box) after refresh.
+// Per-session state lives in React; cross-session state lives in source
+// via Save & lock.
 function __stripDataUrls(v) {
   if (typeof v === 'string') {
-    return /^data:(image|video)\//i.test(v) ? undefined : v;
+    if (/^data:(image|video)\//i.test(v)) return undefined;
+    if (/^blob:/i.test(v)) return undefined;
+    return v;
   }
   if (Array.isArray(v)) {
     return v.map(__stripDataUrls).filter((x) => x !== undefined);

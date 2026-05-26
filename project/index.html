@@ -94,15 +94,15 @@
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=46"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=46"></script>
-<script type="text/babel" src="src/Animations.jsx?v=46"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=46"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=46"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=46"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=46"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=46"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=46"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=47"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=47"></script>
+<script type="text/babel" src="src/Animations.jsx?v=47"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=47"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=47"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=47"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=47"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=47"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=47"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -716,9 +716,33 @@ function SiteBgDropCard() {
   const { tweaks, setTweak } = useTweakState();
   const url = tweaks.siteBackgroundImage || '';
   const dropRef = React.useRef(null);
+  // Liveness probe — when a URL is set, hit it with an Image() request and
+  // track whether the bytes actually load. Surfaces the difference between
+  // "URL saved" and "image renders" so the user can tell a stale path apart
+  // from an upload that succeeded but didn't reach the .atm-bg layer.
+  const [status, setStatus] = React.useState('idle'); // idle | loading | ok | err
+  React.useEffect(() => {
+    if (!url) { setStatus('idle'); return; }
+    setStatus('loading');
+    const img = new Image();
+    img.onload = () => setStatus('ok');
+    img.onerror = () => setStatus('err');
+    img.src = url;
+    return () => { img.onload = img.onerror = null; };
+  }, [url]);
   useImageDrop(dropRef, (path, opts) => {
     setTweak('siteBackgroundImage', path, opts);
   }, { namePrefix: 'site-bg' });
+
+  const dotColor = status === 'ok' ? '#34c759'
+                 : status === 'err' ? '#c33a2a'
+                 : status === 'loading' ? '#c9ad3b'
+                 : 'rgba(0,0,0,0.2)';
+  const statusText = status === 'ok' ? 'Loaded — applied to .atm-bg'
+                   : status === 'err' ? 'URL set but image failed to load'
+                   : status === 'loading' ? 'Loading…'
+                   : 'No image set';
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
       <div
@@ -739,18 +763,25 @@ function SiteBgDropCard() {
         {!url && <span>Drop an image here<br />for the site background</span>}
         <div className="drop-hint" style={{ borderRadius: 8 }}>Drop image to set site background</div>
       </div>
-      {url && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10.5,
-                       color: 'rgba(41,38,27,0.6)' }}>
-          <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap', fontFamily: 'ui-monospace,monospace' }}>
-            {url}
-          </span>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10.5,
+                     color: 'rgba(41,38,27,0.7)' }}>
+        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
+                        background: dotColor, flexShrink: 0,
+                        boxShadow: '0 0 0 2px rgba(255,255,255,.6)' }} />
+        <span style={{ flex: 1 }}>{statusText}</span>
+        {url && (
           <button type="button" className="twk-btn secondary"
                   style={{ height: 22, padding: '0 8px', fontSize: 10 }}
                   onClick={() => setTweak('siteBackgroundImage', '')}>
             Clear
           </button>
+        )}
+      </div>
+      {url && (
+        <div style={{ fontSize: 10, color: 'rgba(41,38,27,0.5)',
+                       fontFamily: 'ui-monospace,monospace',
+                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {url}
         </div>
       )}
     </div>
