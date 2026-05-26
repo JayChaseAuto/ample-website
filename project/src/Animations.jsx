@@ -138,83 +138,39 @@ if (typeof window !== 'undefined') {
   }
 }
 
-/* ---------- File System Access — project dir + assets/ writes ---------- */
-/* Single directory handle for the whole project. Used by image drops AND by
-   the "Save & lock to source" flow in index.html. Cached in IndexedDB so a
-   second session doesn't re-prompt for the picker. */
-const __AMPLE_HANDLE_DB = 'ample-fs';
-const __AMPLE_HANDLE_STORE = 'handles';
-const __AMPLE_HANDLE_KEY = 'projectDir';
+/* ---------- Dev server bridge — uploads + save ---------- */
+/* All editor disk writes go through the local dev server (dev-server.py).
+   PUT /assets/<safe-name> writes images; POST /__editor/save_index rewrites
+   the EDITMODE block in index.html. Loopback-bound, allowlist-validated.
+   No File System Access API, no picker, no IndexedDB handle dance —
+   the drop event just becomes a fetch. */
+const __AMPLE_DEV_PING = '/__editor/ping';
+const __AMPLE_DEV_ASSETS = '/assets/';
+const __AMPLE_DEV_SAVE = '/__editor/save_index';
 
-function __ampleOpenHandleDB() {
-  return new Promise((resolve, reject) => {
-    if (typeof indexedDB === 'undefined') return reject(new Error('no indexedDB'));
-    const req = indexedDB.open(__AMPLE_HANDLE_DB, 1);
-    req.onupgradeneeded = () => req.result.createObjectStore(__AMPLE_HANDLE_STORE);
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
-  });
-}
-
-async function __ampleReadStoredHandle() {
-  try {
-    const db = await __ampleOpenHandleDB();
-    return await new Promise((res, rej) => {
-      const tx = db.transaction(__AMPLE_HANDLE_STORE, 'readonly');
-      const r = tx.objectStore(__AMPLE_HANDLE_STORE).get(__AMPLE_HANDLE_KEY);
-      r.onsuccess = () => res(r.result || null);
-      r.onerror = () => rej(r.error);
-    });
-  } catch { return null; }
-}
-
-async function __ampleWriteStoredHandle(handle) {
-  try {
-    const db = await __ampleOpenHandleDB();
-    await new Promise((res, rej) => {
-      const tx = db.transaction(__AMPLE_HANDLE_STORE, 'readwrite');
-      tx.objectStore(__AMPLE_HANDLE_STORE).put(handle, __AMPLE_HANDLE_KEY);
-      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
-    });
-  } catch {}
-}
-
-let __ampleDirHandle = null;
-
-/* Resolve the project root directory handle, prompting the user only when
-   we don't already have a granted handle. Throws if the browser lacks the
-   API, the user cancels, or the picked folder isn't the ample project. */
-async function ensureProjectDirHandle({ prompt = true } = {}) {
-  const tryPermission = async (h) => {
-    if (!h) return null;
-    const cur = await h.queryPermission({ mode: 'readwrite' });
-    if (cur === 'granted') return h;
-    if (cur === 'prompt' && prompt) {
-      const next = await h.requestPermission({ mode: 'readwrite' });
-      if (next === 'granted') return h;
+/* One-shot probe so the UI can show "dev server connected" vs "offline".
+   Memoised — every component that asks gets the same in-flight promise. */
+let __ampleDevPromise = null;
+function detectDevServer() {
+  if (__ampleDevPromise) return __ampleDevPromise;
+  __ampleDevPromise = (async () => {
+    try {
+      const r = await fetch(__AMPLE_DEV_PING, { cache: 'no-store' });
+      if (!r.ok) return { ok: false, reason: `ping HTTP ${r.status}` };
+      const body = await r.json();
+      if (body && body.server === 'ample-dev') {
+        return { ok: true, root: body.root, assets: body.assets };
+      }
+      return { ok: false, reason: 'unexpected ping payload' };
+    } catch (e) {
+      return { ok: false, reason: (e && e.message) || String(e) };
     }
-    return null;
-  };
-
-  const fromMemory = await tryPermission(__ampleDirHandle);
-  if (fromMemory) return fromMemory;
-  __ampleDirHandle = null;
-
-  const stored = await __ampleReadStoredHandle();
-  const fromDisk = await tryPermission(stored);
-  if (fromDisk) { __ampleDirHandle = fromDisk; return fromDisk; }
-
-  if (!prompt) return null;
-  if (typeof window.showDirectoryPicker !== 'function') {
-    throw new Error('Direct file writes need Chrome, Edge, or Opera. Drops will fall back to in-memory.');
-  }
-  const picked = await window.showDirectoryPicker({ mode: 'readwrite', id: 'ample-project' });
-  try { await picked.getFileHandle('index.html'); }
-  catch { throw new Error('Pick the folder that contains index.html (e.g. ample-website/project).'); }
-  __ampleDirHandle = picked;
-  await __ampleWriteStoredHandle(picked);
-  return picked;
+  })();
+  return __ampleDevPromise;
 }
+// Re-probe on demand (e.g. after the user starts the server without
+// reloading). Used by the Tweaks panel's "Recheck" button.
+function resetDevServerProbe() { __ampleDevPromise = null; }
 
 /* Resolve a drag's payload to a media Blob. Accepts:
    - OS file drags (dataTransfer.files)
@@ -260,27 +216,40 @@ async function resolveDraggedToBlob(dt, accept) {
       return { blob: b, suggestedName: last };
     } catch {}
   }
-  // Last-ditch: a same-origin URL we couldn't fetch — caller can still store it.
-  if (tryUrls.length) return { url: tryUrls[0] };
+  // If we couldn't fetch any of the URLs (CORS, network, wrong MIME) we
+  // intentionally do NOT persist the raw URL. The previous behaviour
+  // stored a verbatim third-party URL into the tweak state, which Save &
+  // lock then baked into source — every published-site visitor would pull
+  // assets from a domain we don't control. Hard failure here is safer.
   return null;
 }
 
-/* Write a Blob into project/assets/ and return the "assets/<filename>" path.
-   Images go through a canvas re-encode (WebP, capped at MAX_DIM) so the
-   sidecar bytes stay reasonable. Videos and unrecognized formats are written
-   as-is with an extension derived from the MIME type. */
+/* Write a Blob into project/assets/ via the local dev server and return the
+   "assets/<filename>" path. Images get a canvas re-encode (WebP, capped at
+   MAX_DIM) so we don't ship 10MB originals; video and SVG keep their bytes.
+   Filename is "<prefix>-<sha256-short>.<ext>" so different bytes never
+   collide on the same slot. Throws with a readable message when the dev
+   server isn't reachable — the caller decides how to surface that. */
 async function writeImageToAssets(blob, namePrefix) {
-  const dir = await ensureProjectDirHandle();
-  const assets = await dir.getDirectoryHandle('assets', { create: true });
   const MAX_DIM = 1600;
   const mime = blob.type || '';
+  // SVGs can carry inline <script>. Even if the host page only uses the
+  // file as <img>/url() (script-inert there), the asset itself lives at
+  // an HTTP path on the deployed site — direct navigation executes the
+  // script in our origin. Reject before the upload to match the server's
+  // SAFE_NAME_RE allowlist.
+  if (mime === 'image/svg+xml') {
+    throw new Error('SVG uploads are disabled — drop a raster image (PNG, JPG, WebP, AVIF) instead.');
+  }
   const extFromMime = (m) => ((m.split('/')[1] || 'bin').toLowerCase()
     .replace('jpeg', 'jpg')
     .replace('quicktime', 'mov')
     .replace('x-matroska', 'mkv'));
   let outBlob = blob;
   let outExt = extFromMime(mime) || 'bin';
-  if (mime.startsWith('image/')) {
+  // SVG bytes can carry script, so skip the canvas pass and ship the
+  // original. Same for non-image MIME types (videos).
+  if (mime.startsWith('image/') && mime !== 'image/svg+xml') {
     try {
       const bitmap = await createImageBitmap(blob);
       try {
@@ -296,7 +265,7 @@ async function writeImageToAssets(blob, namePrefix) {
         bitmap.close && bitmap.close();
       }
     } catch {
-      // SVG / decode failure: keep original bytes.
+      // decode failure: keep original bytes.
     }
   }
   const buf = await outBlob.arrayBuffer();
@@ -306,24 +275,37 @@ async function writeImageToAssets(blob, namePrefix) {
   const safe = String(namePrefix || 'img').toLowerCase()
     .replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '') || 'img';
   const filename = `${safe}-${hex}.${outExt}`;
-  const fh = await assets.getFileHandle(filename, { create: true });
-  const writable = await fh.createWritable();
-  await writable.write(outBlob);
-  await writable.close();
+
+  const resp = await fetch(__AMPLE_DEV_ASSETS + filename, {
+    method: 'PUT',
+    headers: { 'Content-Type': outBlob.type || 'application/octet-stream' },
+    body: outBlob,
+  });
+  if (!resp.ok) {
+    let detail = '';
+    try { const j = await resp.json(); if (j && j.error) detail = ` — ${j.error}`; } catch {}
+    if (resp.status === 0 || resp.status >= 500) {
+      throw new Error(`Dev server not reachable (HTTP ${resp.status})${detail}. Run \`py dev-server.py\` from the repo root.`);
+    }
+    throw new Error(`Upload rejected (HTTP ${resp.status})${detail}`);
+  }
   return `assets/${filename}`;
 }
 
 /* ---------- useImageDrop ---------- */
 /* Wire a ref to accept dragged images. Supports both OS file drops AND
-   in-page asset drags (asset library panels, other tabs, links). The
-   resolved image is written into project/assets/ via the File System
-   Access API and the on-disk path is passed to onDrop(path).
+   in-page asset drags (asset library panels, other tabs, links).
 
-   If the FS write fails (no API support, picker cancelled, permission
-   denied) the drop silently falls back to a base64 data URL — same
-   behaviour as the old hook, so visuals don't break. The fallback URL
-   gets converted into a real assets/ path the next time the user clicks
-   "Save & lock to source" (exportTweaksState handles data URLs).
+   Flow:
+     1. The instant the drop resolves to a blob, we hand onDrop a
+        blob: URL so the image appears immediately — no waiting for the
+        upload round-trip.
+     2. The blob is PUT to the dev server (writeImageToAssets) in the
+        background. On success, onDrop is called again with the canonical
+        "assets/<name>.webp" path and the blob: URL is revoked.
+     3. On upload failure the blob: URL is kept (image still visible) and
+        an `ample-upload-error` window event is dispatched so the panel
+        can show a persistent banner with the actual reason.
 
    Pass { namePrefix } so the saved filename is descriptive
    (e.g. 'card-brake-pads'). Without it the file lands as 'img-<hash>.webp'. */
@@ -338,9 +320,9 @@ function useImageDrop(ref, onDrop, opts) {
   React.useEffect(() => {
     const node = ref.current;
     if (!node) return;
-    // Editor-only feature. Visitors don't get drag-drop on any device
-    // (including the touch fallback path), and the dashed ring stays hidden
-    // via CSS (the .drop-target class is gated on data-editor on <html>).
+    // Editor-only feature. Visitors don't get drag-drop on any device;
+    // the dashed ring stays hidden via CSS (`.drop-target` styles gated on
+    // `html[data-editor="1"]`).
     if (typeof window !== 'undefined' && !window.__ampleEditor) return;
     const hasMedia = (dt) => {
       if (!dt) return false;
@@ -369,18 +351,42 @@ function useImageDrop(ref, onDrop, opts) {
       e.stopPropagation();
       node.classList.remove('is-dragover');
       const resolved = await resolveDraggedToBlob(e.dataTransfer, acceptRef.current);
-      if (!resolved) return;
-      // No blob (CORS, redirect): store the URL verbatim — same-origin
-      // ones still resolve as <img src>.
-      if (!resolved.blob && resolved.url) { onDropRef.current(resolved.url); return; }
+      if (!resolved || !resolved.blob) return;
+
+      // Optimistic preview: render right now from the in-memory blob.
+      // We pass the same prefix back via dispatch so the panel toast can
+      // name the slot (e.g. "Uploading card-tensioner…").
+      const previewUrl = URL.createObjectURL(resolved.blob);
+      onDropRef.current(previewUrl);
+      try {
+        window.dispatchEvent(new CustomEvent('ample-upload-start', {
+          detail: { namePrefix: prefixRef.current || null },
+        }));
+      } catch {}
+
       try {
         const path = await writeImageToAssets(resolved.blob, prefixRef.current);
-        onDropRef.current(path);
+        // Swap blob: URL → canonical assets/ path. The optimistic preview
+        // already pushed a history entry; this follow-up MUST NOT push
+        // another one (skipHistory: true), otherwise pressing Ctrl+Z lands
+        // on the now-revoked blob: URL state and shows a broken image.
+        onDropRef.current(path, { skipHistory: true });
+        URL.revokeObjectURL(previewUrl);
+        try {
+          window.dispatchEvent(new CustomEvent('ample-upload-success', {
+            detail: { namePrefix: prefixRef.current || null, path },
+          }));
+        } catch {}
       } catch (err) {
-        console.warn('writeImageToAssets failed; staging as data URL:', err && err.message);
-        const reader = new FileReader();
-        reader.onload = () => onDropRef.current(String(reader.result));
-        reader.readAsDataURL(resolved.blob);
+        const reason = (err && err.message) || String(err);
+        console.warn('writeImageToAssets failed:', reason);
+        // Leave the blob: URL in place so the image stays visible for
+        // this session — but make it loud that it's not on disk.
+        try {
+          window.dispatchEvent(new CustomEvent('ample-upload-error', {
+            detail: { namePrefix: prefixRef.current || null, reason },
+          }));
+        } catch {}
       }
     };
     node.addEventListener('dragenter', onEnter);
@@ -571,5 +577,6 @@ function AtmosphereCanvas() {
 
 Object.assign(window, {
   Reveal, useParallax, useImageDrop, getLenis, AtmosphereCanvas,
-  ensureProjectDirHandle, writeImageToAssets, resolveDraggedToBlob,
+  writeImageToAssets, resolveDraggedToBlob,
+  detectDevServer, resetDevServerProbe,
 });

@@ -507,13 +507,16 @@ const HERO_RENDERERS = {
 /* ProductCardMedia
    ─────────────────
    Renders a product card's image area with this priority:
-     1. `override` — explicit path set via the Tweaks panel (catalogCardImages).
+     1. `override` — explicit path. Source depends on where the component
+        renders: catalogCardImages[slug] on the grid cards (CatalogCard,
+        FeaturedCard, RelatedProductCard), productOverrides[slug].calloutImage
+        on the product detail page's rich callout layout (CalloutLayout).
      2. Convention — `assets/<slug>.png`, then `assets/<slug>.jpg`.
      3. Fallback — stylized ProductHero illustration.
 
    `fit` controls object-fit (contain = whole image visible, cover = fills card).
 */
-function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, override, padding = 16, scale = 1 }) {
+function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, override, padding = 16, scale = 1, position, onPositionChange }) {
   const conventionalExts = ['png', 'jpg'];
   const [extIdx, setExtIdx] = React.useState(0);
   const [conventionFailed, setConventionFailed] = React.useState(false);
@@ -530,12 +533,84 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
   // a lot of transparent margin baked in. Clamped to a safe range so a
   // misconfigured tweak can't blow the image past the card chrome.
   const safeScale = Math.max(0.5, Math.min(2, Number(scale) || 1));
+  // `padding` insets the image inside the card frame. Previously the image
+  // used inset:0, so wrapper padding was visually invisible — now padding
+  // lives here, on the image element, where it actually works.
+  const safePadding = Math.max(0, Math.min(80, Number(padding) || 0));
+
+  // Drag-to-pan. Only enabled when a callback is supplied — visitors never
+  // get the editor handles, and non-editable callers (e.g. RelatedProductCard)
+  // can opt out by omitting the prop. Live position drives the img during
+  // drag so we don't spam setTweak on every pointermove.
+  const editable = !!onPositionChange;
+  const [livePos, setLivePos] = React.useState(null);
+  const effectivePos = livePos || position || '50% 50%';
+  const parsePos = (s) => {
+    const m = String(s || '50% 50%').match(/(-?\d+(?:\.\d+)?)%\s+(-?\d+(?:\.\d+)?)%/);
+    return m ? [parseFloat(m[1]), parseFloat(m[2])] : [50, 50];
+  };
+  const onPointerDown = (e) => {
+    if (!editable || e.button !== 0) return;
+    const img = e.currentTarget;
+    const wrapper = img.parentElement;
+    if (!wrapper) return;
+    const rect = wrapper.getBoundingClientRect();
+    const innerW = Math.max(1, rect.width - 2 * safePadding);
+    const innerH = Math.max(1, rect.height - 2 * safePadding);
+    const startX = e.clientX, startY = e.clientY;
+    const [px0, py0] = parsePos(position);
+    let dragged = false;
+    let currentPos = null;
+    const move = (ev) => {
+      const dx = ev.clientX - startX, dy = ev.clientY - startY;
+      if (!dragged && Math.hypot(dx, dy) < 4) return;
+      dragged = true;
+      img.style.cursor = 'grabbing';
+      // Direct mapping: dragging right anchors the image more to the right
+      // (objectPosition x grows). Feels like dragging the content within
+      // its viewport. Clamp 0..100.
+      const xPct = Math.max(0, Math.min(100, px0 + (dx / innerW) * 100));
+      const yPct = Math.max(0, Math.min(100, py0 + (dy / innerH) * 100));
+      currentPos = `${xPct.toFixed(1)}% ${yPct.toFixed(1)}%`;
+      setLivePos(currentPos);
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      img.style.cursor = editable ? 'grab' : '';
+      if (dragged) {
+        // Capture-phase one-shot to swallow the click that fires AFTER
+        // pointerup, so a parent <a href> doesn't navigate after a pan.
+        const swallow = (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          window.removeEventListener('click', swallow, true);
+        };
+        window.addEventListener('click', swallow, true);
+        if (currentPos) onPositionChange(currentPos);
+      }
+      setLivePos(null);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
   const imgStyle = {
-    position: 'absolute', inset: 0, width: '100%', height: '100%',
-    objectFit: fit, objectPosition: 'center', zIndex: 1, display: 'block',
+    position: 'absolute',
+    top: safePadding, left: safePadding,
+    width: `calc(100% - ${safePadding * 2}px)`,
+    height: `calc(100% - ${safePadding * 2}px)`,
+    objectFit: fit, objectPosition: effectivePos,
+    zIndex: 1, display: 'block',
     transform: safeScale !== 1 ? `scale(${safeScale})` : undefined,
     transformOrigin: 'center',
+    cursor: editable ? 'grab' : undefined,
+    userSelect: editable ? 'none' : undefined,
+    touchAction: editable ? 'none' : undefined,
   };
+  const imgProps = editable
+    ? { draggable: false, onPointerDown }
+    : { draggable: false };
   const overlay = fit === 'cover' && (
     <div aria-hidden="true" style={{
       position: 'absolute', inset: 0,
@@ -544,8 +619,27 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
     }} />
   );
 
+  // Blurred backdrop — when fit is 'contain' the image leaves dead space
+  // around itself. Filling that space with a heavy blur + scaled copy of
+  // the same image (the way Mercedes/Audi/Porsche product pages do) makes
+  // the frame visually "track" the photo regardless of aspect ratio. Only
+  // renders when there's an explicit URL to back-fill; convention-probe
+  // and ProductHero SVG fallbacks keep the gradient background.
+  const backdrop = (url) => fit === 'contain' && url && (
+    <div aria-hidden="true" style={{
+      position: 'absolute', inset: 0, zIndex: 0,
+      backgroundImage: `url(${url})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      filter: 'blur(28px) saturate(1.15) brightness(0.55)',
+      transform: 'scale(1.15)',
+      pointerEvents: 'none',
+    }} />
+  );
+
   if (override) {
-    return (<><img src={override} alt="" loading="lazy" decoding="async" style={imgStyle} />{overlay}</>);
+    return (<>{backdrop(override)}<img src={override} alt="" loading="lazy" decoding="async" style={imgStyle} {...imgProps} />{overlay}</>);
   }
 
   if (conventionFailed) {
@@ -560,10 +654,12 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
       </div>);
   }
 
+  const conventionUrl = `assets/${slug}.${conventionalExts[extIdx]}`;
   return (<>
+    {backdrop(conventionUrl)}
     <img
       key={extIdx}
-      src={`assets/${slug}.${conventionalExts[extIdx]}`}
+      src={conventionUrl}
       alt=""
       loading="lazy"
       decoding="async"
@@ -572,6 +668,7 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
         else setExtIdx(extIdx + 1);
       }}
       style={imgStyle}
+      {...imgProps}
     />
     {overlay}
   </>);

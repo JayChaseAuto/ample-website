@@ -1,7 +1,7 @@
 /* Ample — Product Detail Page — matches the "Page 3+ Braking/Cooling/..." reference layouts */
 
 function ProductDetailPage({ slug }) {
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const { tweaks, setProductTweak } = useTweakState();
   const overrides = (tweaks.productOverrides || {})[slug] || {};
   // Apply overrides on top of the base product. Empty strings for text fields
   // shouldn't blank out defaults — only apply non-empty values.
@@ -37,15 +37,34 @@ function ProductDetailPage({ slug }) {
   {
     const raw = (typeof overrides.calloutImageScale === 'number')
       ? overrides.calloutImageScale : 1.0;
-    p.calloutImageScale = Math.max(0.5, Math.min(1.6, raw));
+    // Range must match the slider's min/max in index.html — otherwise the
+    // panel displays a value the runtime silently rounds down on first edit.
+    p.calloutImageScale = Math.max(0.5, Math.min(2.5, raw));
   }
+  // Position the callout image inside its frame ("X% Y%"). Drives
+  // object-position on the <img> inside ProductCardMedia. Default = center.
+  p.calloutImagePosition = typeof overrides.calloutImagePosition === 'string'
+    ? overrides.calloutImagePosition : '50% 50%';
   // heroBgImage is a NEW field — empty string means "no photo".
   p.heroBgImage = overrides.heroBgImage || '';
+  // Hero background scale. Default 1, clamp to a sane range so an over-
+  // eager slider can't blow the image past the page chrome.
+  {
+    const raw = (typeof overrides.heroBgImageScale === 'number')
+      ? overrides.heroBgImageScale : 1.0;
+    p.heroBgImageScale = Math.max(0.5, Math.min(2.0, raw));
+  }
+  // calloutImage: the big center photo on the rich callout layout. Has its
+  // own slot so the catalog thumbnail and the detail-page hero photo can be
+  // different. Falls back to the catalog card image when no callout-
+  // specific override is set, so existing products that only have a card
+  // image keep rendering it in the callout slot.
+  p.calloutImage = overrides.calloutImage || (tweaks.catalogCardImages || {})[slug] || '';
   const usesRichLayout = !!(p.numberedFeatures && p.numberedFeatures.length);
 
   const heroDropRef = React.useRef(null);
-  useImageDrop(heroDropRef, (path) => {
-    window.__ampleSetProductTweak && window.__ampleSetProductTweak(slug, 'heroBgImage', path);
+  useImageDrop(heroDropRef, (path, opts) => {
+    setProductTweak(slug, 'heroBgImage', path, opts);
   }, { namePrefix: `product-${slug}-hero` });
   return (
     <div style={{ background: '#000', minHeight: '100vh', color: 'var(--fg-1)' }}>
@@ -86,15 +105,37 @@ function ProductDetailPage({ slug }) {
           {!usesRichLayout && (
             <Reveal delay={2}>
               <div ref={heroDropRef} className="drop-target product-hero"
+                   data-ample-slot="product-hero"
                    style={p.heroHeight ? { minHeight: p.heroHeight } : undefined}>
                 <div className="drop-hint">Drop image to set product hero</div>
                 {p.heroBgImage ? (
                   <>
+                    {/* Blurred backdrop — fills the dead space when the
+                        hero image is fit:contain, so the frame visually
+                        wraps the photo (premium-auto pattern). Skip when
+                        fit:cover since the image already fills. */}
+                    {(p.heroImageFit || 'cover') === 'contain' && (
+                      <div aria-hidden="true" style={{
+                        position: 'absolute', inset: 0, zIndex: 0,
+                        backgroundImage: `url(${p.heroBgImage})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        filter: 'blur(36px) saturate(1.2) brightness(0.5)',
+                        transform: 'scale(1.15)',
+                        pointerEvents: 'none',
+                      }} />
+                    )}
                     <div className="product-hero-image"
                          style={{
                            backgroundImage: `url(${p.heroBgImage})`,
                            backgroundSize: p.heroImageFit || 'cover',
                            backgroundPosition: p.heroImagePosition || 'center',
+                           // Scale composes with background-position by
+                           // anchoring the scale origin to the same point —
+                           // pan and zoom feel coherent instead of fighting.
+                           transform: p.heroBgImageScale !== 1
+                             ? `scale(${p.heroBgImageScale})` : undefined,
+                           transformOrigin: p.heroImagePosition || 'center',
                          }} />
                     {p.heroOverlay > 0 && (
                       <div aria-hidden="true" style={{
@@ -118,10 +159,10 @@ function ProductDetailPage({ slug }) {
 
         {/* Rich layout (callouts + benefits) — opt-in via product.numberedFeatures.
             Falls back to the legacy FeatureCard grid for products that haven't
-            been upgraded yet. */}
+            been upgraded yet. Simple-layout products keep just the hero
+            banner above — no extra center/showcase image. */}
         {p.numberedFeatures && p.numberedFeatures.length > 0 ? (
-          <CalloutLayout slug={slug} p={p}
-            calloutImage={(tweaks.catalogCardImages || {})[slug]} />
+          <CalloutLayout slug={slug} p={p} calloutImage={p.calloutImage} />
         ) : p.features && p.features.length > 0 ? (
           <section style={{ padding: '32px 0 48px', borderTop: '1px solid var(--border-1)' }}>
             <div style={{
@@ -161,7 +202,7 @@ function ProductDetailPage({ slug }) {
   );
 }
 
-function FeatureCard({ icon, title, body, image }) {
+function FeatureCard({ icon, title, body }) {
   return (
     <div style={{
       background: 'var(--ample-coal)', border: '1px solid var(--border-1)',
@@ -181,8 +222,10 @@ function FeatureCard({ icon, title, body, image }) {
    Renders when a product defines `numberedFeatures`. Layout: a four-corner
    numbered callout grid wrapped around a centered product shot, then a
    2×2 benefits panel, with optional intro/closing/outro paragraphs.
-   The center shot pulls from `catalogCardImages[slug]` (clean technical
-   photo) so it stays distinct from the moody hero background up top. */
+   The center shot pulls from `productOverrides[slug].calloutImage` first,
+   falling back to `catalogCardImages[slug]` so older products without a
+   dedicated callout image still render. Distinct from the moody hero
+   background up top — typically a clean technical photo. */
 function CalloutItem({ num, title, body, align = 'left' }) {
   const isRight = align === 'right';
   return (
@@ -250,18 +293,20 @@ function BenefitsBlock({ title, items }) {
 }
 
 function CalloutLayout({ slug, p, calloutImage }) {
+  const { setProductTweak } = useTweakState();
   const items = p.numberedFeatures || [];
   // Pad to 4 so layout placement is stable even if a product ships fewer.
   while (items.length < 4) items.push({ title: '', body: '' });
 
-  // Drag-drop on the center callout image. Writes to catalogCardImages[slug]
-  // — the same field the catalog/featured cards read — so a drop here
-  // also updates the homepage rail and catalog grid.
+  // Drag-drop on the center callout image. Writes to its OWN per-product
+  // field (productOverrides[slug].calloutImage) so it's independent from
+  // the catalog card thumbnail. Render-time fallback in ProductDetailPage
+  // still uses catalogCardImages[slug] when no callout override is set, so
+  // products with only a card image keep showing it in the callout slot.
   const calloutDropRef = React.useRef(null);
-  useImageDrop(calloutDropRef, (path) => {
-    window.__ampleSetTweak && window.__ampleSetTweak('catalogCardImages',
-      { ...(window.__ampleTweaks?.catalogCardImages || {}), [slug]: path });
-  }, { namePrefix: `card-${slug}` });
+  useImageDrop(calloutDropRef, (path, opts) => {
+    setProductTweak(slug, 'calloutImage', path, opts);
+  }, { namePrefix: `callout-${slug}` });
 
   return (
     <>
@@ -286,7 +331,8 @@ function CalloutLayout({ slug, p, calloutImage }) {
           <Reveal style={{ gridColumn: 3, gridRow: 1 }} delay={1}>
             <CalloutItem num="2" align="left" title={items[1].title} body={items[1].body} />
           </Reveal>
-          <div ref={calloutDropRef} className="drop-target callout-stage" style={{
+          <div ref={calloutDropRef} className="drop-target callout-stage"
+               data-ample-slot="product-callout" style={{
             gridColumn: 2, gridRow: '1 / span 2',
             position: 'relative',
             aspectRatio: '1/1',
@@ -305,7 +351,11 @@ function CalloutLayout({ slug, p, calloutImage }) {
             }}>
               <ProductCardMedia slug={slug} heroAsset={p.heroAsset}
                 fit={p.calloutImageFit || 'contain'}
-                size={280} override={calloutImage} padding={28} />
+                size={280} override={calloutImage} padding={28}
+                position={p.calloutImagePosition || '50% 50%'}
+                onPositionChange={window.__ampleEditor
+                  ? (pos) => setProductTweak(slug, 'calloutImagePosition', pos)
+                  : undefined} />
             </div>
           </div>
           <Reveal style={{ gridColumn: 1, gridRow: 2 }} delay={2}>
@@ -337,12 +387,12 @@ function CalloutLayout({ slug, p, calloutImage }) {
   );
 }
 
-function RelatedProductCard({ slug, imageFit, override }) {
+function RelatedProductCard({ slug, imageFit, override, scale, padding, position }) {
   const p = PRODUCTS[slug];
+  const { mergeImageBag } = useTweakState();
   const dropRef = React.useRef(null);
-  useImageDrop(dropRef, (path) => {
-    window.__ampleSetTweak && window.__ampleSetTweak('catalogCardImages',
-      { ...(window.__ampleTweaks?.catalogCardImages || {}), [slug]: path });
+  useImageDrop(dropRef, (path, opts) => {
+    mergeImageBag('catalogCardImages', slug, path, opts);
   }, { namePrefix: `card-${slug}` });
   return (
     <a ref={dropRef} href={`#/product/${slug}`} className="drop-target card-hover card-hover-red" style={{
@@ -352,8 +402,13 @@ function RelatedProductCard({ slug, imageFit, override }) {
       position: 'relative',
     }}>
       <div className="drop-hint">Drop image for {p.title} {p.title2 || ''}</div>
-      <div style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden', background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #050608 80%)', padding: 12 }}>
-        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={180} override={override} padding={12} />
+      {/* No padding here — ProductCardMedia owns the image inset via its
+          padding prop. Wrapper padding stacked on top would double-shrink
+          the photo, which is exactly what RelatedProducts used to do. */}
+      <div style={{ aspectRatio: '1/1', position: 'relative', overflow: 'hidden',
+                    background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #050608 80%)' }}>
+        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={180}
+          override={override} scale={scale} padding={padding} position={position} />
       </div>
       <div style={{ padding: '12px 14px 14px', borderTop: '1px solid var(--border-1)' }}>
         <Eyebrow color={p.goldStandard ? 'gold' : 'red'} style={{ fontSize: 10 }}>{p.goldStandard ? 'Gold Standard' : p.category}</Eyebrow>
@@ -364,27 +419,54 @@ function RelatedProductCard({ slug, imageFit, override }) {
 }
 
 function RelatedProducts({ current }) {
-  const others = PRODUCT_ORDER.filter(s => s !== current).slice(0, 4);
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const { tweaks } = useTweakState();
+  // Pick siblings in the SAME category first. Top up with any other product
+  // only if the category has fewer than 4 — keeps the grid full without
+  // ever showing wholly unrelated products at the top.
+  const curCat = PRODUCTS[current] && PRODUCTS[current].category;
+  const sameCat = PRODUCT_ORDER.filter(
+    (s) => s !== current && PRODUCTS[s] && PRODUCTS[s].category === curCat
+  );
+  const filler = PRODUCT_ORDER.filter(
+    (s) => s !== current && !sameCat.includes(s)
+  );
+  const others = [...sameCat, ...filler].slice(0, 4);
+
   const cardImages = tweaks.catalogCardImages || {};
   const imageFit = tweaks.cardImageFit || 'contain';
+  const globalScale = typeof tweaks.catalogCardScale === 'number' ? tweaks.catalogCardScale : 1;
+  const globalPadding = typeof tweaks.catalogCardPadding === 'number' ? tweaks.catalogCardPadding : 16;
+
   return (
     <section style={{ padding: '16px 0 64px', borderTop: '1px solid var(--border-1)' }}>
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 28, marginBottom: 20 }}>
         <div>
-          <Eyebrow>Related · Full System</Eyebrow>
+          <Eyebrow>Related · {curCat || 'Full System'}</Eyebrow>
           <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 32, textTransform: 'uppercase', margin: '8px 0 0' }}>Keep the circuit complete.</h2>
         </div>
-        <a href="#/catalog" style={{ fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'var(--ample-red)', textDecoration: 'none' }}>Browse all ›</a>
+        <a href={curCat ? `#/catalog/${encodeURIComponent(curCat)}` : '#/catalog'}
+           style={{ fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'var(--ample-red)', textDecoration: 'none' }}>
+          Browse {curCat ? curCat.toLowerCase() : 'all'} ›
+        </a>
       </div>
       <div style={{ display: 'grid',
                     gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 220px), 1fr))',
                     gap: 16 }}>
-        {others.map((slug, idx) => (
-          <Reveal key={slug} delay={idx % 4}>
-            <RelatedProductCard slug={slug} imageFit={imageFit} override={cardImages[slug]} />
-          </Reveal>
-        ))}
+        {others.map((slug, idx) => {
+          // Per-product overrides win over global defaults — same precedence
+          // as FeaturedCard (HomePage) and CatalogCard so a product looks
+          // identical wherever it shows up.
+          const ov = (tweaks.productOverrides || {})[slug] || {};
+          const scale = typeof ov.cardScale === 'number' ? ov.cardScale : globalScale;
+          const padding = typeof ov.cardPadding === 'number' ? ov.cardPadding : globalPadding;
+          const position = typeof ov.cardPosition === 'string' ? ov.cardPosition : '50% 50%';
+          return (
+            <Reveal key={slug} delay={idx % 4}>
+              <RelatedProductCard slug={slug} imageFit={imageFit} override={cardImages[slug]}
+                scale={scale} padding={padding} position={position} />
+            </Reveal>
+          );
+        })}
       </div>
     </section>
   );

@@ -21,3 +21,4 @@ yarn-error.log*
 
 # Local Claude/AI scratch
 .claude/
+.codegraph/

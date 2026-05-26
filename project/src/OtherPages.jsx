@@ -1,7 +1,7 @@
 /* Ample — Catalog, Gold Standard, Story/Contact pages */
 
 function CatalogPage({ filter: filterProp } = {}) {
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const { tweaks } = useTweakState();
   const eyebrow = tweaks.catalogEyebrow || 'Our Inventory';
   const title = tweaks.catalogTitle || 'Our Catalog.';
   const intro = tweaks.catalogIntro || "A curated selection of our precision components, organized by system. For fitment, pricing, or availability on any part, get in touch.";
@@ -101,7 +101,7 @@ function CatalogPage({ filter: filterProp } = {}) {
 
 function CatalogCard({ slug, ratio = '4/3' }) {
   const p = PRODUCTS[slug];
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const { tweaks, setProductTweak, mergeImageBag } = useTweakState();
   const cardImage = (tweaks.catalogCardImages || {})[slug];
   const imageFit = tweaks.cardImageFit || 'contain';
   // Per-product overrides win over the global card defaults.
@@ -112,17 +112,19 @@ function CatalogCard({ slug, ratio = '4/3' }) {
   const cardPadding = typeof overrides.cardPadding === 'number'
     ? overrides.cardPadding
     : (typeof tweaks.catalogCardPadding === 'number' ? tweaks.catalogCardPadding : 16);
+  const cardPosition = typeof overrides.cardPosition === 'string'
+    ? overrides.cardPosition : '50% 50%';
 
   const dropRef = React.useRef(null);
-  useImageDrop(dropRef, (path) => {
-    window.__ampleSetTweak && window.__ampleSetTweak('catalogCardImages',
-      { ...(window.__ampleTweaks?.catalogCardImages || {}), [slug]: path });
+  useImageDrop(dropRef, (path, opts) => {
+    mergeImageBag('catalogCardImages', slug, path, opts);
   }, { namePrefix: `card-${slug}` });
 
   return (
     <div
       ref={dropRef}
       className="catalog-card drop-target card-hover"
+      data-ample-slot={`catalog-card-${slug}`}
       style={{
         position: 'relative',
         background: 'var(--ample-coal)',
@@ -134,8 +136,13 @@ function CatalogCard({ slug, ratio = '4/3' }) {
       {p.goldStandard &&
       <span style={{ position: 'absolute', top: 10, right: 10, zIndex: 4, background: 'var(--ample-gold)', color: '#17110a', fontFamily: 'var(--font-product)', fontSize: 9, fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 999, pointerEvents: 'none' }}>★ Gold</span>
       }
-      <div style={{ position: 'relative', aspectRatio: ratio, background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', padding: cardPadding, overflow: 'hidden' }}>
-        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240} override={cardImage} scale={cardScale} />
+      <div style={{ position: 'relative', aspectRatio: ratio, background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', overflow: 'hidden' }}>
+        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240}
+          override={cardImage} scale={cardScale} padding={cardPadding}
+          position={cardPosition}
+          onPositionChange={window.__ampleEditor
+            ? (pos) => setProductTweak(slug, 'cardPosition', pos)
+            : undefined} />
       </div>
       <a href={`#/product/${slug}`} style={{ textDecoration: 'none', color: 'inherit', display: 'block', padding: '14px 18px 18px', borderTop: '1px solid var(--border-1)' }}>
         <Eyebrow color={p.goldStandard ? 'gold' : 'red'} style={{ fontSize: 10 }}>{p.category}</Eyebrow>
@@ -156,14 +163,14 @@ function CatalogCard({ slug, ratio = '4/3' }) {
 const VIDEO_EXT_RE = /\.(mp4|webm|mov|m4v|ogg|ogv|mkv)(\?|$)/i;
 
 function LabMediaBox() {
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const { tweaks, setTweak } = useTweakState();
   const media = tweaks.goldStandardMedia || '';
   const isVideo = VIDEO_EXT_RE.test(media);
   const isImage = !!media && !isVideo;
 
   const dropRef = React.useRef(null);
-  useImageDrop(dropRef, (path) => {
-    window.__ampleSetTweak && window.__ampleSetTweak('goldStandardMedia', path);
+  useImageDrop(dropRef, (path, opts) => {
+    setTweak('goldStandardMedia', path, opts);
   }, { namePrefix: 'gold-dyno', accept: ['image', 'video'] });
 
   return (
@@ -200,22 +207,23 @@ const GOLD_FEATURES = [
 ];
 
 function GoldFeatureCard({ feature, delay }) {
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
-  const img = (tweaks.goldFeatureImages || {})[feature.key] || '';
+  const { tweaks, mergeImageSlot } = useTweakState();
+  const slot = readImageSlot(tweaks.goldFeatureImages, feature.key);
   const dropRef = React.useRef(null);
-  useImageDrop(dropRef, (path) => {
-    window.__ampleSetTweak && window.__ampleSetTweak('goldFeatureImages',
-      { ...(window.__ampleTweaks?.goldFeatureImages || {}), [feature.key]: path });
+  useImageDrop(dropRef, (path, opts) => {
+    mergeImageSlot('goldFeatureImages', feature.key, { url: path }, opts);
   }, { namePrefix: `gold-${feature.key}` });
   return (
     <Reveal delay={delay} style={{ background: 'var(--ample-coal)', border: '1px solid var(--border-1)', overflow: 'hidden' }}>
       <div
         ref={dropRef}
         className="drop-target"
-        style={{ aspectRatio: '16/9', position: 'relative', background: img
-          ? `url(${img}) center / cover no-repeat`
-          : feature.bg }}>
-        {!img && (
+        data-ample-slot={`gold-${feature.key}`}
+        style={{ aspectRatio: '16/9', position: 'relative',
+          background: slot.url
+            ? `url(${slot.url}) ${slot.position} / ${slot.fit === 'contain' ? 'contain' : 'cover'} no-repeat`
+            : feature.bg }}>
+        {!slot.url && (
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 60%)' }} />
         )}
         <div className="drop-hint">Drop image for {feature.t}</div>
@@ -304,13 +312,11 @@ const STORY_ENTRIES = [
      3. Each card fades up with a 150ms stagger between cards.
    prefers-reduced-motion bails to the final state on mount. */
 function StoryCard({ entry, idx }) {
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
-  const override = (tweaks.storyImages || {})[entry.key];
-  const img = override || entry.img;
+  const { tweaks, mergeImageSlot } = useTweakState();
+  const slot = readImageSlot(tweaks.storyImages, entry.key, entry.img);
   const dropRef = React.useRef(null);
-  useImageDrop(dropRef, (path) => {
-    window.__ampleSetTweak && window.__ampleSetTweak('storyImages',
-      { ...(window.__ampleTweaks?.storyImages || {}), [entry.key]: path });
+  useImageDrop(dropRef, (path, opts) => {
+    mergeImageSlot('storyImages', entry.key, { url: path }, opts);
   }, { namePrefix: `history-${entry.key}` });
   return (
     <div className="story-card" data-idx={idx}>
@@ -318,7 +324,13 @@ function StoryCard({ entry, idx }) {
         <span className="story-dot" aria-hidden="true" />
         <div className="story-year">{entry.year}</div>
         <div ref={dropRef} className="story-img drop-target"
-             style={{ backgroundImage: `url(${img})` }}>
+             data-ample-slot={`story-${entry.key}`}
+             style={{
+               backgroundImage: `url(${slot.url})`,
+               backgroundSize: slot.fit === 'contain' ? 'contain' : 'cover',
+               backgroundPosition: slot.position,
+               backgroundRepeat: 'no-repeat',
+             }}>
           <div className="story-img-shade" aria-hidden="true" />
           <div className="story-img-tag">ARCHIVE · {entry.key}</div>
           <div className="drop-hint">Drop image for {entry.year}</div>

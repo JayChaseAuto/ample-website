@@ -12,7 +12,7 @@ const CATEGORY_CARDS = [
 ];
 
 function HomePage() {
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const { tweaks, setTweak } = useTweakState();
   const headline1 = tweaks.heroHeadline1 || 'Road-ready';
   const headlineAccent = tweaks.heroHeadlineAccent || 'precision.';
   const headline2 = tweaks.heroHeadline2 || 'Engineered beyond stock.';
@@ -26,8 +26,8 @@ function HomePage() {
   useParallax(heroBgRef, 0.18);
 
   const heroDropRef = React.useRef(null);
-  useImageDrop(heroDropRef, (path) => {
-    window.__ampleSetTweak && window.__ampleSetTweak('heroImage', path);
+  useImageDrop(heroDropRef, (path, opts) => {
+    setTweak('heroImage', path, opts);
   }, { namePrefix: 'hero' });
 
   return (
@@ -83,7 +83,7 @@ function HomePage() {
                         gap: 16 }}>
             {CATEGORY_CARDS.map((c, idx) => (
               <Reveal key={c.label} delay={idx % 4}>
-                <CategoryCard card={c} tweaks={tweaks} />
+                <CategoryCard card={c} />
               </Reveal>
             ))}
           </div>
@@ -182,7 +182,7 @@ function Stat({ k, v }) {
 
 function FeaturedCard({ slug }) {
   const p = PRODUCTS[slug];
-  const tweaks = typeof window !== 'undefined' && window.__ampleTweaks || {};
+  const { tweaks, setProductTweak, mergeImageBag } = useTweakState();
   const cardImage = (tweaks.catalogCardImages || {})[slug];
   const imageFit = tweaks.cardImageFit || 'contain';
   // Per-product overrides win over the global card defaults. Falls back to
@@ -194,11 +194,12 @@ function FeaturedCard({ slug }) {
   const cardPadding = typeof overrides.cardPadding === 'number'
     ? overrides.cardPadding
     : (typeof tweaks.catalogCardPadding === 'number' ? tweaks.catalogCardPadding : 16);
+  const cardPosition = typeof overrides.cardPosition === 'string'
+    ? overrides.cardPosition : '50% 50%';
 
   const dropRef = React.useRef(null);
-  useImageDrop(dropRef, (path) => {
-    window.__ampleSetTweak && window.__ampleSetTweak('catalogCardImages',
-      { ...(window.__ampleTweaks?.catalogCardImages || {}), [slug]: path });
+  useImageDrop(dropRef, (path, opts) => {
+    mergeImageBag('catalogCardImages', slug, path, opts);
   }, { namePrefix: `card-${slug}` });
 
   return (
@@ -215,8 +216,13 @@ function FeaturedCard({ slug }) {
         background: 'var(--ample-gold)', color: '#17110a', fontFamily: 'var(--font-product)', fontSize: 9, fontWeight: 800,
         letterSpacing: '0.16em', textTransform: 'uppercase', padding: '4px 8px', borderRadius: 999, pointerEvents: 'none' }}>★ Gold Standard</span>
       }
-      <div style={{ position: 'relative', aspectRatio: '4/3', background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', padding: cardPadding, overflow: 'hidden' }}>
-        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240} override={cardImage} scale={cardScale} />
+      <div style={{ position: 'relative', aspectRatio: '4/3', background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', overflow: 'hidden' }}>
+        <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240}
+          override={cardImage} scale={cardScale} padding={cardPadding}
+          position={cardPosition}
+          onPositionChange={window.__ampleEditor
+            ? (pos) => setProductTweak(slug, 'cardPosition', pos)
+            : undefined} />
       </div>
       <div style={{ padding: '14px 16px 16px', borderTop: '1px solid var(--border-1)' }}>
         <Eyebrow color={p.goldStandard ? 'gold' : 'red'} style={{ fontSize: 10 }}>{p.category}</Eyebrow>
@@ -256,17 +262,23 @@ function GoldBanner() {
 
 }
 
-function CategoryCard({ card, tweaks }) {
+function CategoryCard({ card }) {
+  const { tweaks, mergeImageSlot } = useTweakState();
   const ref = React.useRef(null);
-  useImageDrop(ref, (path) => {
-    window.__ampleSetCategoryImage && window.__ampleSetCategoryImage(card.label, path);
+  useImageDrop(ref, (path, opts) => {
+    mergeImageSlot('categoryImages', card.label, { url: path }, opts);
   }, { namePrefix: `cat-${card.label}` });
-  const userImg = (tweaks.categoryImages || {})[card.label];
-  const img = userImg !== undefined ? userImg : card.defaultImage;
+  const slot = readImageSlot(tweaks.categoryImages, card.label, card.defaultImage);
   return (
-    <a ref={ref} href={`#/catalog/${encodeURIComponent(card.label)}`} className="cat-card drop-target">
+    <a ref={ref} href={`#/catalog/${encodeURIComponent(card.label)}`} className="cat-card drop-target"
+       data-ample-slot={`category-banner-${card.label}`}>
       <div className="cat-photo"
-           style={img ? { backgroundImage: `url(${img})` } : {}} />
+           style={slot.url ? {
+             backgroundImage: `url(${slot.url})`,
+             backgroundSize: slot.fit === 'contain' ? 'contain' : 'cover',
+             backgroundPosition: slot.position,
+             backgroundRepeat: 'no-repeat',
+           } : {}} />
       <div className="cat-shade" />
       <div className="cat-icon-chip">
         <Icon name={card.icon} size={18} />
