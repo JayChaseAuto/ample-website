@@ -108,6 +108,9 @@
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accentColor": "#E92024",
   "theme": "dark",
+  "siteLogo": "",
+  "siteLogoHeight": 22,
+  "featuredProducts": ["brake-pads", "caliper-npc"],
   "heroImage": "assets\/hero-932c2302.webp",
   "heroOverlay": 35,
   "heroHeadline1": "oem+",
@@ -1021,6 +1024,18 @@ function App() {
 
         {/* ─────────────────────── STYLE ─────────────────────── */}
         <TweakTab id="style">
+          <TweakSection label="Brand · Logo"
+                        subtitle="Drag the logo image onto the header to upload, or paste a path"
+                        slot="site-logo" />
+          <TweakText label="Logo image"
+                     value={t.siteLogo || ''}
+                     placeholder="assets/logo-red-transparent.png"
+                     onChange={(v) => setTweak('siteLogo', v)} />
+          <TweakSlider label="Logo height"
+                       value={typeof t.siteLogoHeight === 'number' ? t.siteLogoHeight : 22}
+                       min={14} max={48} step={1} unit="px"
+                       onChange={(v) => setTweak('siteLogoHeight', v)} />
+
           <TweakSection label="Brand" />
           <TweakColor label="Accent color" value={t.accentColor}
                       onChange={(v) => setTweak('accentColor', v)} />
@@ -1357,6 +1372,18 @@ function App() {
         <TweakTab id="content">
           {routeKey === 'home' && (
             <>
+              <TweakSection label="Featured rail"
+                            subtitle="Products shown in the 'Built for the drive.' grid (one slug per line)" />
+              <TweakTextarea label="Slugs"
+                             rows={4}
+                             value={(Array.isArray(t.featuredProducts) ? t.featuredProducts : []).join('\n')}
+                             placeholder={'brake-pads\ncaliper-npc'}
+                             onChange={(v) => setTweak('featuredProducts',
+                               v.split(/\r?\n/).map((s) => s.trim()).filter(Boolean))} />
+              <div style={{ fontSize: 10.5, color: 'rgba(41,38,27,.55)', lineHeight: 1.4 }}>
+                Available slugs: {(window.PRODUCT_ORDER || []).join(', ')}
+              </div>
+
               <TweakSection label="Hero · Headline" />
               <TweakText label="Line 1" value={t.heroHeadline1}
                          onChange={(v) => setTweak('heroHeadline1', v)} />

@@ -9,6 +9,17 @@ const NAV_LINKS = [
 ];
 
 function SiteHeader({ active }) {
+  // Drop-to-replace logo. Editors can drag a logo file onto the header
+  // anchor — dev server stores it under assets/, tweak state remembers it.
+  // Falls back to the original committed PNG when no override is set so
+  // visitors and fresh clones render correctly.
+  const { tweaks, setTweak } = useTweakState();
+  const logoSrc = tweaks.siteLogo || 'assets/logo-red-transparent.png';
+  const logoHeight = typeof tweaks.siteLogoHeight === 'number' ? tweaks.siteLogoHeight : 22;
+  const logoRef = React.useRef(null);
+  useImageDrop(logoRef, (path, opts) => {
+    setTweak('siteLogo', path, opts);
+  }, { namePrefix: 'site-logo' });
   return (
     <header style={{
       position: 'sticky', top: 0, zIndex: 50,
@@ -23,8 +34,12 @@ function SiteHeader({ active }) {
         gap: 'clamp(12px, 3vw, 40px)',
         maxWidth: 1440, margin: '0 auto',
       }}>
-        <a href="#/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none', flexShrink: 0 }}>
-          <img src="assets/logo-red-transparent.png" alt="ample" style={{ height: 22, display: 'block' }} />
+        <a ref={logoRef} href="#/" className="drop-target"
+           data-ample-slot="site-logo"
+           style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none',
+                    flexShrink: 0, position: 'relative', padding: 4, margin: -4 }}>
+          <div className="drop-hint">Drop logo image</div>
+          <img src={logoSrc} alt="ample" style={{ height: logoHeight, display: 'block' }} />
         </a>
         {/* Nav scrolls horizontally on narrow screens; .nav-scroll hides the
             scrollbar so the row looks clean. Items keep whiteSpace: nowrap

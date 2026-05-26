@@ -98,15 +98,31 @@ function HomePage() {
             </div>
             <a href="#/catalog" style={{ fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.18em', color: 'var(--ample-red)', textDecoration: 'none' }}>BROWSE ALL ›</a>
           </Reveal>
-          <div style={{ display: 'grid',
-                        gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 260px), 1fr))`,
-                        gap: 16 }}>
-            {PRODUCT_ORDER.slice(0, gridCols).map((slug, idx) => (
-              <Reveal key={slug} delay={idx % 4} style={{ display: 'block' }}>
-                <FeaturedCard slug={slug} />
-              </Reveal>
-            ))}
-          </div>
+          {(() => {
+            // Featured rail = `tweaks.featuredProducts` (array of slugs).
+            // Default ['brake-pads', 'caliper-npc'] because Braking is the
+            // anchor category — the two flagship parts lead the homepage.
+            // Falls back to the first gridCols products if the array is
+            // missing or empty; filters out any slug that doesn't resolve
+            // so a typo in source doesn't crash the rail.
+            const configured = Array.isArray(tweaks.featuredProducts) && tweaks.featuredProducts.length
+              ? tweaks.featuredProducts
+              : ['brake-pads', 'caliper-npc'];
+            const featured = configured
+              .filter((s) => PRODUCTS[s])
+              .slice(0, Math.max(1, gridCols));
+            return (
+              <div style={{ display: 'grid',
+                            gridTemplateColumns: `repeat(auto-fit, minmax(min(100%, 260px), 1fr))`,
+                            gap: 16 }}>
+                {featured.map((slug, idx) => (
+                  <Reveal key={slug} delay={idx % 4} style={{ display: 'block' }}>
+                    <FeaturedCard slug={slug} />
+                  </Reveal>
+                ))}
+              </div>
+            );
+          })()}
         </section>
 
         {/* Gold standard banner */}
