@@ -781,16 +781,31 @@ html:not([data-editor="1"]) .drop-target { cursor: inherit !important; }
      horizontal padding via class so authors don't have to update each one. */
   .stack-on-mobile { grid-template-columns: 1fr !important; }
 
-  /* Product detail bremsenbrakes-style callout grid: stack to 1 column with
-     image first, then the four numbered features below. */
+  /* Product detail callout grid: stack to 1 column with the image FIRST,
+     then the four numbered features as a vertical list. Mirrors how
+     Mercedes, Audi and Porsche product detail pages handle this on
+     mobile — visual anchor up top, copy reads top→bottom. */
   .callout-grid {
     grid-template-columns: 1fr !important;
-    row-gap: 28px !important;
+    row-gap: 24px !important;
   }
   .callout-grid > * {
     grid-column: 1 !important;
     grid-row: auto !important;
   }
+  /* Image first regardless of DOM order. order:-1 wins over the source
+     ordering (callouts 1+2, then image, then 3+4). */
+  .callout-grid > .callout-stage { order: -1 !important; }
+  /* Kill the desktop row-reverse on right-aligned callouts — on mobile
+     every callout reads identically: number on the left, copy on the
+     right. Also center the copy text so the column stays balanced. */
+  .callout-grid .callout-card {
+    flex-direction: row !important;
+    text-align: left !important;
+    gap: 14px !important;
+    padding: 0 4px;
+  }
+  .callout-grid .callout-card > div:last-child p { margin-left: 0 !important; }
   /* Benefits 2x2 grid → single column with horizontal dividers. */
   .benefits-2x2 { grid-template-columns: 1fr !important; }
   .benefits-2x2 > * {

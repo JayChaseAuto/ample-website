@@ -41,13 +41,20 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 const __TWEAKS_STYLE = `
-  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:280px;
+  .twk-panel{position:fixed;right:16px;bottom:16px;z-index:2147483646;width:300px;
     max-height:calc(100vh - 32px);display:flex;flex-direction:column;
     background:rgba(250,249,247,.78);color:#29261b;
     -webkit-backdrop-filter:blur(24px) saturate(160%);backdrop-filter:blur(24px) saturate(160%);
     border:.5px solid rgba(255,255,255,.6);border-radius:14px;
     box-shadow:0 1px 0 rgba(255,255,255,.5) inset,0 12px 40px rgba(0,0,0,.18);
     font:11.5px/1.4 ui-sans-serif,system-ui,-apple-system,sans-serif;overflow:hidden}
+  .twk-resize{position:absolute;left:0;top:0;bottom:0;width:8px;cursor:ew-resize;
+    background:transparent;transition:background .15s;touch-action:none;z-index:3}
+  .twk-resize:hover,.twk-resize:active{background:rgba(0,0,0,.06)}
+  .twk-resize::before{content:"";position:absolute;left:3px;top:50%;
+    transform:translateY(-50%);width:2px;height:24px;border-radius:2px;
+    background:rgba(0,0,0,.18);opacity:0;transition:opacity .15s}
+  .twk-resize:hover::before{opacity:1}
   .twk-hd{display:flex;align-items:center;justify-content:space-between;
     padding:10px 8px 10px 14px;cursor:move;user-select:none}
   .twk-hd b{font-size:12px;font-weight:600;letter-spacing:.01em}
@@ -74,6 +81,24 @@ const __TWEAKS_STYLE = `
   .twk-sect{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
     color:rgba(41,38,27,.45);padding:10px 0 0}
   .twk-sect:first-child{padding-top:0}
+  .twk-sect-sub{font-weight:400;font-size:10px;letter-spacing:.01em;
+    text-transform:none;color:rgba(41,38,27,.62);margin-top:3px;line-height:1.35}
+  .twk-sect-jump{appearance:none;border:0;background:transparent;color:rgba(41,38,27,.45);
+    font:inherit;font-size:12px;line-height:1;padding:2px 4px;border-radius:4px;
+    cursor:pointer;flex-shrink:0;text-transform:none;letter-spacing:0}
+  .twk-sect-jump:hover{color:var(--ample-red,#c96442);background:rgba(0,0,0,.05)}
+
+  /* Global slot-focus pulse — applied to any [data-ample-slot] element
+     when its panel section's ↗ button is clicked. Lives in the global
+     style scope because target elements are anywhere in the page tree,
+     not inside the panel. */
+  .ample-slot-focus{outline:2px solid #c96442 !important;outline-offset:4px;
+    animation:ample-slot-flash 1.5s ease-out;border-radius:inherit}
+  @keyframes ample-slot-flash{
+    0%{box-shadow:0 0 0 0 rgba(201,100,66,.7)}
+    25%{box-shadow:0 0 0 14px rgba(201,100,66,.18)}
+    100%{box-shadow:0 0 0 26px rgba(201,100,66,0)}
+  }
 
   .twk-field{appearance:none;width:100%;height:26px;padding:0 8px;
     border:.5px solid rgba(0,0,0,.1);border-radius:7px;
@@ -151,37 +176,295 @@ const __TWEAKS_STYLE = `
     font-size:9.5px;padding:2px 5px;border-radius:4px;
     background:rgba(255,255,255,.08);border:.5px solid rgba(255,255,255,.16);
     color:rgba(255,255,255,.7);letter-spacing:0}
+
+  /* Tabs — sticky header strip inside the panel body. Matches the segmented
+     control idiom (twk-seg) so the panel feels consistent. */
+  .twk-tabs{display:flex;gap:2px;padding:2px;background:rgba(0,0,0,.06);
+    border-radius:8px;margin:0 0 10px;outline:none;position:sticky;
+    top:0;z-index:2;backdrop-filter:blur(8px)}
+  .twk-tab{appearance:none;flex:1;min-width:0;border:0;background:transparent;
+    color:rgba(41,38,27,.55);font:inherit;font-weight:600;font-size:10.5px;
+    letter-spacing:.04em;text-transform:uppercase;padding:6px 4px;
+    border-radius:6px;cursor:default;
+    transition:background .15s,color .15s,box-shadow .15s;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .twk-tab:hover{color:rgba(41,38,27,.85)}
+  .twk-tab.active{background:rgba(255,255,255,.92);color:#29261b;
+    box-shadow:0 1px 2px rgba(0,0,0,.12)}
+  .twk-tab:focus-visible{outline:2px solid var(--ample-red,#c96442);outline-offset:1px}
+  .twk-tabs:focus-visible{outline:2px solid var(--ample-red,#c96442);outline-offset:2px}
 `;
 
 // ── useTweaks ───────────────────────────────────────────────────────────────
 // Single source of truth for tweak values. setTweak persists via the host
 // (__edit_mode_set_keys → host rewrites the EDITMODE block on disk).
-function useTweaks(defaults) {
-  // localStorage key — bump to invalidate stored state if defaults schema changes.
-  const STORAGE_KEY = '__ampleTweaks_v1';
-  const [values, setValues] = React.useState(() => {
-    try {
-      if (typeof localStorage !== 'undefined') {
-        const stored = localStorage.getItem(STORAGE_KEY);
-        if (stored) return { ...defaults, ...JSON.parse(stored) };
+
+// Recursively drop any string value that's a data: image/video URL. Used to
+// keep base64 blobs out of localStorage — they bloat the 5MB quota, silently
+// fail to persist when over, and (worst) shadow Save & lock's freshly written
+// defaults across refreshes. Per-session state lives in React; cross-session
+// state lives in source via Save & lock.
+function __stripDataUrls(v) {
+  if (typeof v === 'string') {
+    return /^data:(image|video)\//i.test(v) ? undefined : v;
+  }
+  if (Array.isArray(v)) {
+    return v.map(__stripDataUrls).filter((x) => x !== undefined);
+  }
+  if (v && typeof v === 'object') {
+    const out = {};
+    for (const k of Object.keys(v)) {
+      const cleaned = __stripDataUrls(v[k]);
+      if (cleaned !== undefined) out[k] = cleaned;
+    }
+    return out;
+  }
+  return v;
+}
+
+// localStorage schema version. Bump when stored shape changes in a way
+// that older readers can't tolerate. Hydration walks back through prior
+// versions, applies migrations, then writes the result under the current
+// key — old keys are cleaned up. Lets us evolve the schema without
+// stranding users on stale state.
+const STORAGE_KEY_PREFIX = '__ampleTweaks_v';
+const STORAGE_VERSION = 2;
+const STORAGE_KEY = STORAGE_KEY_PREFIX + STORAGE_VERSION;
+
+// Per-version migration functions. Key = the version we're migrating INTO.
+// Each takes the parsed object from the previous version and returns the
+// shape this version expects. Identity for now — bump and add transforms
+// when the bag schema actually changes.
+const __TWEAKS_MIGRATIONS = {
+  2: (prev) => prev, // v1 → v2: bag entries can be strings OR objects; readers handle both, no rewrite needed
+};
+
+function __hydrateTweaks() {
+  if (typeof localStorage === 'undefined') return null;
+  try {
+    // Current-version hit
+    const cur = localStorage.getItem(STORAGE_KEY);
+    if (cur) return __stripDataUrls(JSON.parse(cur)) || {};
+    // Walk back through old versions, apply forward migrations, persist
+    // result under the current key and clean up the old one.
+    for (let v = STORAGE_VERSION - 1; v >= 0; v--) {
+      const oldKey = STORAGE_KEY_PREFIX + v;
+      const raw = localStorage.getItem(oldKey);
+      if (raw == null) continue;
+      let parsed = JSON.parse(raw);
+      for (let step = v + 1; step <= STORAGE_VERSION; step++) {
+        const fn = __TWEAKS_MIGRATIONS[step];
+        if (fn) parsed = fn(parsed);
       }
-    } catch {}
-    return defaults;
+      const cleaned = __stripDataUrls(parsed) || {};
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(cleaned)); } catch {}
+      try { localStorage.removeItem(oldKey); } catch {}
+      return cleaned;
+    }
+  } catch {}
+  return null;
+}
+
+// Undo/redo history settings. Cap keeps memory in check; debounce coalesces
+// slider drags into one history entry instead of one per pointermove.
+const __TWEAKS_HISTORY_MAX = 30;
+const __TWEAKS_DEBOUNCE_MS = 350;
+
+function useTweaks(defaults) {
+  const [values, setValues] = React.useState(() => {
+    const hydrated = __hydrateTweaks();
+    return hydrated ? { ...defaults, ...hydrated } : defaults;
   });
-  // Accepts either setTweak('key', value) or setTweak({ key: value, ... }) so a
-  // useState-style call doesn't write a "[object Object]" key into the persisted
-  // JSON block.
-  const setTweak = React.useCallback((keyOrEdits, val) => {
-    const edits = typeof keyOrEdits === 'object' && keyOrEdits !== null
-      ? keyOrEdits : { [keyOrEdits]: val };
+
+  // History stacks live in refs because they're not part of the rendered
+  // output — bumping them shouldn't trigger a re-render. The bump counter
+  // IS state, so canUndo/canRedo recompute when the user undoes/redoes.
+  const pastRef = React.useRef([]);
+  const futureRef = React.useRef([]);
+  const lastPushAtRef = React.useRef(0);
+  const [historyTick, setHistoryTick] = React.useState(0);
+
+  // Three call shapes:
+  //   setTweak('key', value)                  → edits = { key: value }
+  //   setTweak({ key1: v1, key2: v2 })        → edits = that object
+  //   setTweak((prev) => ({ key: derived }))  → edits = fn(prev), evaluated
+  //                                             inside the setState callback so
+  //                                             the derived edits always see
+  //                                             the latest state (no stale
+  //                                             closures from drop handlers).
+  // Optional third arg: { skipHistory: true } — skips the undo push. Use
+  // for invisible follow-ups like the drop handler swapping a blob: URL
+  // for its canonical assets/ path AFTER an upload settles. Without this,
+  // undo restores the (now-revoked) blob: URL and the image breaks.
+  const setTweak = React.useCallback((keyOrEditsOrFn, val, opts) => {
+    const skipHistory = !!(opts && opts.skipHistory);
     setValues((prev) => {
+      let edits;
+      if (typeof keyOrEditsOrFn === 'function') {
+        edits = keyOrEditsOrFn(prev) || {};
+      } else if (typeof keyOrEditsOrFn === 'object' && keyOrEditsOrFn !== null) {
+        edits = keyOrEditsOrFn;
+      } else {
+        edits = { [keyOrEditsOrFn]: val };
+      }
       const next = { ...prev, ...edits };
-      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(next)); } catch {}
+
+      // Push prev onto history, debounced. A burst of edits (slider drag)
+      // collapses into a single undo step at the burst boundary.
+      if (!skipHistory) {
+        const now = Date.now();
+        if (now - lastPushAtRef.current > __TWEAKS_DEBOUNCE_MS) {
+          pastRef.current.push(prev);
+          if (pastRef.current.length > __TWEAKS_HISTORY_MAX) pastRef.current.shift();
+          futureRef.current = []; // any new edit clears the redo stack
+          // Trigger re-render of canUndo/canRedo consumers without spamming
+          setHistoryTick((n) => n + 1);
+        }
+        lastPushAtRef.current = now;
+      }
+
+      // React state keeps the data URL so the image renders this session;
+      // localStorage only ever sees the stripped version.
+      try {
+        const persistable = __stripDataUrls(next) || {};
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
+      } catch {}
+      // Host protocol — fire inside the reducer so functional updaters'
+      // computed edits get reported correctly. Non-StrictMode app, so
+      // double-fire under reducer re-run isn't an issue.
+      try { window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*'); } catch {}
       return next;
     });
-    window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
   }, []);
-  return [values, setTweak];
+
+  const undo = React.useCallback(() => {
+    setValues((prev) => {
+      if (pastRef.current.length === 0) return prev;
+      const restored = pastRef.current.pop();
+      futureRef.current.push(prev);
+      if (futureRef.current.length > __TWEAKS_HISTORY_MAX) futureRef.current.shift();
+      try {
+        const persistable = __stripDataUrls(restored) || {};
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
+      } catch {}
+      lastPushAtRef.current = 0; // next setTweak treats this as a fresh burst
+      setHistoryTick((n) => n + 1);
+      return restored;
+    });
+  }, []);
+
+  const redo = React.useCallback(() => {
+    setValues((prev) => {
+      if (futureRef.current.length === 0) return prev;
+      const restored = futureRef.current.pop();
+      pastRef.current.push(prev);
+      if (pastRef.current.length > __TWEAKS_HISTORY_MAX) pastRef.current.shift();
+      try {
+        const persistable = __stripDataUrls(restored) || {};
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
+      } catch {}
+      lastPushAtRef.current = 0;
+      setHistoryTick((n) => n + 1);
+      return restored;
+    });
+  }, []);
+
+  // Recomputed only when history changes (historyTick) — cheap.
+  const canUndo = pastRef.current.length > 0;
+  const canRedo = futureRef.current.length > 0;
+  // Reference historyTick so React tracks the dep (lint-friendly).
+  void historyTick;
+
+  // Memoize the history object so its identity is stable across renders
+  // when nothing actually changed. Without this, every App render produced
+  // a fresh history reference, which invalidated the TweaksContext useMemo,
+  // re-fired the keydown listener effect, and re-mirrored window globals
+  // — a quiet but real perf tax.
+  const history = React.useMemo(
+    () => ({ undo, redo, canUndo, canRedo }),
+    [undo, redo, canUndo, canRedo]
+  );
+  return [values, setTweak, history];
+}
+
+// ── Image-slot helpers ─────────────────────────────────────────────────────
+// Image bags split into two storage shapes by design — NOT inconsistency:
+//
+//   • categoryImages / storyImages / goldFeatureImages →
+//     entries are { url, position, scale, fit } objects (or legacy bare
+//     strings, normalized by readImageSlot). The knobs live INSIDE the
+//     entry because each banner / story year / feature card is its own
+//     standalone slot with no parallel per-slug state to attach them to.
+//
+//   • catalogCardImages →
+//     entries stay as bare strings. The accompanying knobs (cardScale,
+//     cardPadding, cardPosition) live in productOverrides[slug] because
+//     they're properties of the PRODUCT, not the image-instance. A drop
+//     replaces just the URL; the product's visual treatment persists
+//     across image swaps. Migrating these into the bag would require
+//     duplicating the same per-product values across every product surface
+//     (catalog grid, featured rail, related grid) instead of one source.
+//
+// readImageSlot normalizes both shapes into the same { url, position,
+// scale, fit } object so renderers don't have to branch. mergeImageSlot
+// patches an object in place; mergeImageBag still exists for the
+// string-only bag (catalogCardImages).
+function readImageSlot(bag, key, fallbackUrl) {
+  const v = (bag || {})[key];
+  if (typeof v === 'string') {
+    return { url: v, position: '50% 50%', scale: 1, fit: 'cover' };
+  }
+  if (v && typeof v === 'object') {
+    return {
+      url: typeof v.url === 'string' ? v.url : '',
+      position: typeof v.position === 'string' ? v.position : '50% 50%',
+      scale: typeof v.scale === 'number' ? v.scale : 1,
+      fit: typeof v.fit === 'string' ? v.fit : 'cover',
+    };
+  }
+  return { url: fallbackUrl || '', position: '50% 50%', scale: 1, fit: 'cover' };
+}
+
+// ── TweaksContext ───────────────────────────────────────────────────────────
+// React Context that the panel and all readers consume. Replaces the legacy
+// window.__ampleTweaks / window.__ampleSetTweak globals — components now
+// subscribe properly and re-render on state changes instead of relying on a
+// manual dispatch event. The provider also re-exposes the setters on window
+// as compatibility shims for code paths (or third-party embeds) that still
+// reach for the globals.
+const TweaksContext = React.createContext(null);
+
+function useTweakState() {
+  const ctx = React.useContext(TweaksContext);
+  if (!ctx) {
+    // Render-time without a provider is almost certainly a bug — fail loud
+    // with usable defaults rather than crashing the page with a TypeError.
+    if (typeof console !== 'undefined') {
+      console.warn('useTweakState() called outside <TweaksProvider> — returning no-op stubs.');
+    }
+    return {
+      tweaks: {},
+      setTweak: () => {},
+      setProductTweak: () => {},
+      mergeImageBag: () => {},
+      mergeImageSlot: () => {},
+      history: { undo: () => {}, redo: () => {}, canUndo: false, canRedo: false },
+    };
+  }
+  return ctx;
+}
+
+function TweaksProvider({ value, children }) {
+  // Pre-mount CSS init in index.html reads window.__ampleTweaks directly,
+  // so keep the value mirror. The setter shims (__ampleSetTweak,
+  // __ampleSetProductTweak, __ampleSetCategoryImage) were removed — a
+  // repo-wide grep found zero readers. Internal callers all use
+  // useTweakState(); legacy embeds can either upgrade or read tweaks
+  // directly from this window value.
+  React.useEffect(() => {
+    window.__ampleTweaks = value.tweaks;
+  }, [value.tweaks]);
+  return React.createElement(TweaksContext.Provider, { value }, children);
 }
 
 // ── TweaksPanel ─────────────────────────────────────────────────────────────
@@ -199,6 +482,18 @@ function TweaksPanel({ title = 'Tweaks', children }) {
   const dragRef = React.useRef(null);
   const offsetRef = React.useRef({ x: 16, y: 16 });
   const PAD = 16;
+  // Panel width — drag the left edge to expand. Persisted across reloads.
+  const WIDTH_KEY = '__ampleTweaksWidth';
+  const WIDTH_MIN = 260, WIDTH_MAX = 640, WIDTH_DEFAULT = 300;
+  const [width, setWidth] = React.useState(() => {
+    try {
+      const v = parseInt(localStorage.getItem(WIDTH_KEY) || '', 10);
+      if (Number.isFinite(v)) return Math.max(WIDTH_MIN, Math.min(WIDTH_MAX, v));
+    } catch {}
+    return WIDTH_DEFAULT;
+  });
+  const widthRef = React.useRef(width);
+  widthRef.current = width;
 
   const clampToViewport = React.useCallback(() => {
     const panel = dragRef.current;
@@ -284,6 +579,27 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     window.addEventListener('mouseup', up);
   };
 
+  // Left-edge resize. Panel is anchored bottom-right; dragging the left
+  // edge LEFT widens it, dragging RIGHT narrows it. Width persisted to
+  // localStorage so it survives reloads.
+  const onResizeDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const startX = e.clientX;
+    const startW = widthRef.current;
+    const move = (ev) => {
+      const next = Math.max(WIDTH_MIN, Math.min(WIDTH_MAX, startW + (startX - ev.clientX)));
+      setWidth(next);
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      try { localStorage.setItem(WIDTH_KEY, String(widthRef.current)); } catch {}
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
   if (!open) {
     // Closed: show a small floating launcher button so the panel is always
     // discoverable. T also toggles, but a visible button is easier to find.
@@ -304,7 +620,9 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     <>
       <style>{__TWEAKS_STYLE}</style>
       <div ref={dragRef} className="twk-panel" data-noncommentable=""
-           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y }}>
+           style={{ right: offsetRef.current.x, bottom: offsetRef.current.y, width: width + 'px' }}>
+        <div className="twk-resize" onPointerDown={onResizeDown}
+             title="Drag to resize" aria-label="Resize panel" />
         <div className="twk-hd" onMouseDown={onDragStart}>
           <b>{title}</b>
           <button className="twk-x" aria-label="Close tweaks"
@@ -319,10 +637,33 @@ function TweaksPanel({ title = 'Tweaks', children }) {
 
 // ── Layout helpers ──────────────────────────────────────────────────────────
 
-function TweakSection({ label, children }) {
+// Section header. Optional:
+//   subtitle — short plain-English description rendered under the label.
+//   slot     — data-ample-slot value of the page element this section
+//              controls. Renders a "↗" button that scrolls the element
+//              into view and pulses an outline so you can find it.
+function TweakSection({ label, subtitle, slot, children }) {
+  const focus = React.useCallback(() => {
+    if (!slot) return;
+    const el = document.querySelector(`[data-ample-slot="${slot}"]`);
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.classList.add('ample-slot-focus');
+    setTimeout(() => el.classList.remove('ample-slot-focus'), 1600);
+  }, [slot]);
   return (
     <>
-      <div className="twk-sect">{label}</div>
+      <div className="twk-sect">
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span style={{ flex: 1, minWidth: 0 }}>{label}</span>
+          {slot && (
+            <button type="button" className="twk-sect-jump"
+                    onClick={focus} title="Jump to this on the page"
+                    aria-label="Jump to this element">↗</button>
+          )}
+        </div>
+        {subtitle && <div className="twk-sect-sub">{subtitle}</div>}
+      </div>
       {children}
     </>
   );
@@ -490,6 +831,154 @@ function TweakButton({ label, onClick, secondary = false }) {
   );
 }
 
+// ── TweakImageMeta ──────────────────────────────────────────────────────────
+// Fit (Fill / Fit) + Position pad pair. The two knobs that always travel
+// together for background-image slots (category banners, story timeline,
+// gold standard features). Use after reading the slot with readImageSlot;
+// onPatch receives a partial like { fit: 'cover' } or { position: '50% 30%' }
+// that can be handed straight to mergeImageSlot.
+function TweakImageMeta({ slot, label, onPatch }) {
+  const labelFor = (k) => label ? `${label} · ${k}` : (k.charAt(0).toUpperCase() + k.slice(1));
+  return (
+    <>
+      <TweakRadio label={labelFor('fit')}
+                  value={slot.fit}
+                  options={[
+                    { value: 'cover', label: 'Fill' },
+                    { value: 'contain', label: 'Fit' },
+                  ]}
+                  onChange={(v) => onPatch({ fit: v })} />
+      <TweakPositionPad label={labelFor('position')}
+                        value={slot.position}
+                        onChange={(v) => onPatch({ position: v })} />
+    </>
+  );
+}
+
+// ── TweakTabs / TweakTab ────────────────────────────────────────────────────
+// Sticky horizontal tab strip inside the panel body. Children must be
+// <TweakTab id="..."> wrappers — only the active tab's children mount, so
+// non-visible tab trees don't keep stale effects running.
+//
+// Persists the active tab to localStorage keyed by `id`, and survives a
+// route change that removes the active tab (falls back to the first tab).
+// Keyboard: ← / → on the strip cycles tabs.
+function TweakTabs({ id, tabs, children, sticky = false }) {
+  const STORAGE_KEY = `__ampleTab_${id || 'default'}`;
+  const validIds = tabs.map((t) => t.id);
+  const firstId = validIds[0];
+  const [active, setActive] = React.useState(() => {
+    try {
+      const stored = typeof localStorage !== 'undefined'
+        ? localStorage.getItem(STORAGE_KEY) : null;
+      if (stored && validIds.includes(stored)) return stored;
+    } catch {}
+    return firstId;
+  });
+  // If the tab list changes and the active one is gone (route change), fall
+  // back to the first tab. Without this you'd see an empty panel body.
+  React.useEffect(() => {
+    if (!validIds.includes(active)) setActive(firstId);
+    // intentional: only react to the tab id set
+  }, [validIds.join('|')]);
+  const persist = (next) => {
+    setActive(next);
+    try { localStorage.setItem(STORAGE_KEY, next); } catch {}
+  };
+  const onKey = (e) => {
+    const i = validIds.indexOf(active);
+    if (i < 0) return;
+    if (e.key === 'ArrowLeft' && i > 0) {
+      e.preventDefault(); persist(validIds[i - 1]);
+    }
+    if (e.key === 'ArrowRight' && i < validIds.length - 1) {
+      e.preventDefault(); persist(validIds[i + 1]);
+    }
+  };
+  return (
+    <>
+      <div className="twk-tabs" role="tablist" tabIndex={0} onKeyDown={onKey}
+           style={sticky ? undefined : { position: 'static' }}>
+        {tabs.map((t) => (
+          <button key={t.id} type="button" role="tab"
+                  aria-selected={t.id === active}
+                  className={'twk-tab' + (t.id === active ? ' active' : '')}
+                  onClick={() => persist(t.id)}
+                  title={t.title || t.label}>{t.label}</button>
+        ))}
+      </div>
+      {React.Children.toArray(children).filter(
+        (c) => c && c.props && c.props.id === active
+      )}
+    </>
+  );
+}
+
+function TweakTab({ id, children }) {
+  // Pure wrapper — TweakTabs decides whether to render based on `id`.
+  // The component just passes its children through.
+  return React.createElement(React.Fragment, null, children);
+}
+
+// ── TweakPositionPad ────────────────────────────────────────────────────────
+// 2D position pad: drag (or click) the dot inside the square to set an
+// object-position-style "X% Y%" value. Companion control for the in-place
+// drag-to-pan on the cards themselves — useful for fine adjustments and for
+// resetting via a single click.
+function TweakPositionPad({ label, value, onChange }) {
+  const trackRef = React.useRef(null);
+  const parsePos = (s) => {
+    const m = String(s || '50% 50%').match(/(-?\d+(?:\.\d+)?)%\s+(-?\d+(?:\.\d+)?)%/);
+    return m ? [parseFloat(m[1]), parseFloat(m[2])] : [50, 50];
+  };
+  const [x, y] = parsePos(value);
+
+  const update = (clientX, clientY) => {
+    const r = trackRef.current.getBoundingClientRect();
+    const nx = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+    const ny = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
+    onChange(`${nx.toFixed(1)}% ${ny.toFixed(1)}%`);
+  };
+
+  const onPointerDown = (e) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    update(e.clientX, e.clientY);
+    const move = (ev) => update(ev.clientX, ev.clientY);
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  return (
+    <TweakRow label={label} value={`${Math.round(x)}% ${Math.round(y)}%`}>
+      <div ref={trackRef} onPointerDown={onPointerDown}
+           style={{
+             position: 'relative', width: '100%', height: 64,
+             background: 'rgba(0,0,0,.06)', borderRadius: 6,
+             border: '.5px solid rgba(0,0,0,.1)',
+             cursor: 'crosshair', userSelect: 'none', touchAction: 'none',
+             overflow: 'hidden',
+           }}>
+        {/* crosshair guides at 50/50 to anchor "center" visually */}
+        <div aria-hidden="true" style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, borderLeft: '.5px dashed rgba(0,0,0,.18)' }} />
+        <div aria-hidden="true" style={{ position: 'absolute', top: '50%', left: 0, right: 0, borderTop: '.5px dashed rgba(0,0,0,.18)' }} />
+        <div aria-hidden="true" style={{
+          position: 'absolute', left: `${x}%`, top: `${y}%`,
+          width: 12, height: 12, borderRadius: '50%',
+          background: '#fff', border: '1.5px solid rgba(0,0,0,.7)',
+          transform: 'translate(-50%, -50%)',
+          boxShadow: '0 1px 3px rgba(0,0,0,.3)',
+          pointerEvents: 'none',
+        }} />
+      </div>
+    </TweakRow>
+  );
+}
+
 function TweakTextarea({ label, value, placeholder, rows = 3, onChange }) {
   return (
     <TweakRow label={label}>
@@ -504,4 +993,8 @@ Object.assign(window, {
   useTweaks, TweaksPanel, TweakSection, TweakRow,
   TweakSlider, TweakToggle, TweakRadio, TweakSelect,
   TweakText, TweakTextarea, TweakNumber, TweakColor, TweakButton,
+  TweakPositionPad, TweakImageMeta,
+  TweakTabs, TweakTab,
+  TweaksContext, TweaksProvider, useTweakState,
+  readImageSlot,
 });
