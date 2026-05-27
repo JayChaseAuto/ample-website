@@ -179,20 +179,12 @@ function ProductDetailPage({ slug }) {
           </section>
         ) : null}
 
-        {/* Engineering summary — full width, no specs sheet beside it. */}
-        <section style={{ padding: '32px 0 64px', borderTop: '1px solid var(--border-1)' }}>
-          <Reveal>
-            <Eyebrow>Engineering Summary</Eyebrow>
-            <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0 0', display: 'grid', gap: 14, maxWidth: 820 }}>
-              {p.bullets.map((b, i) => (
-                <li key={i} style={{ display: 'flex', gap: 14, alignItems: 'flex-start', fontSize: 16, color: 'var(--fg-1)', lineHeight: 1.6 }}>
-                  <span style={{ width: 8, height: 8, background: 'var(--ample-red)', marginTop: 10, flexShrink: 0 }} />
-                  {b}
-                </li>
-              ))}
-            </ul>
-          </Reveal>
-        </section>
+        {/* Engineering Summary section removed — the bullet list was cluttering
+            the page now that every rich-layout product has intro + 4 numbered
+            callouts + benefits panel that already cover the same ground.
+            p.bullets is still loaded as a tweak field (Tweaks panel exposes it
+            in case future templates want to surface it again), it just no
+            longer renders on the detail page. */}
 
         {/* Related products rail */}
         <RelatedProducts current={slug} />
