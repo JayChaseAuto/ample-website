@@ -371,7 +371,25 @@ function useImageDrop(ref, onDrop, opts) {
         // another one (skipHistory: true), otherwise pressing Ctrl+Z lands
         // on the now-revoked blob: URL state and shows a broken image.
         onDropRef.current(path, { skipHistory: true });
-        URL.revokeObjectURL(previewUrl);
+        // Defer the blob revoke past React's render of the new URL.
+        // Revoking synchronously here can briefly leave the DOM with a
+        // CSS background-image: url(blob:...) that points at a dead
+        // blob — visible as a one-frame flash to black (or transparent)
+        // between the revoke and React's next paint. The image() probe
+        // pre-loads the assets/ URL so by the time the timeout fires
+        // the new path is in the HTTP cache and React has rendered
+        // with it on screen.
+        const stale = previewUrl;
+        const finalize = () => { try { URL.revokeObjectURL(stale); } catch {} };
+        try {
+          const probe = new Image();
+          probe.onload = finalize;
+          probe.onerror = finalize;
+          probe.src = path;
+          // Belt-and-braces: if neither onload nor onerror fires (rare),
+          // free the blob after 4 seconds anyway so we do not leak.
+          setTimeout(finalize, 4000);
+        } catch { finalize(); }
         try {
           window.dispatchEvent(new CustomEvent('ample-upload-success', {
             detail: { namePrefix: prefixRef.current || null, path },

@@ -94,15 +94,15 @@
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=48"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=48"></script>
-<script type="text/babel" src="src/Animations.jsx?v=48"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=48"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=48"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=48"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=48"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=48"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=48"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=51"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=51"></script>
+<script type="text/babel" src="src/Animations.jsx?v=51"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=51"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=51"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=51"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=51"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=51"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=51"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -1586,11 +1586,13 @@ function App() {
                          value={productData?.summary || ''}
                          onChange={(v) => setProductTweak(productSlug, 'summary', v)} />
 
-              <TweakSection label="Product · Engineering summary" />
-              <TweakTextarea label="Bullets (one per line)" rows={8}
-                         value={(productData?.bullets || []).join('\n')}
-                         onChange={(v) => setProductTweak(productSlug, 'bullets',
-                           v.split(/\r?\n/).map((s) => s.trim()).filter(Boolean))} />
+              {/* Engineering Summary editor removed alongside the page section.
+                  The bullets field is still in the data model (useful for
+                  search/snippet generation and a possible future re-add) but
+                  has no on-page renderer, so editing it would be confusing.
+                  If you want to bring back per-product bullets, drop the
+                  section back into ProductDetailPage.jsx and re-add the
+                  TweakTextarea here. */}
 
               {productData?.numberedFeatures && (
                 <>
