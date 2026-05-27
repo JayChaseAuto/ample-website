@@ -44,7 +44,7 @@ function CatalogPage({ filter: filterProp } = {}) {
   }
 
   return (
-    <div style={{ background: 'var(--bg-0)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <SiteHeader active="catalog" />
       <main style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(56px, 9vw, 80px)' }} data-screen-label="Catalog">
         <Reveal><Eyebrow>{eyebrow}</Eyebrow></Reveal>
@@ -201,14 +201,24 @@ function LabMediaBox() {
 }
 
 /* ---------- Gold Standard · Precision + Material feature cards ---------- */
+// tKey/bKey point at the tweak keys that override title + body; the inline t/b
+// strings are the source-of-truth defaults the Content panel falls back to.
 const GOLD_FEATURES = [
-  { key: 'precision', t: 'Precision Engineering', b: 'Our machining partners hold ±5 µm tolerances across the whole catalog, verified per-batch on a CMM.', bg: 'linear-gradient(135deg, #2a2d33 0%, #0a0b0d 100%)' },
-  { key: 'material',  t: 'Team of Professionals', b: 'Our dedicated experts enforce rigorous quality assurance protocols at every stage of the supply chain, ensuring excellence from sourcing to final delivery.', bg: 'linear-gradient(135deg, #1a1b1e 0%, #000 100%)' },
+  { key: 'precision', tKey: 'goldPrecisionTitle', bKey: 'goldPrecisionBody',
+    t: 'Precision Engineering',
+    b: 'Our machining partners hold ±5 µm tolerances across the whole catalog, verified per-batch on a CMM.',
+    bg: 'linear-gradient(135deg, #2a2d33 0%, #0a0b0d 100%)' },
+  { key: 'material', tKey: 'goldMaterialTitle', bKey: 'goldMaterialBody',
+    t: 'Team of Professionals',
+    b: 'Our dedicated experts enforce rigorous quality assurance protocols at every stage of the supply chain, ensuring excellence from sourcing to final delivery.',
+    bg: 'linear-gradient(135deg, #1a1b1e 0%, #000 100%)' },
 ];
 
 function GoldFeatureCard({ feature, delay }) {
   const { tweaks, mergeImageSlot } = useTweakState();
   const slot = readImageSlot(tweaks.goldFeatureImages, feature.key);
+  const title = tweaks[feature.tKey] || feature.t;
+  const body = tweaks[feature.bKey] || feature.b;
   const dropRef = React.useRef(null);
   useImageDrop(dropRef, (path, opts) => {
     mergeImageSlot('goldFeatureImages', feature.key, { url: path }, opts);
@@ -226,11 +236,11 @@ function GoldFeatureCard({ feature, delay }) {
         {!slot.url && (
           <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.05) 0%, transparent 60%)' }} />
         )}
-        <div className="drop-hint">Drop image for {feature.t}</div>
+        <div className="drop-hint">Drop image for {title}</div>
       </div>
       <div style={{ padding: 24, borderTop: '1px solid var(--border-1)' }}>
-        <Eyebrow color="gold">{feature.t}</Eyebrow>
-        <p style={{ color: 'var(--fg-2)', fontSize: 14, lineHeight: 1.6, marginTop: 10 }}>{feature.b}</p>
+        <Eyebrow color="gold">{title}</Eyebrow>
+        <p style={{ color: 'var(--fg-2)', fontSize: 14, lineHeight: 1.6, marginTop: 10 }}>{body}</p>
       </div>
     </Reveal>
   );
@@ -238,17 +248,29 @@ function GoldFeatureCard({ feature, delay }) {
 
 /* ---------- Gold Standard page ---------- */
 function GoldStandardPage() {
+  const { tweaks } = useTweakState();
+  const heroEyebrow = tweaks.goldHeroEyebrow || 'The Standard';
+  const heroTitleAccent = tweaks.goldHeroTitleAccent || 'The Gold Standard.';
+  const heroTitleLine2 = tweaks.goldHeroTitleLine2 || 'Uncompromising';
+  const heroTitleLine3 = tweaks.goldHeroTitleLine3 || 'quality assurance.';
+  const testingEyebrow = tweaks.goldTestingEyebrow || 'Rigorous Testing';
+  const testingTitle = tweaks.goldTestingTitle || 'Every SKU gets the dyno.';
+  const testingBody = tweaks.goldTestingBody ||
+    'Our high-inertia friction dyno runs each Gold Standard batch to failure. Thermally, mechanically, then in duty cycle. Nothing leaves the lab on a spec sheet alone.';
+  const promiseEyebrow = tweaks.goldPromiseEyebrow || 'Service Promise';
+  const promiseLine1 = tweaks.goldPromiseLine1 || 'We stand behind every part.';
+  const promiseLine2 = tweaks.goldPromiseLine2 || 'Trusted by professionals.';
   return (
-    <div style={{ background: '#000', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <SiteHeader active="gold" />
       <main data-screen-label="Gold Standard">
         <section style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(20px, 4vw, 40px) clamp(24px, 5vw, 32px)' }}>
           <div className="stack-on-mobile gold-hero-grid" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 'clamp(24px, 5vw, 48px)', alignItems: 'start' }}>
             <Reveal className="gold-hero-copy">
-              <Eyebrow color="gold">The Standard</Eyebrow>
+              <Eyebrow color="gold">{heroEyebrow}</Eyebrow>
               <h1 className="gold-hero-title" style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(34px, 8.5vw, 88px)', lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: '-0.02em', margin: '12px 0 0', overflowWrap: 'anywhere' }}>
-                <span style={{ color: 'var(--ample-gold)' }}>The Gold Standard.</span><br />
-                Uncompromising<br />quality assurance.
+                <span style={{ color: 'var(--ample-gold)' }}>{heroTitleAccent}</span><br />
+                {heroTitleLine2}<br />{heroTitleLine3}
               </h1>
             </Reveal>
             <Reveal delay={2} className="gold-hero-medallion" style={{ display: 'flex', justifyContent: 'center', paddingTop: 40 }}>
@@ -262,10 +284,10 @@ function GoldStandardPage() {
           <Reveal className="stack-on-mobile" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
             <LabMediaBox />
             <div style={{ padding: '32px 8px' }}>
-              <Eyebrow>Rigorous Testing</Eyebrow>
-              <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 36, textTransform: 'uppercase', margin: '10px 0 14px' }}>Every SKU gets the dyno.</h2>
+              <Eyebrow>{testingEyebrow}</Eyebrow>
+              <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 36, textTransform: 'uppercase', margin: '10px 0 14px' }}>{testingTitle}</h2>
               <p style={{ color: 'var(--fg-2)', fontSize: 15, lineHeight: 1.6, maxWidth: 520 }}>
-                Our high-inertia friction dyno runs each Gold Standard batch to failure. Thermally, mechanically, then in duty cycle. Nothing leaves the lab on a spec sheet alone.
+                {testingBody}
               </p>
             </div>
           </Reveal>
@@ -284,9 +306,9 @@ function GoldStandardPage() {
         <section style={{ borderTop: '1px solid var(--border-1)', borderBottom: '1px solid var(--border-1)', background: '#000' }}>
           <Stripes color="gold" height={6} />
           <Reveal style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px)', textAlign: 'center' }}>
-            <Eyebrow color="gold">Service Promise</Eyebrow>
+            <Eyebrow color="gold">{promiseEyebrow}</Eyebrow>
             <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(32px, 6vw, 56px)', textTransform: 'uppercase', margin: '14px 0 0', lineHeight: 0.95 }}>
-              We stand behind every part.<br /><span style={{ color: 'var(--ample-gold)' }}>Trusted by professionals.</span>
+              {promiseLine1}<br /><span style={{ color: 'var(--ample-gold)' }}>{promiseLine2}</span>
             </h2>
           </Reveal>
           <Stripes color="gold" height={6} />
@@ -370,7 +392,7 @@ function StoryTimeline() {
 
 function StoryPage() {
   return (
-    <div style={{ background: '#000', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <SiteHeader active="story" />
       <main style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(48px, 8vw, 64px)' }} data-screen-label="Our Story">
         <Reveal><Eyebrow>History · Timeline</Eyebrow></Reveal>
@@ -526,7 +548,7 @@ function ContactForm() {
 
 function ContactPage() {
   return (
-    <div style={{ background: '#000', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <SiteHeader active="contact" />
       <main style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(48px, 8vw, 64px)' }} data-screen-label="Contact Us">
         <Reveal><Eyebrow>Get In Touch</Eyebrow></Reveal>

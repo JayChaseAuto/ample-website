@@ -67,7 +67,7 @@ function ProductDetailPage({ slug }) {
     setProductTweak(slug, 'heroBgImage', path, opts);
   }, { namePrefix: `product-${slug}-hero` });
   return (
-    <div style={{ background: '#000', minHeight: '100vh', color: 'var(--fg-1)' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh', color: 'var(--fg-1)' }}>
       <SiteHeader active="gold" />
       <main style={{ maxWidth: 1440, margin: '0 auto', padding: '0 clamp(16px, 4vw, 40px)' }}>
         {/* Hero section. Left-aligned eyebrow + title + summary on the

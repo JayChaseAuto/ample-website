@@ -547,6 +547,19 @@ html.lenis, html.lenis body { height: auto; }
   pointer-events: none;
   z-index: 1;
 }
+/* Site-wide background texture (carbon fiber by default once a user drops
+   one in via the Tweaks panel). Sits at the bottom of the atm stack so
+   grid / noise / glow still layer on top. Driven by --site-bg-image, set
+   from the siteBackgroundImage tweak via applyTweaksToDOM in index.html.
+   Without an image set, this layer renders nothing — page wrappers that
+   are transparent fall back to the body's solid color. */
+.atm-bg {
+  background-image: var(--site-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0; /* one below the rest of the atm stack */
+}
 .atm-grid {
   background-image:
     linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),

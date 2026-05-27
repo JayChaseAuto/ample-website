@@ -94,15 +94,15 @@
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=40"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=40"></script>
-<script type="text/babel" src="src/Animations.jsx?v=40"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=40"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=40"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=40"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=40"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=40"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=40"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=48"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=48"></script>
+<script type="text/babel" src="src/Animations.jsx?v=48"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=48"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=48"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=48"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=48"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=48"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=48"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -111,7 +111,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "heroImage": "assets\/hero-932c2302.webp",
   "heroOverlay": 35,
   "heroHeadline1": "oem+",
-  "heroHeadlineAccent": "brakes",
+  "heroHeadlineAccent": "parts",
   "heroHeadline2": "",
   "showStats": true,
   "stat1Value": "1M+",
@@ -121,7 +121,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "stat3Value": "20+",
   "stat3Label": "years of experience",
   "gridCols": 4,
-  "showGoldBanner": false,
+  "showGoldBanner": true,
   "catalogEyebrow": "Our Inventory",
   "catalogTitle": "Our Catalog.",
   "catalogIntro": "A curated selection of our precision components, organized by system. For fitment, pricing, or availability on any part, get in touch.",
@@ -135,8 +135,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "catalogShowBlurbs": true,
   "categoryImages": {
     "Braking": {
-      "url": "assets\/cat-braking-d59db60f.webp",
-      "position": "57.1% 48.7%",
+      "url": "assets\/cat-braking-b45d7397.webp",
+      "position": "55.8% 31.5%",
       "fit": "cover"
     },
     "Cooling": "assets\/cat-cooling-711bfc91.webp",
@@ -169,7 +169,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "heater-core": "assets\/card-heater-core-36993be8.webp",
     "gasket": "assets\/card-gasket-51104de0.webp",
     "radiator-urk": "assets\/card-radiator-urk-e1a379e8.webp",
-    "tensioner": "assets\/card-tensioner-cc18be79.webp"
+    "tensioner": "assets\/card-tensioner-cc18be79.webp",
+    "rack-pinion": "assets\/card-rack-pinion-9bd31313.webp"
   },
   "productOverrides": {
     "brake-pads": {
@@ -186,7 +187,35 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardPadding": 22,
       "cardPosition": "99.5% 0.0%",
       "calloutImagePosition": "53.6% 93.8%",
-      "heroBgImageScale": 1.3
+      "heroBgImageScale": 1.3,
+      "summary": "Brake pads that feel the same way every time. Cold morning commute, third lap of a canyon road, traffic on the way home.",
+      "bullets": [
+        "Linear bite from the first millimeter of pedal travel.",
+        "Low-dust ceramic compound. Wheels stay clean between washes.",
+        "Quiet at the curb. No squeal at low speed, no chatter on cold mornings.",
+        "Holds shape past 800 °C. Track day or stop-and-go, the pedal feels the same.",
+        "Drop-in fitment. Shim, chamfer, and bedding done at the factory.",
+        "ABE + ECE R90 certified. Inspection and insurance happy."
+      ],
+      "intro": "",
+      "benefits": [
+        {
+          "icon": "activity",
+          "body": "Linear bite from the first millimeter of pedal travel."
+        },
+        {
+          "icon": "sparkles",
+          "body": "Low-dust compound. Wheels stay clean between washes."
+        },
+        {
+          "icon": "thermometer-sun",
+          "body": "No fade, no glaze, no surprises."
+        },
+        {
+          "icon": "shield",
+          "body": "ABE + ECE R90 certified. Inspection and insurance friendly."
+        }
+      ]
     },
     "pad-sensor": {
       "heroBgImage": "assets\/product-pad-sensor-hero-aaf8d397.webp",
@@ -224,20 +253,27 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardScale": 1
     },
     "caliper-npc": {
-      "heroBgImage": "assets\/product-ignition-coil-hero-63cfbbca.webp",
+      "heroBgImage": "assets\/brake-disc-caliper.jpg",
       "heroAsset": "radiator",
       "outro": "It is not greasy, forms a very thin layer, and does not compromise braking performance. The coating withstands temperatures up to 400 °C (750 °F), maintaining its protective qualities through heat cycling without crystallization or organic resin buildup. Applied in a closed system that recycles leftover liquids, making it a sustainable choice for high-performance brake calipers.",
       "calloutImageScale": 2.5,
       "cardScale": 1.5,
-      "calloutImageFit": "cover",
+      "calloutImageFit": "contain",
       "heroHeight": 500,
       "cardPosition": "50.8% 42.2%",
-      "calloutImagePosition": "66.2% 46.9%",
+      "calloutImagePosition": "50.0% 48.6%",
       "cardPadding": 2,
       "heroOverlay": 0,
       "heroBgImageScale": 0.9,
       "heroImageFit": "cover",
-      "heroImagePosition": "51.6% 55.3%"
+      "heroImagePosition": "51.6% 55.3%",
+      "bullets": [
+        "Brand-new OEM-spec caliper. Single-piston floating design.",
+        "New seals, new boot, slide pins greased.",
+        "Cadmium-plated finish. Won’t rust through.",
+        "OEM bracket compatible"
+      ],
+      "intro": "Our brand-new brake calipers offer a very high degree of corrosion resistance. New pistons, slider pins, new seals and a pre-fitted bleeder mean an easier, quicker, safer install and no core return. Built to match OE standards and subject to rigorous QC testing."
     },
     "lighting": {
       "heroBgImage": "assets\/product-lighting-hero-d63a17b8.webp",
@@ -344,10 +380,28 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroBgImageScale": 1.4,
       "heroImageFit": "contain",
       "heroImagePosition": "48.2% 48.1%"
+    },
+    "rack-pinion": {
+      "cardScale": 1
     }
   },
   "atmosphere": "grid",
   "atmosphereGlow": 10,
+  "siteBackgroundImage": "",
+  "goldHeroEyebrow": "The Standard",
+  "goldHeroTitleAccent": "The Gold Standard.",
+  "goldHeroTitleLine2": "Uncompromising",
+  "goldHeroTitleLine3": "quality assurance.",
+  "goldTestingEyebrow": "Rigorous Testing",
+  "goldTestingTitle": "Every SKU gets the dyno.",
+  "goldTestingBody": "Our high-inertia friction dyno runs each Gold Standard batch to failure. Thermally, mechanically, then in duty cycle. Nothing leaves the lab on a spec sheet alone.",
+  "goldPrecisionTitle": "Precision Engineering",
+  "goldPrecisionBody": "Our machining partners hold ±5 µm tolerances across the whole catalog, verified per-batch on a CMM.",
+  "goldMaterialTitle": "Team of Professionals",
+  "goldMaterialBody": "Our dedicated experts enforce rigorous quality assurance protocols at every stage of the supply chain, ensuring excellence from sourcing to final delivery.",
+  "goldPromiseEyebrow": "Service Promise",
+  "goldPromiseLine1": "We stand behind every part.",
+  "goldPromiseLine2": "Trusted by professionals.",
   "goldStandardMedia": "assets\/gold-dyno-094485be.mov",
   "goldFeatureImages": {
     "precision": {
@@ -381,7 +435,13 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     }
   },
   "catalogCardScale": 1.3,
-  "catalogCardPadding": 0
+  "catalogCardPadding": 0,
+  "siteLogo": "",
+  "siteLogoHeight": 28,
+  "featuredProducts": [
+    "brake-pads",
+    "caliper-npc"
+  ]
 }/*EDITMODE-END*/;
 
 // Photo assets available in /assets — surfaced in the Tweaks panel as
@@ -490,6 +550,7 @@ async function exportTweaksState(t) {
       clone.storyImages[k] = await liftSlot(`custom-history-${slugify(k)}`, clone.storyImages[k]);
     }
   }
+  clone.siteBackgroundImage = await liftSlot('custom-site-bg', clone.siteBackgroundImage);
   clone.goldStandardMedia = await liftSlot('custom-gold-dyno', clone.goldStandardMedia);
   if (clone.goldFeatureImages) {
     for (const k of Object.keys(clone.goldFeatureImages)) {
@@ -565,6 +626,18 @@ function applyTweaksToDOM(t) {
   root.style.setProperty('--accent', t.accentColor);
   root.style.setProperty('--border-hot', t.accentColor);
   root.setAttribute('data-theme', t.theme);
+  // Site-wide background image. Set the CSS variable .atm-bg consumes —
+  // empty/unset → no image, anything else → wrap in url(). Single source of
+  // truth so both first-paint (pre-React shim) and live edits stay in sync.
+  // Escape backslash and double-quote so a path containing either does not
+  // break out of the url() argument and let stray characters become CSS.
+  if (t.siteBackgroundImage) {
+    const safe = String(t.siteBackgroundImage)
+      .replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    root.style.setProperty('--site-bg-image', `url("${safe}")`);
+  } else {
+    root.style.removeProperty('--site-bg-image');
+  }
 }
 
 /* PreviewToggle — editor-only segmented control top-right. Lets you flip
@@ -635,6 +708,93 @@ function MobilePreviewFrame() {
       }}>
         390 × 844 · iPhone 14 Pro
       </div>
+    </div>
+  );
+}
+
+/* SiteBgDropCard — small drop slot inside the Tweaks panel Style tab.
+   Drag-and-drop any image and it persists into project/assets/ via the
+   dev server (useImageDrop handles the upload), then the URL lands in
+   tweaks.siteBackgroundImage. The .atm-bg layer reads --site-bg-image
+   from there. Includes a thumbnail preview and a Clear button. */
+function SiteBgDropCard() {
+  const { tweaks, setTweak } = useTweakState();
+  const url = tweaks.siteBackgroundImage || '';
+  const dropRef = React.useRef(null);
+  // Liveness probe — when a URL is set, hit it with an Image() request and
+  // track whether the bytes actually load. Surfaces the difference between
+  // "URL saved" and "image renders" so the user can tell a stale path apart
+  // from an upload that succeeded but didn't reach the .atm-bg layer.
+  const [status, setStatus] = React.useState('idle'); // idle | loading | ok | err
+  React.useEffect(() => {
+    if (!url) { setStatus('idle'); return; }
+    setStatus('loading');
+    const img = new Image();
+    img.onload = () => setStatus('ok');
+    img.onerror = () => setStatus('err');
+    img.src = url;
+    // Cleanup: drop callbacks AND clear src to abort the in-flight network
+    // request. Without removeAttribute('src') the browser keeps streaming
+    // the image even after we no longer care, which piles up on rapid edits.
+    return () => {
+      img.onload = img.onerror = null;
+      img.removeAttribute('src');
+    };
+  }, [url]);
+  useImageDrop(dropRef, (path, opts) => {
+    setTweak('siteBackgroundImage', path, opts);
+  }, { namePrefix: 'site-bg' });
+
+  const dotColor = status === 'ok' ? '#34c759'
+                 : status === 'err' ? '#c33a2a'
+                 : status === 'loading' ? '#c9ad3b'
+                 : 'rgba(0,0,0,0.2)';
+  const statusText = status === 'ok' ? 'Loaded — applied to .atm-bg'
+                   : status === 'err' ? 'URL set but image failed to load'
+                   : status === 'loading' ? 'Loading…'
+                   : 'No image set';
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div
+        ref={dropRef}
+        className="drop-target"
+        style={{
+          position: 'relative', aspectRatio: '16 / 9',
+          borderRadius: 8,
+          border: '1px dashed rgba(0,0,0,0.25)',
+          background: url
+            ? `url("${url}") center / cover no-repeat, rgba(0,0,0,0.06)`
+            : 'rgba(0,0,0,0.06)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          color: 'rgba(41,38,27,0.55)',
+          fontSize: 10.5, lineHeight: 1.3, textAlign: 'center',
+          padding: 8,
+        }}>
+        {!url && <span>Drop an image here<br />for the site background</span>}
+        <div className="drop-hint" style={{ borderRadius: 8 }}>Drop image to set site background</div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10.5,
+                     color: 'rgba(41,38,27,0.7)' }}>
+        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
+                        background: dotColor, flexShrink: 0,
+                        boxShadow: '0 0 0 2px rgba(255,255,255,.6)' }} />
+        <span style={{ flex: 1 }}>{statusText}</span>
+        {url && (
+          <button type="button" className="twk-btn secondary"
+                  style={{ height: 22, padding: '0 8px', fontSize: 10 }}
+                  onClick={() => setTweak('siteBackgroundImage', '')}>
+            Clear
+          </button>
+        )}
+      </div>
+      {url && (
+        <div style={{ fontSize: 10, color: 'rgba(41,38,27,0.5)',
+                       fontFamily: 'ui-monospace,monospace',
+                       overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {url}
+        </div>
+      )}
     </div>
   );
 }
@@ -934,6 +1094,11 @@ function App() {
         </div>
       )}
     <div className="atm-host">
+      {/* Site-wide background texture. Driven by tweaks.siteBackgroundImage
+          (via --site-bg-image CSS var, set in applyTweaksToDOM). Always
+          rendered so it picks up the var if/when it appears — no DOM
+          churn when the image swaps. */}
+      <div className="atm-layer atm-bg" aria-hidden="true" />
       {showGrid && <div className="atm-layer atm-grid" aria-hidden="true" />}
       {showNoise && <div className="atm-layer atm-noise" aria-hidden="true" />}
       <div className="atm-layer atm-glow" aria-hidden="true"
@@ -966,7 +1131,7 @@ function App() {
           // something to put in them.
           const hasLayout = routeKey === 'home' || routeKey === 'catalog' || routeKey === 'product';
           const hasImages = routeKey === 'home' || routeKey === 'catalog' || routeKey === 'product' || routeKey === 'gold' || routeKey === 'story';
-          const hasContent = routeKey === 'home' || routeKey === 'catalog' || routeKey === 'product' || routeKey === 'contact';
+          const hasContent = routeKey === 'home' || routeKey === 'catalog' || routeKey === 'product' || routeKey === 'gold' || routeKey === 'contact';
           const tabs = [
             { id: 'style', label: 'Style' },
             hasLayout && { id: 'layout', label: 'Layout' },
@@ -1027,6 +1192,10 @@ function App() {
           <TweakRadio label="Theme" value={t.theme}
                       options={['dark', 'light']}
                       onChange={(v) => setTweak('theme', v)} />
+          <TweakSection label="Site background"
+                        subtitle="Drop a texture to show behind every page. The home hero stays solid black." />
+          <SiteBgDropCard />
+
           <TweakSection label="Page · Atmosphere" />
           <TweakRadio label="Background style" value={t.atmosphere || 'both'}
                       options={[
@@ -1488,6 +1657,47 @@ function App() {
                                  onChange={(v) => setProductTweak(productSlug, 'outro', v)} />
                 </>
               )}
+            </>
+          )}
+          {routeKey === 'gold' && (
+            <>
+              <TweakSection label="Gold · Hero" />
+              <TweakText label="Eyebrow" value={t.goldHeroEyebrow}
+                         onChange={(v) => setTweak('goldHeroEyebrow', v)} />
+              <TweakText label="Title · gold line" value={t.goldHeroTitleAccent}
+                         onChange={(v) => setTweak('goldHeroTitleAccent', v)} />
+              <TweakText label="Title · line 2" value={t.goldHeroTitleLine2}
+                         onChange={(v) => setTweak('goldHeroTitleLine2', v)} />
+              <TweakText label="Title · line 3" value={t.goldHeroTitleLine3}
+                         onChange={(v) => setTweak('goldHeroTitleLine3', v)} />
+
+              <TweakSection label="Gold · Rigorous Testing" />
+              <TweakText label="Eyebrow" value={t.goldTestingEyebrow}
+                         onChange={(v) => setTweak('goldTestingEyebrow', v)} />
+              <TweakText label="Title" value={t.goldTestingTitle}
+                         onChange={(v) => setTweak('goldTestingTitle', v)} />
+              <TweakTextarea label="Body" rows={4} value={t.goldTestingBody}
+                             onChange={(v) => setTweak('goldTestingBody', v)} />
+
+              <TweakSection label="Gold · Precision card" slot="gold-precision" />
+              <TweakText label="Title" value={t.goldPrecisionTitle}
+                         onChange={(v) => setTweak('goldPrecisionTitle', v)} />
+              <TweakTextarea label="Body" rows={4} value={t.goldPrecisionBody}
+                             onChange={(v) => setTweak('goldPrecisionBody', v)} />
+
+              <TweakSection label="Gold · Material card" slot="gold-material" />
+              <TweakText label="Title" value={t.goldMaterialTitle}
+                         onChange={(v) => setTweak('goldMaterialTitle', v)} />
+              <TweakTextarea label="Body" rows={4} value={t.goldMaterialBody}
+                             onChange={(v) => setTweak('goldMaterialBody', v)} />
+
+              <TweakSection label="Gold · Service Promise" />
+              <TweakText label="Eyebrow" value={t.goldPromiseEyebrow}
+                         onChange={(v) => setTweak('goldPromiseEyebrow', v)} />
+              <TweakText label="Line 1" value={t.goldPromiseLine1}
+                         onChange={(v) => setTweak('goldPromiseLine1', v)} />
+              <TweakText label="Line 2 · gold" value={t.goldPromiseLine2}
+                         onChange={(v) => setTweak('goldPromiseLine2', v)} />
             </>
           )}
           {routeKey === 'contact' && (
