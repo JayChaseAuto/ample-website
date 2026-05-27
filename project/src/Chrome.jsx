@@ -54,9 +54,12 @@ function SiteHeader({ active }) {
   }, [isMobile]);
 
   // Dev-time marker so a stale cached build is easy to spot in DevTools.
-  // Bump the version string whenever SiteHeader changes shape.
+  // Bump the version string whenever SiteHeader changes shape. Editor-only
+  // so production visitors don't see N copies stack up as they navigate
+  // (SiteHeader unmounts on every route change).
   React.useEffect(() => {
-    if (typeof console !== 'undefined') {
+    if (typeof window !== 'undefined' && window.__ampleEditor &&
+        typeof console !== 'undefined') {
       console.log('[ample] SiteHeader v3 (logo + hamburger on ≤720px)');
     }
   }, []);

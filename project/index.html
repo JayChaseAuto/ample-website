@@ -94,15 +94,15 @@
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=47"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=47"></script>
-<script type="text/babel" src="src/Animations.jsx?v=47"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=47"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=47"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=47"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=47"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=47"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=47"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=48"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=48"></script>
+<script type="text/babel" src="src/Animations.jsx?v=48"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=48"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=48"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=48"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=48"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=48"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=48"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -188,7 +188,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardPosition": "99.5% 0.0%",
       "calloutImagePosition": "53.6% 93.8%",
       "heroBgImageScale": 1.3,
-      "summary": "Brake pads that feel  the same way every time. Cold morning commute, third lap of a canyon road, traffic on the way home",
+      "summary": "Brake pads that feel the same way every time. Cold morning commute, third lap of a canyon road, traffic on the way home.",
       "bullets": [
         "Linear bite from the first millimeter of pedal travel.",
         "Low-dust ceramic compound. Wheels stay clean between washes.",
@@ -197,7 +197,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
         "Drop-in fitment. Shim, chamfer, and bedding done at the factory.",
         "ABE + ECE R90 certified. Inspection and insurance happy."
       ],
-      "intro": "edal.",
+      "intro": "",
       "benefits": [
         {
           "icon": "activity",
@@ -550,6 +550,7 @@ async function exportTweaksState(t) {
       clone.storyImages[k] = await liftSlot(`custom-history-${slugify(k)}`, clone.storyImages[k]);
     }
   }
+  clone.siteBackgroundImage = await liftSlot('custom-site-bg', clone.siteBackgroundImage);
   clone.goldStandardMedia = await liftSlot('custom-gold-dyno', clone.goldStandardMedia);
   if (clone.goldFeatureImages) {
     for (const k of Object.keys(clone.goldFeatureImages)) {
@@ -628,8 +629,12 @@ function applyTweaksToDOM(t) {
   // Site-wide background image. Set the CSS variable .atm-bg consumes —
   // empty/unset → no image, anything else → wrap in url(). Single source of
   // truth so both first-paint (pre-React shim) and live edits stay in sync.
+  // Escape backslash and double-quote so a path containing either does not
+  // break out of the url() argument and let stray characters become CSS.
   if (t.siteBackgroundImage) {
-    root.style.setProperty('--site-bg-image', `url("${t.siteBackgroundImage}")`);
+    const safe = String(t.siteBackgroundImage)
+      .replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    root.style.setProperty('--site-bg-image', `url("${safe}")`);
   } else {
     root.style.removeProperty('--site-bg-image');
   }
@@ -728,7 +733,13 @@ function SiteBgDropCard() {
     img.onload = () => setStatus('ok');
     img.onerror = () => setStatus('err');
     img.src = url;
-    return () => { img.onload = img.onerror = null; };
+    // Cleanup: drop callbacks AND clear src to abort the in-flight network
+    // request. Without removeAttribute('src') the browser keeps streaming
+    // the image even after we no longer care, which piles up on rapid edits.
+    return () => {
+      img.onload = img.onerror = null;
+      img.removeAttribute('src');
+    };
   }, [url]);
   useImageDrop(dropRef, (path, opts) => {
     setTweak('siteBackgroundImage', path, opts);

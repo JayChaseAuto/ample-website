@@ -568,7 +568,12 @@ function AtmosphereCanvas() {
       style={{
         position: 'fixed', top: 0, left: 0,
         width: '100vw', height: '100vh',
-        pointerEvents: 'none', zIndex: 0,
+        // z-index: 1 so this paints with the other atmosphere layers
+        // (.atm-grid, .atm-noise, .atm-glow) — ABOVE the .atm-bg site
+        // background but BELOW page content (z-index: 2). Previously
+        // z-index: 0 collided with .atm-bg and won the DOM-order tiebreak,
+        // overlaying the user-set background with a 65% animated grid.
+        pointerEvents: 'none', zIndex: 1,
         opacity: 0.65,
       }}
     />
