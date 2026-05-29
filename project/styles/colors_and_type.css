@@ -555,9 +555,9 @@ html.lenis, html.lenis body { height: auto; }
    are transparent fall back to the body's solid color. */
 .atm-bg {
   background-image: var(--site-bg-image, none);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-size: 600px auto;
+  background-position: top left;
+  background-repeat: repeat;
   z-index: 0; /* one below the rest of the atm stack */
 }
 .atm-grid {
@@ -741,6 +741,72 @@ html.lenis, html.lenis body { height: auto; }
     bottom: -36%;
     height: 36%;
   }
+}
+
+/* ==========================================================================
+   Banner carousel — swipeable gallery inside the callout center stage.
+   Arrows fade in on hover/focus (desktop) and stay visible on touch; dots
+   sit along the bottom with a red active pill. Swipe is handled in JS.
+   ========================================================================== */
+.banner-carousel:focus-visible { outline: 2px solid var(--ample-red); outline-offset: 2px; }
+.banner-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 3; width: 38px; height: 38px; border-radius: 999px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(11, 11, 13, 0.55); color: #fff;
+  font-size: 22px; line-height: 1; cursor: pointer;
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  opacity: 0; transition: opacity 180ms, background 180ms, border-color 180ms;
+}
+.banner-arrow.prev { left: 10px; }
+.banner-arrow.next { right: 10px; }
+.banner-carousel:hover .banner-arrow,
+.banner-carousel:focus-within .banner-arrow { opacity: 1; }
+.banner-arrow:hover { background: var(--ample-red); border-color: var(--ample-red); }
+/* Touch devices can't hover — keep the arrows visible. */
+@media (hover: none) { .banner-arrow { opacity: 0.9; } }
+.banner-dots {
+  position: absolute; left: 0; right: 0; bottom: 10px; z-index: 3;
+  display: flex; gap: 7px; justify-content: center; align-items: center;
+}
+.banner-dot {
+  width: 7px; height: 7px; border-radius: 999px; padding: 0; cursor: pointer;
+  border: none; background: rgba(255, 255, 255, 0.4);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35);
+  transition: background 180ms, width 180ms;
+}
+.banner-dot.is-active { background: var(--ample-red); width: 18px; }
+.banner-dot:hover { background: rgba(255, 255, 255, 0.75); }
+
+/* Image-focus callout layout — a large centered carousel as the section hero,
+   with the numbered callouts as a supporting row beneath. Used when a product
+   has banners; image-only products keep the .callout-grid flank layout. */
+.callout-showcase {
+  max-width: min(100%, 1000px);
+  margin: 0 auto;
+}
+.callout-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(16px, 2.4vw, 30px);
+  margin-top: clamp(28px, 5vw, 52px);
+}
+@media (max-width: 900px) {
+  .callout-row { grid-template-columns: 1fr 1fr; row-gap: 30px; }
+}
+@media (max-width: 520px) {
+  /* Single column, and compact each callout to a left-aligned row (number
+     beside the copy) instead of the tall stacked card — keeps the carousel
+     the dominant element on a phone instead of a long centered text list. */
+  .callout-row { grid-template-columns: 1fr; row-gap: 18px; margin-top: 26px; }
+  .callout-row .callout-card {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    gap: 14px !important;
+  }
+  .callout-row .callout-card p { margin: 6px 0 0 !important; max-width: none !important; }
 }
 
 /* Numbered circles on the callouts — gain a red ring on hover. */

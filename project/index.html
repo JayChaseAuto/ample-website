@@ -94,21 +94,21 @@
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=51"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=51"></script>
-<script type="text/babel" src="src/Animations.jsx?v=51"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=51"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=51"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=51"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=51"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=51"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=51"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=56"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=56"></script>
+<script type="text/babel" src="src/Animations.jsx?v=56"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=56"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=56"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=56"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=56"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=56"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=56"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accentColor": "#E92024",
   "theme": "dark",
-  "heroImage": "assets\/hero-932c2302.webp",
+  "heroImage": "assets\/hero-d3c3d9c4.webp",
   "heroOverlay": 35,
   "heroHeadline1": "oem+",
   "heroHeadlineAccent": "parts",
@@ -121,7 +121,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "stat3Value": "20+",
   "stat3Label": "years of experience",
   "gridCols": 4,
-  "showGoldBanner": true,
+  "showGoldBanner": false,
   "catalogEyebrow": "Our Inventory",
   "catalogTitle": "Our Catalog.",
   "catalogIntro": "A curated selection of our precision components, organized by system. For fitment, pricing, or availability on any part, get in touch.",
@@ -135,19 +135,22 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "catalogShowBlurbs": true,
   "categoryImages": {
     "Braking": {
-      "url": "assets\/cat-braking-b45d7397.webp",
-      "position": "55.8% 31.5%",
+      "url": "assets\/cat-braking-aeef19c2.webp",
+      "position": "52.3% 100.0%",
       "fit": "cover"
     },
     "Cooling": "assets\/cat-cooling-711bfc91.webp",
     "HVAC": "assets\/cat-hvac-81ac76a5.webp",
     "Engine": {
-      "url": "assets\/engine-parts-banner-raw.png",
+      "url": "assets\/cat-engine-9d93c393.webp",
       "position": "50.4% 50.5%"
     },
     "Electrical": "assets\/cat-electrical-16b4a8cc.webp",
     "Lighting": "assets\/cat-lighting-e172da46.webp",
-    "Steering": "assets\/cat-steering-f5ec687b.webp",
+    "Steering": {
+      "url": "assets\/cat-steering-f5ec687b.webp",
+      "position": "100.0% 75.7%"
+    },
     "Service": "assets\/cat-service-c289f552.webp"
   },
   "catalogCardImages": {
@@ -158,7 +161,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "water-pump-awn": "assets\/card-water-pump-awn-bf9d322d.webp",
     "compressor": "assets\/card-compressor-b04f024a.webp",
     "alternator": "assets\/card-alternator-fe236578.webp",
-    "starter": "assets\/card-starter-8fe5405d.webp",
+    "starter": "assets\/card-starter-544cf15d.webp",
     "ignition-coil": "assets\/card-ignition-coil-ccb1cb69.webp",
     "lighting": "assets\/card-lighting-3f4b4811.webp",
     "power-steering-pump": "assets\/card-power-steering-pump-982668a3.webp",
@@ -180,7 +183,6 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "calloutImageFit": "cover",
       "calloutImageScale": 1.4,
       "heroImageFit": "contain",
-      "calloutImage": "assets\/callout-brake-pads-6a8fecae.webp",
       "heroImagePosition": "center",
       "heroOverlay": 40,
       "heroHeight": 520,
@@ -215,7 +217,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
           "icon": "shield",
           "body": "ABE + ECE R90 certified. Inspection and insurance friendly."
         }
-      ]
+      ],
+      "calloutImage": "assets\/callout-brake-pads-ffb98608.webp"
     },
     "pad-sensor": {
       "heroBgImage": "assets\/product-pad-sensor-hero-aaf8d397.webp",
@@ -234,7 +237,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "starter": {
       "heroBgImage": "assets\/product-starter-hero-ff47eda2.webp",
       "calloutImageFit": "cover",
-      "cardScale": 1.1
+      "cardScale": 1.1,
+      "calloutImageScale": 1.25
     },
     "cabin-filter": {
       "heroBgImage": "assets\/product-cabin-filter-hero-f69bf462.webp",
@@ -245,12 +249,20 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroOverlay": 0,
       "heroImagePosition": "49.8% 54.3%",
       "cardPadding": 14,
-      "heroBgImageScale": 0.85
+      "heroBgImageScale": 0.9,
+      "calloutImage": "assets\/callout-cabin-filter-60ed47be.webp",
+      "calloutImageFit": "contain",
+      "calloutImagePosition": "50.0% 50.9%",
+      "calloutImageScale": 1.25
     },
     "air-filter": {
       "heroBgImage": "assets\/product-air-filter-hero-ccc3bf87.webp",
       "heroImageFit": "cover",
-      "cardScale": 1
+      "cardScale": 1,
+      "calloutImage": "assets\/callout-air-filter-86753cdc.webp",
+      "cardPadding": 0,
+      "calloutImageScale": 1.25,
+      "calloutImageFit": "cover"
     },
     "caliper-npc": {
       "heroBgImage": "assets\/brake-disc-caliper.jpg",
@@ -279,7 +291,28 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroBgImage": "assets\/product-lighting-hero-d63a17b8.webp",
       "heroImageFit": "contain",
       "cardPosition": "61.1% 65.6%",
-      "cardScale": 1.05
+      "cardScale": 1.05,
+      "calloutImage": "assets\/callout-lighting-0f92d99c.webp",
+      "heroBgImageScale": 1,
+      "calloutImageScale": 1.15,
+      "numberedFeatures": [
+        {
+          "title": "Optical Centre Match",
+          "body": "The LED chip array sits at the exact focal point of the original filament. Reflector and projector lenses focus the beam the way the engineers drew it up: clean cutoff, wide hot spot, no scatter into the oncoming lane."
+        },
+        {
+          "title": "CAN-Bus Integration",
+          "body": "The driver board sinks the same current the OE halogen drew, so the body computer never throws a bulb-out code, never strobes the indicator and never needs a resistor pack inline. Drop in, drive, done."
+        },
+        {
+          "title": "Active Thermal Management",
+          "body": "Bonded aluminium heat sink and PWM-controlled fan keep the LED junction at its design temperature. Maintains rated output past 500 hours of operation, no dimming, no colour shift."
+        },
+        {
+          "title": "IP68 Sealed Housing",
+          "body": "Fully sealed against pressure-wash, salt spray and the freeze-thaw cycles of a Canadian winter. The original failure mode of moisture creeping in at the bulb base is engineered out."
+        }
+      ]
     },
     "ignition-coil": {
       "heroBgImage": "assets\/product-ignition-coil-hero-ac25edda.webp",
@@ -287,7 +320,9 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardScale": 1,
       "heroImagePosition": "49.2% 46.5%",
       "heroBgImageScale": 1.4,
-      "cardPadding": 0
+      "cardPadding": 0,
+      "calloutImageScale": 1.2,
+      "calloutImageFit": "contain"
     },
     "heater-core": {
       "heroBgImage": "assets\/product-heater-core-hero-de510721.webp",
@@ -296,7 +331,11 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardPadding": 12,
       "heroBgImageScale": 1.05,
       "heroImagePosition": "54.1% 34.0%",
-      "heroOverlay": 8
+      "heroOverlay": 8,
+      "cardPosition": "49.2% 53.6%",
+      "calloutImage": "assets\/callout-heater-core-f431de5b.webp",
+      "calloutImageFit": "cover",
+      "calloutImageScale": 1.5
     },
     "condenser": {
       "heroBgImage": "assets\/product-condenser-hero-e703d2a9.webp",
@@ -304,7 +343,11 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardScale": 1.15,
       "cardPadding": 0,
       "heroBgImageScale": 1.45,
-      "heroImagePosition": "49.5% 51.2%"
+      "heroImagePosition": "49.5% 51.2%",
+      "calloutImage": "assets\/callout-condenser-95d2c2b8.webp",
+      "calloutImageFit": "contain",
+      "calloutImageScale": 1.4,
+      "calloutImagePosition": "82.8% 55.3%"
     },
     "compressor": {
       "heroBgImage": "assets\/product-compressor-hero-c74443d3.webp",
@@ -325,14 +368,24 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     },
     "gasket": {
       "heroBgImage": "assets\/product-gasket-hero-aa42c23f.webp",
-      "heroImageFit": "contain"
+      "heroImageFit": "contain",
+      "calloutImage": "assets\/callout-gasket-a7ce8bad.webp",
+      "calloutImageFit": "cover",
+      "cardPadding": 0,
+      "cardScale": 1.4,
+      "calloutImageScale": 1.15,
+      "calloutImagePosition": "45.4% 57.1%"
     },
     "abs-sensor": {
       "heroBgImage": "assets\/product-abs-sensor-hero-ca125d58.webp",
       "heroImageFit": "contain",
       "cardScale": 1.5,
       "cardPadding": 6,
-      "cardPosition": "50.8% 76.6%"
+      "cardPosition": "50.8% 76.6%",
+      "calloutImage": "assets\/callout-abs-sensor-eb04873e.webp",
+      "calloutImageFit": "cover",
+      "calloutImageScale": 1.2,
+      "calloutImagePosition": "57.0% 44.9%"
     },
     "water-pump-awn": {
       "heroBgImage": "assets\/product-water-pump-awn-hero-fdc31b04.webp",
@@ -349,13 +402,14 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardScale": 1.3
     },
     "wiper-motor": {
-      "cardScale": 0.95,
+      "cardScale": 1,
       "heroBgImage": "assets\/product-wiper-motor-hero-187ce69b.webp",
       "heroImageFit": "contain",
       "heroImagePosition": "50.5% 50.9%",
       "calloutImageFit": "cover",
       "calloutImagePosition": "54.1% 54.7%",
-      "calloutImageScale": 1.2
+      "calloutImageScale": 1.2,
+      "calloutImage": "assets\/callout-wiper-motor-569eb848.webp"
     },
     "radiator-urk": {
       "heroBgImage": "assets\/product-radiator-urk-hero-fe17d7ad.webp",
@@ -363,14 +417,17 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroImagePosition": "51.0% 57.5%",
       "heroBgImageScale": 1.1,
       "cardScale": 1.25,
-      "cardPosition": "50.8% 79.7%",
+      "cardPosition": "49.9% 74.2%",
       "cardPadding": 20,
-      "calloutImageScale": 1.05
+      "calloutImageScale": 1.2,
+      "calloutImageFit": "cover"
     },
     "tensioner": {
       "heroBgImage": "assets\/product-tensioner-hero-66fb3844.webp",
       "heroImageFit": "contain",
-      "cardScale": 1.15
+      "cardScale": 1.15,
+      "calloutImage": "assets\/callout-tensioner-91680a58.webp",
+      "calloutImageScale": 1.3
     },
     "power-steering-pump": {
       "cardScale": 1,
@@ -382,12 +439,14 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroImagePosition": "48.2% 48.1%"
     },
     "rack-pinion": {
-      "cardScale": 1
+      "cardScale": 1,
+      "calloutImage": "assets\/callout-rack-pinion-a4c09fba.webp",
+      "calloutImageScale": 1.3
     }
   },
   "atmosphere": "grid",
   "atmosphereGlow": 10,
-  "siteBackgroundImage": "",
+  "siteBackgroundImage": "assets\/site-bg-a860fc28.webp",
   "goldHeroEyebrow": "The Standard",
   "goldHeroTitleAccent": "The Gold Standard.",
   "goldHeroTitleLine2": "Uncompromising",
@@ -419,12 +478,12 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "position": "79.2% 89.9%"
     },
     "2011": {
-      "url": "assets\/history-2011-8a109803.webp",
+      "url": "assets\/history-2011-0755a0e1.webp",
       "position": "93.6% 38.1%",
       "fit": "cover"
     },
     "2019": {
-      "url": "assets\/history-2019-11609917.webp",
+      "url": "assets\/history-2019-4f4a1f87.webp",
       "position": "65.6% 44.0%",
       "fit": "cover"
     },
@@ -538,6 +597,14 @@ async function exportTweaksState(t) {
       if (o && o.calloutImage) {
         o.calloutImage = await liftSlot(`custom-callout-${slugify(slug)}`, o.calloutImage);
       }
+      // Banner gallery — an ordered array of { url, alt } slots. liftSlot
+      // uploads any straggler blob:/data: url and preserves alt; assets/
+      // paths pass through untouched.
+      if (o && Array.isArray(o.banners)) {
+        o.banners = await Promise.all(o.banners.map((slot, i) =>
+          liftSlot(`custom-product-${slugify(slug)}-banner-${i + 1}`, slot)
+        ));
+      }
     }
   }
   if (clone.catalogCardImages) {
@@ -631,9 +698,13 @@ function applyTweaksToDOM(t) {
   // truth so both first-paint (pre-React shim) and live edits stay in sync.
   // Escape backslash and double-quote so a path containing either does not
   // break out of the url() argument and let stray characters become CSS.
+  // Force a leading slash on relative paths: the .atm-bg rule lives in
+  // /styles/colors_and_type.css, and url() inside a var() resolves against
+  // the stylesheet's URL, so "assets/x.webp" would 404 at /styles/assets/.
   if (t.siteBackgroundImage) {
-    const safe = String(t.siteBackgroundImage)
-      .replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+    let raw = String(t.siteBackgroundImage);
+    if (!/^([a-z]+:|\/\/|\/|data:|blob:)/i.test(raw)) raw = '/' + raw;
+    const safe = raw.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     root.style.setProperty('--site-bg-image', `url("${safe}")`);
   } else {
     root.style.removeProperty('--site-bg-image');
@@ -749,7 +820,7 @@ function SiteBgDropCard() {
                  : status === 'err' ? '#c33a2a'
                  : status === 'loading' ? '#c9ad3b'
                  : 'rgba(0,0,0,0.2)';
-  const statusText = status === 'ok' ? 'Loaded — applied to .atm-bg'
+  const statusText = status === 'ok' ? 'Loaded, applied to .atm-bg'
                    : status === 'err' ? 'URL set but image failed to load'
                    : status === 'loading' ? 'Loading…'
                    : 'No image set';
@@ -796,6 +867,113 @@ function SiteBgDropCard() {
         </div>
       )}
     </div>
+  );
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Product banner editor — a variable-length, reorderable list of full-width
+   marketing banners for one product (productOverrides[slug].banners, each
+   entry { url, alt }). The on-page render is <ProductBanners> in
+   ProductDetailPage.jsx. Each row is its own component so useImageDrop (a
+   hook) is called exactly once per row. All mutations run through setTweak's
+   functional updater so the optimistic blob → canonical assets/ path swap
+   can't race against a stale array snapshot.
+   ───────────────────────────────────────────────────────────────────────── */
+function useBannerUpdater(slug, baseBanners) {
+  const { setTweak } = useTweakState();
+  return React.useCallback((fn, opts) => {
+    setTweak((prev) => {
+      const ov = prev.productOverrides || {};
+      const existing = (ov[slug] && Array.isArray(ov[slug].banners)) ? ov[slug].banners : null;
+      // Seed from the product's base banners on the first edit, so reordering
+      // or adding doesn't silently wipe the default set defined in ProductData.
+      const cur = (existing && existing.length) ? existing : (baseBanners || []);
+      const next = fn(cur.slice());
+      return { productOverrides: { ...ov, [slug]: { ...(ov[slug] || {}), banners: next } } };
+    }, undefined, opts);
+  }, [setTweak, slug, baseBanners]);
+}
+
+function ProductBannerRow({ slug, banner, index, count, update }) {
+  const dropRef = React.useRef(null);
+  // Replace-in-place: the optimistic blob fire and the canonical assets fire
+  // both target this index, so the double-fire just overwrites the slot.
+  useImageDrop(dropRef, (path, opts) => {
+    update((arr) => { arr[index] = { ...(arr[index] || {}), url: path }; return arr; }, opts);
+  }, { namePrefix: `product-${slug}-banner-${index + 1}` });
+  const url = banner.url || '';
+  const btn = { height: 22, minWidth: 26, padding: '0 6px', fontSize: 12, lineHeight: 1 };
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10,
+                  border: '1px solid rgba(0,0,0,0.08)', borderRadius: 8, padding: 8 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+        <span style={{ fontSize: 10.5, fontWeight: 700, letterSpacing: '0.04em',
+                       textTransform: 'uppercase', color: 'rgba(41,38,27,0.7)' }}>Banner {index + 1}</span>
+        <div style={{ display: 'flex', gap: 4 }}>
+          <button type="button" className="twk-btn secondary" style={{ ...btn, opacity: index === 0 ? 0.4 : 1 }}
+            disabled={index === 0} title="Move up"
+            onClick={() => update((arr) => { const j = index - 1; if (j >= 0) { const tmp = arr[index]; arr[index] = arr[j]; arr[j] = tmp; } return arr; })}>↑</button>
+          <button type="button" className="twk-btn secondary" style={{ ...btn, opacity: index === count - 1 ? 0.4 : 1 }}
+            disabled={index === count - 1} title="Move down"
+            onClick={() => update((arr) => { const j = index + 1; if (j < arr.length) { const tmp = arr[index]; arr[index] = arr[j]; arr[j] = tmp; } return arr; })}>↓</button>
+          <button type="button" className="twk-btn secondary" style={btn} title="Remove"
+            onClick={() => update((arr) => { arr.splice(index, 1); return arr; })}>×</button>
+        </div>
+      </div>
+      <div ref={dropRef} className="drop-target" style={{
+        position: 'relative', aspectRatio: '16 / 9', borderRadius: 6,
+        border: '1px dashed rgba(0,0,0,0.25)',
+        background: url ? `url("${url}") center / cover no-repeat, rgba(0,0,0,0.06)` : 'rgba(0,0,0,0.06)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: 'rgba(41,38,27,0.55)', fontSize: 10.5, textAlign: 'center', padding: 8 }}>
+        {!url && <span>Drop image</span>}
+        <div className="drop-hint" style={{ borderRadius: 6 }}>Drop to replace banner {index + 1}</div>
+      </div>
+      <TweakText label="Alt / caption (optional)" value={banner.alt || ''}
+                 onChange={(v) => update((arr) => { arr[index] = { ...(arr[index] || {}), alt: v }; return arr; })} />
+    </div>
+  );
+}
+
+function AddBannerSlot({ slug, count, update }) {
+  const dropRef = React.useRef(null);
+  // Append-on-drop. Only commit the canonical assets/ path (ignore the
+  // optimistic blob fire) so one drop adds exactly one banner instead of a
+  // dead blob entry plus the real one.
+  useImageDrop(dropRef, (path) => {
+    if (typeof path === 'string' && path.startsWith('blob:')) return;
+    update((arr) => { arr.push({ url: path, alt: '' }); return arr; });
+  }, { namePrefix: `product-${slug}-banner-${count + 1}` });
+  return (
+    <div ref={dropRef} className="drop-target" style={{
+      position: 'relative', aspectRatio: '16 / 5', borderRadius: 6,
+      border: '1px dashed rgba(0,0,0,0.3)', background: 'rgba(0,0,0,0.04)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      color: 'rgba(41,38,27,0.6)', fontSize: 11, textAlign: 'center', padding: 8 }}>
+      <span>+ Drop image to add a banner</span>
+      <div className="drop-hint" style={{ borderRadius: 6 }}>Drop to add banner</div>
+    </div>
+  );
+}
+
+function ProductBannerEditor({ slug }) {
+  const { tweaks } = useTweakState();
+  const baseBanners = (window.PRODUCTS && window.PRODUCTS[slug] && window.PRODUCTS[slug].banners) || [];
+  const update = useBannerUpdater(slug, baseBanners);
+  const ov = ((tweaks.productOverrides || {})[slug] || {}).banners;
+  // Mirror what's on the page: show the override list once it exists, else the
+  // product's base banners from ProductData.
+  const banners = (Array.isArray(ov) && ov.length) ? ov : baseBanners;
+  return (
+    <>
+      <TweakSection label="Product · Banners"
+                    subtitle="Full-width graphics shown below the callouts. Drop, reorder (↑ ↓), or remove (×)." />
+      {banners.map((b, i) => (
+        <ProductBannerRow key={`banner-${i}`} slug={slug} banner={b || {}} index={i}
+                          count={banners.length} update={update} />
+      ))}
+      <AddBannerSlot slug={slug} count={banners.length} update={update} />
+    </>
   );
 }
 
@@ -934,7 +1112,7 @@ function App() {
         seen.add(u);
         const file = u.split('/').pop();
         const niceSlug = slug.replace(/-/g, ' ');
-        out.push({ value: u, label: `${niceSlug} hero — ${file}` });
+        out.push({ value: u, label: `${niceSlug} hero: ${file}` });
       }
     }
     const cur = productData?.heroBgImage;
@@ -1099,15 +1277,19 @@ function App() {
           rendered so it picks up the var if/when it appears — no DOM
           churn when the image swaps. */}
       <div className="atm-layer atm-bg" aria-hidden="true" />
-      {showGrid && <div className="atm-layer atm-grid" aria-hidden="true" />}
+      {/* When a custom site bg is set, suppress the decorative grid AND
+          animated canvas — both form a grid pattern that fights the user's
+          texture. The glow + noise stay since they don't form a grid. */}
+      {showGrid && !t.siteBackgroundImage && <div className="atm-layer atm-grid" aria-hidden="true" />}
       {showNoise && <div className="atm-layer atm-noise" aria-hidden="true" />}
       <div className="atm-layer atm-glow" aria-hidden="true"
            style={{ opacity: glowOpacity }} />
       {/* Animated atmosphere canvas. Tied to the same enable/disable as the
           static grid: if atmosphere is 'none', no canvas. Otherwise the
           canvas runs at 24fps capped, mobile-tuned, with a static frame
-          when prefers-reduced-motion is on. */}
-      {atm !== 'none' && <AtmosphereCanvas />}
+          when prefers-reduced-motion is on. Also suppressed when a site
+          bg is set, same reasoning as .atm-grid. */}
+      {atm !== 'none' && !t.siteBackgroundImage && <AtmosphereCanvas />}
       {page}
       <TweaksPanel title={
         productSlug ? 'Product · Tweaks'
@@ -1341,7 +1523,7 @@ function App() {
                            onChange={(v) => setTweak('catalogCardPadding', v)} />
 
               <TweakSection label="Per-product overrides"
-                            subtitle="Pick one card to tweak — overrides the global defaults above"
+                            subtitle="Pick one card to tweak. Overrides the global defaults above."
                             slot={catalogEditingSlug ? `catalog-card-${catalogEditingSlug}` : undefined} />
               <TweakSelect label="Edit product"
                            value={catalogEditingSlug}
@@ -1487,7 +1669,7 @@ function App() {
                       ? <TweakImageMeta slot={slot}
                           onPatch={(p) => mergeImageSlot('goldFeatureImages', key, p)} />
                       : <div style={{ fontSize: 10.5, color: 'rgba(41,38,27,.55)' }}>
-                          No image yet — drop one on the {niceLabel} card.
+                          No image yet. Drop one on the {niceLabel} card.
                         </div>}
                   </React.Fragment>
                 );
@@ -1581,10 +1763,6 @@ function App() {
               <TweakText label="Title line 2"
                          value={productData?.title2 || ''}
                          onChange={(v) => setProductTweak(productSlug, 'title2', v)} />
-              <TweakTextarea label="Summary"
-                         rows={4}
-                         value={productData?.summary || ''}
-                         onChange={(v) => setProductTweak(productSlug, 'summary', v)} />
 
               {/* Engineering Summary editor removed alongside the page section.
                   The bullets field is still in the data model (useful for
@@ -1659,6 +1837,11 @@ function App() {
                                  onChange={(v) => setProductTweak(productSlug, 'outro', v)} />
                 </>
               )}
+
+              {/* Banner gallery editor — available for every product (rich or
+                  simple). Add/reorder/remove full-width graphics shown below
+                  the callouts on the page via <ProductBanners>. */}
+              <ProductBannerEditor slug={productSlug} />
             </>
           )}
           {routeKey === 'gold' && (
@@ -1723,8 +1906,8 @@ function App() {
           }} />
           <div style={{ flex: 1, fontSize: 11, color: 'rgba(41,38,27,.85)' }}>
             {devStatus == null ? 'Checking…'
-             : devStatus.ok ? 'Connected — drops save to assets/'
-             : 'Offline — drops will preview but not persist'}
+             : devStatus.ok ? 'Connected. Drops save to assets/'
+             : 'Offline. Drops preview but will not persist'}
           </div>
           <button type="button" className="twk-btn secondary" style={{ height: 22, padding: '0 8px', fontSize: 10 }}
                   onClick={checkDevServer}>Recheck</button>
@@ -1758,7 +1941,7 @@ function App() {
                 )}
                 {saveResult.failures && saveResult.failures.length > 0 && (
                   <div style={{ marginTop: 4, color: '#a13a2a' }}>
-                    {saveResult.failures.length} image{saveResult.failures.length === 1 ? '' : 's'} couldn't be uploaded — they remain in memory only. Check dev server.
+                    {saveResult.failures.length} image{saveResult.failures.length === 1 ? '' : 's'} couldn't be uploaded, so they remain in memory only. Check dev server.
                   </div>
                 )}
                 <div style={{ marginTop: 4, color: 'rgba(41,38,27,.62)' }}>Refresh to see the locked-in defaults.</div>

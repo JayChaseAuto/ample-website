@@ -231,7 +231,7 @@ async function resolveDraggedToBlob(dt, accept) {
    collide on the same slot. Throws with a readable message when the dev
    server isn't reachable — the caller decides how to surface that. */
 async function writeImageToAssets(blob, namePrefix) {
-  const MAX_DIM = 1600;
+  const MAX_DIM = 2560;
   const mime = blob.type || '';
   // SVGs can carry inline <script>. Even if the host page only uses the
   // file as <img>/url() (script-inert there), the asset itself lives at

@@ -41,7 +41,7 @@ function HomePage() {
         }} data-screen-label="Homepage · Hero">
           <div className="drop-hint">Drop image to set hero background</div>
           <div ref={heroBgRef} style={{
-            position: 'absolute', top: '-30%', left: 0, right: 0, bottom: '-30%',
+            position: 'absolute', top: '-15%', left: 0, right: 0, bottom: '-15%',
             backgroundImage: `url(${heroImage})`,
             backgroundSize: 'cover', backgroundPosition: 'right center',
             opacity: 0.85

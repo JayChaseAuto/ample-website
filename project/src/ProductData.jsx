@@ -1,16 +1,15 @@
-/* Ample — Product data.
+/* Ample, Product data.
    Voice: driver-focused. Lead with the experience (the pedal feel, the
    first crank, the cabin temperature in traffic), then back it with what
-   the part does. No spec sheets — those live on the product card on
+   the part does. No spec sheets, those live on the product card on
    request. Engineering summary stays as a short bullet list.
 
    Fields per product:
      slug, category, eyebrow, title, title2
      goldStandard       (badge in catalog + detail page)
-     summary            (1-2 sentence pitch, driver tone)
-     heroAsset          (legacy enum — still used by tweak select option)
+     heroAsset          (legacy enum, still used by tweak select option)
      callouts           (deprecated, kept as [] for compatibility)
-     features           (optional — feature cards under hero)
+     features           (optional, feature cards under hero)
      bullets            (engineering summary, full-width list)
 */
 
@@ -22,7 +21,6 @@ const PRODUCTS = {
     title2: 'Brake Pads.',
     eyebrow: 'Braking · Confidence',
     goldStandard: true,
-    summary: 'Brake pads that bite the same way every time. Cold morning commute, third lap of a canyon road, traffic on the way home. The pedal feels the same.',
     heroAsset: 'brake-pads',
     callouts: [],
     features: [
@@ -48,7 +46,7 @@ const PRODUCTS = {
       { title: 'Slotted',          body: '100% slotted compound for NVH control. Quiet at the curb, predictable in the corner.' },
       { title: 'Ceramic Formula',  body: 'Ceramic friction layer for extended pad life and low brake dust.' },
     ],
-    closing: 'From the morning commute to the canyon road, the bite stays linear and the pedal stays consistent. Drop-in fitment with shim, chamfer and bedding done at the factory means the install takes minutes, not an afternoon.',
+    closing: 'On the morning commute or the third lap of a canyon road, the bite stays linear and the pedal stays the same. Shim, chamfer and bedding are done at the factory, so the install takes minutes, not an afternoon.',
     benefitsTitle: 'Engineered Above Stock',
     benefits: [
       { icon: 'activity',         body: 'Linear bite from the first millimeter of pedal travel.' },
@@ -56,7 +54,7 @@ const PRODUCTS = {
       { icon: 'thermometer-sun',  body: 'Holds shape past 800 °C. No fade, no glaze, no surprises.' },
       { icon: 'shield',           body: 'ABE + ECE R90 certified. Inspection and insurance friendly.' },
     ],
-    outro: 'Verified through repeated bedding cycles against OE friction curves, then salt-spray and cyclic corrosion tested batch by batch — the same QC program that backs every Gold Standard SKU in the range.',
+    outro: 'We run them through repeated bedding cycles against the OE friction curve, then salt-spray and corrosion-test each batch. A pad that drifts off the curve never gets boxed.',
   },
 
   'calipers': {
@@ -66,7 +64,6 @@ const PRODUCTS = {
     title2: '& Rotor.',
     eyebrow: 'Braking · The Bite',
     goldStandard: true,
-    summary: 'The first inch of pedal travel decides the corner. Six pistons, a forged monobloc body, and a floating rotor that holds shape lap after lap. The pedal feels the same on lap one and lap eight.',
     heroAsset: 'caliper',
     callouts: [],
     features: [
@@ -97,7 +94,7 @@ const PRODUCTS = {
       { icon: 'shield',           body: 'Drop-in fitment with the bracket list, no hose mods.' },
       { icon: 'sparkles',         body: 'Low-dust ceramic compound. Wheels stay clean between washes.' },
     ],
-    outro: 'ABE + ECE R90 certified. Inspection and insurance friendly. Verified on our high-inertia friction dyno before it ships, the same QC program that backs every Gold Standard SKU.',
+    outro: 'ABE and ECE R90 certified, so inspection and insurance stay happy. Every batch runs on our high-inertia friction dyno before it ships.',
   },
 
   'radiators': {
@@ -107,7 +104,6 @@ const PRODUCTS = {
     title2: 'Assembly.',
     eyebrow: 'Cooling · Headroom',
     goldStandard: true,
-    summary: 'The radiator never gets the credit. Until the day it earns it. Sit in 90 °F traffic with a track day in the calendar, and you’ll know exactly which one’s in the bay.',
     heroAsset: 'radiator',
     callouts: [],
     features: [
@@ -136,7 +132,7 @@ const PRODUCTS = {
       { icon: 'activity',        body: 'Lower restriction. Pump flows easier, idle temps drop.' },
       { icon: 'sparkles',        body: 'Silicone hoses included. One box, full system, one weekend.' },
     ],
-    outro: 'Each radiator is pressure-tested at 2 bar and dye-checked at every weld before shipping. Built on the line that supplies our OE cooling program, the same QC standard that backs every Gold Standard SKU in the range.',
+    outro: 'Each radiator is pressure-tested at 2 bar and dye-checked at every weld before it ships. The welds that do not hold get caught here, not in your driveway.',
   },
 
   'alternator': {
@@ -146,7 +142,6 @@ const PRODUCTS = {
     title2: 'Alternator.',
     eyebrow: 'Electrical · Charge',
     goldStandard: false,
-    summary: 'Headlights that don’t dim at idle. Heated seats, defroster, fan, sound system. All on at the same time, and the battery still gains. Built to keep up with a fully-loaded car.',
     heroAsset: 'starter',
     callouts: [],
     features: [
@@ -167,7 +162,7 @@ const PRODUCTS = {
       { title: 'Hardened Slip Rings', body: 'Forged slip rings on the rotor. Brush wear pattern stays even, service interval extends well past stock.' },
       { title: 'OEM Interface',       body: 'Same bracket, same connector, same belt path. No harness mods, no pulley swap, no reflash.' },
     ],
-    closing: 'Cheap rebuilds fail in two ways. Both end with a no-start morning and a tow. The bearing dies around the first major service and the brushes go flat not long after. This one is built so that morning does not happen.',
+    closing: 'Cheap rebuilds fail in two ways. Both end with a no-start morning and a tow. The bearing dies around the first major service and the brushes go flat not long after. Tighter tolerances on both are what keep that morning off your calendar.',
     benefitsTitle: 'Built for Long Hauls',
     benefits: [
       { icon: 'zap',             body: 'Full charge at idle. Battery gains in traffic, not just on the highway.' },
@@ -175,22 +170,21 @@ const PRODUCTS = {
       { icon: 'shield',          body: 'Sealed bearings, lifetime-rated. No grease point, no service interval.' },
       { icon: 'activity',        body: 'Clean voltage curve. No flicker at the lights, no whine in the radio.' },
     ],
-    outro: 'Each alternator is dyno-tested for output across the rpm range and thermal-shock validated batch by batch. Built on the line that supplies our OE contracts, the same QC program that backs every Gold Standard SKU in the range.',
+    outro: 'Each alternator is dyno-tested for output across the rpm range and thermal-shock checked batch by batch. If it cannot hold charge when it is hot, it does not ship.',
   },
 };
 
 /* ----------------------------------------------------------------------------
    Bulk catalog additions.
-   Each entry passes its own summary + bullets so the copy stays driver-first
-   instead of falling back to the generic boilerplate.
+   Each entry passes its own bullets so the engineering-summary list stays
+   driver-first instead of falling back to the generic boilerplate.
 ---------------------------------------------------------------------------- */
 
-function makeProduct({ slug, category, eyebrow, title, title2, summary, heroAsset, bullets, features, ...rest }) {
+function makeProduct({ slug, category, eyebrow, title, title2, heroAsset, bullets, features, ...rest }) {
   return {
     slug, category, eyebrow: eyebrow || category,
     title, title2: title2 || '',
     goldStandard: false,
-    summary: summary || `${title} ${title2 || ''}. Reach out for fitment, batch availability and pricing.`.trim(),
     heroAsset,
     callouts: [],
     features: features || [],
@@ -213,21 +207,19 @@ const NEW_PRODUCTS = [
     category: 'Wipers', eyebrow: 'Wipers · The Sync',
     title: 'Wiper Linkage', title2: 'Assembly.',
     heroAsset: 'wiper-motor',
-    summary: 'Sloppy wipers waste a downpour. The linkage keeps both arms moving in step. When it dies, the passenger side drags or stops mid-stroke. This one drops in.',
     bullets: [
       'Restored sync. Both arms hit the same point at the same time.',
       'OEM bracket compatible. No drilling, no body work.',
       'New bushings and bearings. Eliminates the rattle at speed.',
       'Quiet at the bottom of the stroke. No groan into the cabin.',
     ],
-    /* Wiper-linkage stays simple — not in PRODUCT_ORDER, no rich layout needed. */
+    /* Wiper-linkage stays simple, not in PRODUCT_ORDER, no rich layout needed. */
   }),
   makeProduct({
     slug: 'wiper-motor',
     category: 'Wipers', eyebrow: 'Wipers · Park & Forget',
     title: 'Wiper', title2: 'Motor.',
     heroAsset: 'wiper-motor',
-    summary: 'Wipers should sweep, park, and shut up. Two speeds, dependable park position, OEM mount. The kind of part you forget about, which is the point.',
     bullets: [
       'Two-speed motor with reliable park position.',
       '12 V drop-in. Same connector, same mount, same harness.',
@@ -241,7 +233,7 @@ const NEW_PRODUCTS = [
       { title: 'OEM Mount',         body: 'Same bracket bolts, same linkage pickup, same harness. No bracket modifications, no linkage refit.' },
       { title: 'Quiet at Park',     body: 'Engineered for low-noise park engagement. No groan at the bottom of the stroke, no thump into the cowl.' },
     ],
-    closing: 'When the wiper motor fails, it fails at the worst possible moment. A heavy rain, a stop in traffic, blades freeze mid-sweep with the windshield half cleared. This one is built so that moment does not arrive.',
+    closing: 'When the wiper motor fails, it fails at the worst possible moment. A heavy rain, a stop in traffic, blades freeze mid-sweep with the windshield half cleared. Sealed bearings and a dependable park circuit keep that moment off the table.',
     benefitsTitle: 'Built for the Downpour',
     benefits: [
       { icon: 'wind',     body: 'Two-speed sweep with reliable park position.' },
@@ -249,14 +241,13 @@ const NEW_PRODUCTS = [
       { icon: 'activity', body: 'Quiet at park. No groan into the cowl.' },
       { icon: 'sparkles', body: 'OE bracket, connector and mount.' },
     ],
-    outro: 'Each motor is bench-tested for park reliability and current draw across the temperature range. Built on the line that supplies our OE wiper program, the same QC standard that backs every wiper SKU in the ample range.',
+    outro: 'Each motor is bench-tested for park reliability and current draw, from cold start to fully heat-soaked.',
   }),
   makeProduct({
     slug: 'oil-cooler',
     category: 'Cooling', eyebrow: 'Cooling · Hot Oil',
     title: 'Oil', title2: 'Cooler.',
     heroAsset: 'oil-cooler',
-    summary: 'Oil that’s hotter than it should be is oil that’s already breaking down. Stacked-plate, thermostatic. Sips heat off the oil only when it has to.',
     bullets: [
       'Stacked-plate design. High surface area, low pressure drop.',
       'Thermostatic bypass. Full flow until oil is hot, no drag at warmup.',
@@ -278,14 +269,13 @@ const NEW_PRODUCTS = [
       { icon: 'activity',        body: 'Thermostatic bypass. No drag at warmup.' },
       { icon: 'sparkles',        body: 'AN fittings and adapter plate in the box.' },
     ],
-    outro: 'Each cooler is pressure-tested at 8 bar before shipping, well above any operating pressure it will ever see. Built on the line that supplies our OE program, the same QC standard that backs every Gold Standard SKU in the range.',
+    outro: 'Each cooler is pressure-tested at 8 bar before shipping, well above anything it will ever see in service.',
   }),
   makeProduct({
     slug: 'tensioner',
     category: 'Engine', eyebrow: 'Engine · No Squeal',
     title: 'Belt', title2: 'Tensioner.',
     heroAsset: 'tensioner',
-    summary: "Every belt squeal you have ever heard came from a tensioner that gave up. Cast aluminium spring case, sealed hydraulic damper, OE-spec spring rate — quiet for the next 100,000 km.",
     bullets: [
       'Heavy-duty cast aluminium spring case and arm. Resists the housing-separation failure mode that ends cheap units in 20-30K miles.',
       'Flat-spring design. Maintains constant tension across the operating range without spiking when a new belt is installed.',
@@ -294,14 +284,14 @@ const NEW_PRODUCTS = [
       'Steel pivot tube and zinc-coated mounting bolts. Survives engine-bay heat-cycling and road salt.',
       'Auxiliary belt pulley and mounting hardware in the box.',
     ],
-    intro: 'Our serpentine belt tensioner pairs a flat-spring assembly with a sealed hydraulic damper inside a cast-aluminium housing. The flat spring holds constant tension across the full operating arc — no spike when a fresh belt is fitted, no slack as the belt stretches — and the damper absorbs the high-frequency pulses the accessory drive throws at it under load. OEM bracket footprint, OEM bolt pattern, OEM pulley diameter — drops onto the original mount with no modifications.',
+    intro: 'Our serpentine belt tensioner pairs a flat-spring assembly with a sealed hydraulic damper inside a cast-aluminium housing. The flat spring holds constant tension across the full operating arc, so there is no spike when a fresh belt goes on and no slack as it stretches, while the damper soaks up the high-frequency pulses the accessory drive throws at it under load. It keeps the OEM bracket footprint, bolt pattern and pulley diameter, so it drops onto the original mount with no modifications.',
     numberedFeatures: [
       { title: 'Cast-Aluminium Housing',  body: 'Heavy-duty cast spring case and arm. Resists the housing-separation crack that ends discount tensioners at 20-30K miles. Stronger metal at the mount means less distortion and longer spring life.' },
       { title: 'Flat-Spring Tension',     body: 'Flat-spring geometry holds constant force across the operating range. No new-belt overshoot that overloads accessory bearings, no late-life sag that starts belt slip on cold mornings.' },
       { title: 'Sealed Hydraulic Damper', body: 'Hydraulic damper isolates the high-frequency pulses the alternator and A/C compressor pump into the belt. Quiet at idle, no chatter on heat-soak, no belt skip when the A/C kicks in.' },
       { title: 'OEM Bracket Fit',         body: 'Same bracket footprint, bolt pattern, pulley diameter and routing as OE. No bracket fab, no belt-length change. Mounts up with the original bolts and a torque wrench.' },
     ],
-    closing: "Tensioners do not fail loudly. The damper weakens, the belt starts chattering at certain RPMs, the bearing develops play, the belt walks toward the front of the pulley, and one morning the belt sheds. A cast-aluminium housing, a sealed damper and an OE-spec spring rate close off the quiet-failure window at the source.",
+    closing: "Tensioners do not fail loudly. The damper weakens, the belt starts chattering at certain RPMs, the bearing develops play, the belt walks toward the front of the pulley, and one morning the belt sheds. A cast-aluminium housing, a sealed damper and an OE-spec spring rate keep that slow failure from ever starting.",
     benefitsTitle: 'Built to Hold Tension',
     benefits: [
       { icon: 'activity', body: 'Flat-spring constant tension. No new-belt overshoot, no late-life sag.' },
@@ -309,14 +299,13 @@ const NEW_PRODUCTS = [
       { icon: 'sparkles', body: 'Sealed hydraulic damper. Quiet at idle, no belt chatter under load.' },
       { icon: 'zap',      body: 'OEM bracket fit. Drops onto the original mount with no fabrication.' },
     ],
-    outro: 'Each tensioner is spring-rate-tested against the OE acceptance window, then leak-tested at the damper seal and shaft seal before it ships. Built on the line that supplies our OE engine program, the same QC standard that backs every Engine SKU in the ample range.',
+    outro: 'Each tensioner is spring-rate tested against the OE acceptance window, then the damper and shaft seals are leak-checked before it ships. Anything outside the window gets pulled off the line.',
   }),
   makeProduct({
     slug: 'starter',
     category: 'Electrical', eyebrow: 'Electrical · Cranks',
     title: 'Starter', title2: 'Motor.',
     heroAsset: 'starter',
-    summary: 'The straightforward version. Same gear-reduction architecture, OEM-spec mount, 2.4 kW peak. For cars that don’t need rare-earth-and-titanium and just need to start tomorrow.',
     bullets: [
       'Gear-reduction starter, 1.8 to 2.4 kW peak.',
       'OEM-spec mounting and electrical interface.',
@@ -330,7 +319,7 @@ const NEW_PRODUCTS = [
       { title: 'Hardened Pinion',        body: 'Forged Bendix pinion with hardened teeth. No premature wear against the ring gear after thousands of start cycles.' },
       { title: 'OEM Interface',          body: 'Same bolt pattern, same connector, same engagement geometry. No engine mount changes, no harness modification.' },
     ],
-    closing: 'Cheap starters fail two ways. Both end with a click and no crank. The solenoid contacts pit after 50,000 cycles, or the pinion teeth wear into the flywheel. This one is built so neither happens.',
+    closing: 'Cheap starters fail two ways. Both end with a click and no crank. The solenoid contacts pit after 50,000 cycles, or the pinion teeth chew into the flywheel. Hardened teeth and sealed contacts are exactly the two parts we over-build.',
     benefitsTitle: 'Built to Crank',
     benefits: [
       { icon: 'zap',             body: 'Cranks fast in subzero conditions.' },
@@ -338,14 +327,13 @@ const NEW_PRODUCTS = [
       { icon: 'shield',          body: 'Hardened pinion. No flywheel wear.' },
       { icon: 'activity',        body: 'Two-year replacement warranty.' },
     ],
-    outro: 'Each starter is bench-tested at temperature for engagement reliability and held-current draw. Built on the line that supplies our OE replacement program, the same QC standard that backs every electrical SKU in the ample range.',
+    outro: 'Every starter is bench-tested hot and cold for engagement and held-current draw. The ones that crank slow or pull too much never make it into a box.',
   }),
   makeProduct({
     slug: 'water-pump-awn',
     category: 'Cooling', eyebrow: 'Cooling · Replacement',
     title: 'Water', title2: 'Pump.',
     heroAsset: 'water-pump',
-    summary: 'OEM housing, forged impeller, factory-spec output. The straightforward replacement when the original goes plastic.',
     bullets: [
       'Forged steel impeller. Survives high rpm without cavitation.',
       'OEM housing footprint. No hose changes.',
@@ -365,7 +353,7 @@ const NEW_PRODUCTS = [
       { title: 'Sealed Bearing',        body: 'Double-row sealed bearing, no grease point, no service interval. Quiet at every rpm, dry at the shaft.' },
       { title: 'OEM Footprint',         body: 'Same housing, same gasket, same bolt pattern, same pulley alignment. No bracket mods, no hose mods.' },
     ],
-    closing: 'Plastic impellers crack at the hub when the engine cycles hot to cold. The signature failure is a slow temp rise that nobody notices until the gauge hits red and the gasket lets go. Steel impeller, steel hub, steel shaft. The signature failure does not happen here.',
+    closing: 'Plastic impellers crack at the hub when the engine cycles hot to cold. The signature failure is a slow temp rise that nobody notices until the gauge hits red and the gasket lets go. Steel impeller, steel hub, steel shaft. There is no plastic left to crack.',
     benefitsTitle: 'Built to Outlast the Loop',
     benefits: [
       { icon: 'thermometer-sun', body: 'Sustained flow at temperature. No cavitation, no airlock, no surprise overheat in traffic.' },
@@ -373,14 +361,13 @@ const NEW_PRODUCTS = [
       { icon: 'activity',        body: 'Quiet at every rpm. No bearing whine, no shaft chatter into the cabin.' },
       { icon: 'sparkles',        body: 'Gasket and bolts in the box. Drop in, fill, bleed, drive.' },
     ],
-    outro: 'Each pump is dry-spun for balance and pressure-tested for leak-down at the seal and the housing before it leaves the line. Cast and machined to OE drawings, sampled batch by batch, the same QC program that backs every Gold Standard SKU in the range.',
+    outro: 'Each pump is dry-spun for balance and pressure-tested for leak-down at the seal and housing before it leaves the line. Cast and machined to the OE drawings, with batch samples pulled and checked against them.',
   }),
   makeProduct({
     slug: 'blower-motor',
     category: 'HVAC', eyebrow: 'HVAC · Cabin Air',
     title: 'Blower', title2: 'Motor.',
     heroAsset: 'blower-motor',
-    summary: 'A cabin fan that doesn’t surrender at speed three. Multi-speed, OEM mount, sealed bearing. The part you don’t think about until it stops, and then you can’t think about anything else.',
     bullets: [
       'Multi-speed cabin blower. Full range without intermittent drop-out.',
       'Sealed bearings. Quiet at every speed.',
@@ -393,23 +380,22 @@ const NEW_PRODUCTS = [
     category: 'Lighting', eyebrow: 'Lighting · Cleaner Beam',
     title: 'LED', title2: 'Lighting.',
     heroAsset: 'lighting',
-    summary: "Photometrically-tuned beam, hard cutoff at the legal line, CAN-bus integrated driver. A wider pool of usable light on YOUR road, zero glare into the oncoming lane.",
     bullets: [
-      '4,000+ lumens per side with a properly-shaped beam — not flood-lit white noise.',
+      '4,000+ lumens per side with a properly-shaped beam, not flood-lit white noise.',
       'Sharp horizontal cutoff. Stays under the regulatory glare line for oncoming traffic.',
       'CAN-bus integrated driver. No bulb-out warnings, no resistor packs, no hyperflash.',
       'Active thermal management. Bonded aluminium heat sink with a PWM-controlled fan.',
       'IP67-sealed housing. Survives pressure-wash, salt spray and Canadian winter freeze-thaw.',
       'Plug-and-play harness. H7, H11, 9005, 9006, HB3, HB4 sizes available.',
     ],
-    intro: "Our LED replacement lamps put the LED emitter array in the exact focal position the original halogen filament occupied — the optics in the housing already know what to do with light coming from that point. The result is a beam pattern that follows the original photometric design, with a sharp cutoff at the regulatory line and a wider hot-spot than the halogen could produce at the same current. CAN-bus integration on the driver board talks back to the body computer so the ECU sees the correct current draw — no bulb-out warnings, no hyperflashed indicators, no resistor packs spliced into the harness.",
+    intro: "Our LED replacement lamps put the emitter array in the exact focal position the original halogen filament occupied. The optics in the housing already know what to do with light coming from that point. The result is a beam that follows the original photometric design, with a sharp cutoff at the regulatory line and a wider hot spot than the halogen could throw at the same current. The driver board talks back to the body computer over the CAN bus so the ECU reads the correct current draw. No bulb-out warnings, no hyperflashed indicators, no resistor packs spliced into the harness.",
     numberedFeatures: [
-      { title: 'Optical Centre Match',      body: 'The LED chip array sits at the exact focal point of the original filament. Reflector and projector lenses focus the beam the way the engineers designed — clean cutoff, wide hot spot, no scatter into the oncoming lane.' },
+      { title: 'Optical Centre Match',      body: 'The LED chip array sits at the exact focal point of the original filament. Reflector and projector lenses focus the beam the way the engineers drew it up: clean cutoff, wide hot spot, no scatter into the oncoming lane.' },
       { title: 'CAN-Bus Integration',       body: 'The driver board sinks the same current the OE halogen drew, so the body computer never throws a bulb-out code, never strobes the indicator and never needs a resistor pack inline. Drop in, drive, done.' },
-      { title: 'Active Thermal Management', body: 'Bonded aluminium heat sink and PWM-controlled fan keep the LED junction at its design temperature. Maintains rated output past 500 hours of operation — no dimming, no colour shift.' },
+      { title: 'Active Thermal Management', body: 'Bonded aluminium heat sink and PWM-controlled fan keep the LED junction at its design temperature. Maintains rated output past 500 hours of operation, no dimming, no colour shift.' },
       { title: 'IP67 Sealed Housing',       body: 'Fully sealed against pressure-wash, salt spray and the freeze-thaw cycles of a Canadian winter. The original failure mode of moisture creeping in at the bulb base is engineered out.' },
     ],
-    closing: "Cheap LED bulbs put more raw lumens onto a windshield, less light onto the road, and a lot of glare into the eyes of every driver coming the other way. A photometrically-matched beam, a CAN-bus driver and active cooling delivers what the optic was actually designed for — more usable light on your road, none of it in someone else's mirror.",
+    closing: "Cheap LED bulbs put more raw lumens onto a windshield, less light onto the road, and a lot of glare into the eyes of every driver coming the other way. A photometrically matched beam, a CAN-bus driver and active cooling give the optic what it was built for: more usable light on your road, and none of it in someone else's mirror.",
     benefitsTitle: 'More Road. Less Glare.',
     benefits: [
       { icon: 'sun',             body: 'Photometrically-tuned beam. Wider hot spot, sharp cutoff, no oncoming glare.' },
@@ -417,30 +403,39 @@ const NEW_PRODUCTS = [
       { icon: 'thermometer-sun', body: 'Active thermal management. Rated output past 500 hours without dimming.' },
       { icon: 'shield',          body: 'IP67 sealed housing. Survives pressure wash, salt spray and winter freeze cycles.' },
     ],
-    outro: 'Each bulb is photometrically validated against the OE beam pattern at the goniometer, current-draw-tested against the CAN-bus interrogation profile of major OEMs, and run for 500 hours at temperature before final QC. Built on the line that supplies our OE replacement program, the same QC standard that backs every Lighting SKU in the ample range.',
+    outro: 'Each bulb is validated against the OE beam pattern on the goniometer, current-draw tested against the CAN-bus profiles of the major makers, and run for 500 hours at temperature before final QC.',
+    // Marketing banner gallery — full-width graphics rendered below the
+    // callouts by <ProductBanners>. Base set; the Tweaks editor can reorder,
+    // add or replace these per deployment (writes to productOverrides.banners).
+    banners: [
+      { url: 'assets/product-lighting-banner-1-ed82a21a.webp', alt: 'Extreme weather performance: an IP68-rated LED that holds up in rain, fog, snow and dust.' },
+      { url: 'assets/product-lighting-banner-2-c53f39ec.webp', alt: 'Smart intelligence driver with adaptive fan cooling and error-free CAN-bus decoding.' },
+      { url: 'assets/product-lighting-banner-3-6c97058b.webp', alt: 'Beam distance held at 2000 ft across 1, 3 and 5 years, while halogen fades from 300 to 100 ft.' },
+      { url: 'assets/product-lighting-banner-4-72752dde.webp', alt: 'Lab-tested against halogen on brightness, color temperature, life-span and beam distance.' },
+      { url: 'assets/product-lighting-banner-5-16d3cd46.webp', alt: 'The LED lineup, 100% verified and tested across common bulb fitments.' },
+    ],
   }),
   makeProduct({
     slug: 'ignition-coil',
     category: 'Engine', eyebrow: 'Engine · Hotter Spark',
     title: 'Ignition', title2: 'Coil.',
     heroAsset: 'ignition-coil',
-    summary: "Pencil-style coil-on-plug. Integrated driver IC on top, diagonal windings inside, epoxy-sealed against the heat and oil-vapour of the plug well. Fires the same on lap one and 60,000 km later.",
     bullets: [
-      'Coil-on-plug pencil format. Sits directly in the spark plug well — no high-tension lead to age.',
+      'Coil-on-plug pencil format. Sits directly in the spark plug well, no high-tension lead to age.',
       'Integrated driver IC. Logic-level trigger from the ECU, no external igniter module required.',
       'Diagonal secondary windings. Higher voltage output and lower leakage than sectioned-bobbin designs.',
       'Epoxy-potted secondary with silicone boot. Sealed against heat, moisture and oil vapour.',
       'OEM electrical interface. Same connector, same pinout, same mounting bolt as the original.',
       'Pre-tested for spark consistency and dwell stability across the full RPM range.',
     ],
-    intro: "Our coil-on-plug ignition coil packages a high-output secondary, a diagonal winding geometry and an integrated igniter IC into a single sealed pencil that drops straight into the spark plug well. The driver IC accepts a logic-level trigger from the ECU and switches the primary coil internally — no external ignition module to wire, no high-tension lead to age. Diagonal windings eliminate the sectioned bobbins of older designs, giving more secondary voltage per turn and lower leakage at sustained high RPM.",
+    intro: "Our coil-on-plug ignition coil packages a high-output secondary, a diagonal winding geometry and an integrated igniter IC into a single sealed pencil that drops straight into the spark plug well. The driver IC takes a logic-level trigger from the ECU and switches the primary coil internally, so there is no external ignition module to wire and no high-tension lead to age. The diagonal windings drop the sectioned bobbins of older designs, which puts more secondary voltage per turn and less leakage on the table at sustained high rpm.",
     numberedFeatures: [
       { title: 'Pencil COP Format',    body: 'Sits inside the spark plug well, directly on the plug terminal. No HT lead between the coil and the plug means no insulation breakdown, no carbon tracking and no misfires hiding behind a worn-out wire.' },
-      { title: 'Integrated Driver IC', body: 'The driving transistor is built into the coil top — the ECU sends a logic-level trigger and the coil handles primary switching internally. No external igniter module to fault, no extra harness to source.' },
+      { title: 'Integrated Driver IC', body: 'The driving transistor is built into the coil top. The ECU sends a logic-level trigger and the coil handles primary switching on its own. No external igniter module to fault, no extra harness to source.' },
       { title: 'Diagonal Windings',    body: 'Diagonal secondary winding geometry packs more turns into the same volume and reduces inter-layer leakage. Higher output voltage and more consistent spark energy across the full RPM range.' },
-      { title: 'Sealed Construction',  body: 'Epoxy-potted secondary and silicone boot. Sealed against the oil-vapour, heat and moisture environment inside the plug well — the conditions that crack housings and split boots on aging OE coils.' },
+      { title: 'Sealed Construction',  body: 'Epoxy-potted secondary and silicone boot. Sealed against the oil-vapour, heat and moisture environment inside the plug well, the conditions that crack housings and split boots on aging OE coils.' },
     ],
-    closing: "Coils do not fail in a way you notice at first. The spark gets weaker, the misfire counters tick up a few per minute, fuel trims drift to compensate, and the catalyst starts taking heat it was never designed to take. By the time the check-engine light comes on, the next failure is already the catalytic converter. A sealed pencil coil with an integrated driver and diagonal windings closes off the slow-degradation window at the source.",
+    closing: "Coils do not fail in a way you notice at first. The spark gets weaker, the misfire counters tick up a few per minute, fuel trims drift to compensate, and the catalyst starts taking heat it was never designed to take. By the time the check-engine light comes on, the next failure is already the catalytic converter. A sealed pencil coil with an integrated driver and diagonal windings keeps that slow fade from ever starting.",
     benefitsTitle: 'Built for the Misfire That Never Happens',
     benefits: [
       { icon: 'zap',      body: 'Higher-energy spark across the rev range. Cleaner idle, fewer misfires, less fuel-trim drift.' },
@@ -448,14 +443,13 @@ const NEW_PRODUCTS = [
       { icon: 'activity', body: 'Integrated driver IC. No external igniter to fail, no extra harness to source.' },
       { icon: 'sparkles', body: 'OEM connector and mount. Drop in, plug in, drive.' },
     ],
-    outro: 'Each coil is bench-tested for spark voltage and dwell stability across the full operating range, then pressure-tested at the secondary tower seal before shipping. Built on the line that supplies our OE ignition program, the same QC standard that backs every Engine SKU in the ample range.',
+    outro: 'Each coil is bench-tested for spark voltage and dwell stability across the rev range, then the secondary tower seal is pressure-checked. A coil that drops voltage at high rpm never leaves the bench.',
   }),
   makeProduct({
     slug: 'caliper-npc',
     category: 'Braking', eyebrow: 'Braking · OE Spec',
     title: 'Brake', title2: 'Caliper.',
     heroAsset: 'caliper',
-    summary: 'Brand-new single-piston caliper with fresh seals, new boot, new pins, and a corrosion-resistant finish. Drop-in fit for the part it replaces, no bracket mods.',
     bullets: [
       'Brand-new OEM-spec caliper. Single-piston floating design.',
       'New seals, new boot, slide pins greased.',
@@ -484,7 +478,6 @@ const NEW_PRODUCTS = [
     category: 'HVAC', eyebrow: 'HVAC · Cabin Cool',
     title: 'A/C', title2: 'Compressor.',
     heroAsset: 'compressor',
-    summary: 'Cabin cool depends on a compressor that doesn’t bite into the engine when it kicks in. Six-cylinder swash-plate, low cycling, no surge.',
     bullets: [
       '6-cylinder swash-plate. Smooth engagement, no clutch shock.',
       'R134a refrigerant compatible.',
@@ -504,7 +497,7 @@ const NEW_PRODUCTS = [
       { title: 'Sealed Magnetic Clutch',   body: 'Double-row bearing, sealed for life. Quiet at idle, no rattle on heat soak, no metal in the lines.' },
       { title: 'OEM Fitment',              body: 'Same bracket, same connector, same belt path, same refrigerant. No harness, hose or mount modifications.' },
     ],
-    closing: 'Compressors fail the same way every summer. The bearing screams, the clutch slips, the lines fill with metal and the cabin runs warm. This one is built so that does not happen. Each unit is bench-tested at temperature and pressure before it leaves the line.',
+    closing: 'Compressors fail the same way every summer. The bearing screams, the clutch slips, the lines fill with metal and the cabin runs warm. We bench-test each unit at temperature and pressure before it ships, because that scream is the one nobody wants to hear twice.',
     benefitsTitle: 'Engineered for the Heat',
     benefits: [
       { icon: 'thermometer-snowflake', body: 'Sustained cooling under heat soak. No pull-down loss in traffic, no warm air at idle.' },
@@ -512,14 +505,13 @@ const NEW_PRODUCTS = [
       { icon: 'shield',                body: 'Sealed bearing and clutch. Quiet at every rpm, dry at every gasket.' },
       { icon: 'sparkles',              body: 'Pre-charged with the correct PAG oil. Drop in, vacuum, charge, done.' },
     ],
-    outro: 'Magnetic clutch torque-tested through 200 engagement cycles. Refrigerant ports pressure-tested for leak-down at 25 bar before shipping. Built on an ISO/TS-certified manufacturing line and sampled batch by batch, the same QC program that backs every Gold Standard SKU in the range.',
+    outro: 'The magnetic clutch is torque-tested through 200 engagement cycles and the refrigerant ports are leak-checked at 25 bar before shipping. Built on an ISO/TS-certified line, with samples pulled from every batch.',
   }),
   makeProduct({
     slug: 'exhaust',
     category: 'Engine', eyebrow: 'Engine · The Sound',
     title: 'Exhaust', title2: 'System.',
     heroAsset: 'exhaust',
-    summary: 'Cat-back stainless. Better breathing, fewer drone notes, no rattles. The kind of upgrade you hear when you accelerate, not when you idle in your driveway.',
     bullets: [
       'Stainless 304 throughout. Won’t rust through Northern winters.',
       'Mandrel-bent. No flow restriction at the bends.',
@@ -532,7 +524,6 @@ const NEW_PRODUCTS = [
     category: 'Engine', eyebrow: 'Engine · The Seal',
     title: 'Gaskets', title2: '',
     heroAsset: 'gasket',
-    summary: "Multi-layer steel head gasket. Five layers of 300-series stainless, embossed sealing beads at every passage, Viton-coated outer layers rated to 482°F. The seal you do not get to inspect after the head goes back on.",
     bullets: [
       'Multi-layer steel construction. Five layers of 300-series stainless sandwiched together.',
       'Embossed sealing beads around every cylinder bore and coolant passage.',
@@ -541,14 +532,14 @@ const NEW_PRODUCTS = [
       'OEM bolt pattern, OEM bore diameter, OEM oil and coolant passages.',
       'No sealant required. Install dry, torque to spec, button it up.',
     ],
-    intro: 'Our cylinder head gasket is a true MLS (multi-layer steel) assembly: five layers of 300-series stainless steel sandwiched together, with embossed beads pressed around the cylinder bores and every coolant and oil passage. The outer two layers are Viton-coated — a fluoroelastomer rubber that conforms to the surface finish of the head and block at install, then stays put through the heat cycling that opens up composite gaskets. The centre shim layer is plain stainless, varied in thickness to set deck height. No sealant, no retorquing, no liquid copper.',
+    intro: 'Our cylinder head gasket is a true MLS (multi-layer steel) assembly: five layers of 300-series stainless steel sandwiched together, with embossed beads pressed around the cylinder bores and every coolant and oil passage. The outer two layers are Viton-coated, a fluoroelastomer rubber that conforms to the surface finish of the head and block at install, then stays put through the heat cycling that opens up composite gaskets. The centre shim layer is plain stainless, varied in thickness to set deck height. No sealant, no retorquing, no liquid copper.',
     numberedFeatures: [
-      { title: 'Five-Layer Stainless Stack', body: 'Five layers of 300-series stainless steel — corrosion-proof, dimensionally stable under thermal load, and chemically inert to coolant, oil and combustion gases. The architecture every OE supplier ships on modern aluminium-headed engines.' },
+      { title: 'Five-Layer Stainless Stack', body: 'Five layers of 300-series stainless steel, corrosion-proof, dimensionally stable under thermal load, and chemically inert to coolant, oil and combustion gases. The architecture every OE supplier ships on modern aluminium-headed engines.' },
       { title: 'Embossed Sealing Beads',     body: 'Pressed beads around every cylinder bore and every coolant and oil passage. The bead height conforms to the surface finish at torque-down and stays compressed through the heat-and-cool cycles that loosen composite gaskets.' },
-      { title: 'Viton Outer Coating',        body: 'Outer layers coated in Viton fluoroelastomer rubber — heat-stable to 482°F sustained, conforms to the deck surface, fills the micro-roughness no machine shop can polish away. No sealant needed, no liquid copper, no retorque.' },
-      { title: 'OEM Geometry',               body: 'Same bore, same bolt pattern, same oil and coolant passage map as the original. Drops onto a clean deck with torque to OE spec — no machining, no retorque, no anaerobic sealant on the deck face.' },
+      { title: 'Viton Outer Coating',        body: 'Outer layers coated in Viton fluoroelastomer rubber, heat-stable to 482°F sustained, conforms to the deck surface, fills the micro-roughness no machine shop can polish away. No sealant needed, no liquid copper, no retorque.' },
+      { title: 'OEM Geometry',               body: 'Same bore, same bolt pattern, same oil and coolant passage map as the original. Drops onto a clean deck with torque to OE spec, no machining, no retorque, no anaerobic sealant on the deck face.' },
     ],
-    closing: "Gaskets fail in two ways and both end with the head off. Composite gaskets cook and lose clamp under thermal cycling, dripping coolant down the side of the block. Single-layer steel gaskets warp under combustion pressure spikes and blow between cylinders. A five-layer stainless stack with Viton-coated outer layers stops both failure paths at the source.",
+    closing: "Gaskets fail in two ways and both end with the head off. Composite gaskets cook and lose clamp under thermal cycling, dripping coolant down the side of the block. Single-layer steel gaskets warp under combustion pressure spikes and blow between cylinders. A five-layer stainless stack with Viton-coated outer layers shuts down both of those failure paths.",
     benefitsTitle: 'Built to Stay Sealed',
     benefits: [
       { icon: 'shield',          body: 'Five layers of 300-series stainless. Survives thermal cycling that ends composite gaskets.' },
@@ -556,14 +547,13 @@ const NEW_PRODUCTS = [
       { icon: 'activity',        body: 'Embossed beads at every seal point. Combustion, coolant and oil stay in their own passages.' },
       { icon: 'sparkles',        body: 'OEM bore and bolt pattern. Drop onto a clean deck, torque to spec, drive.' },
     ],
-    outro: 'Every gasket is dimensionally checked at the bore and bolt holes, then sample-tested per batch for bead height, coating thickness and flatness. Built on the line that supplies our OE head-gasket program, the same QC standard that backs every Engine SKU in the ample range.',
+    outro: 'Every gasket is dimensionally checked at the bore and bolt holes, then batch-sampled for bead height, coating thickness and flatness. A few microns out at the deck face is a leak waiting to happen, so the tolerance stays tight.',
   }),
   makeProduct({
     slug: 'abs-sensor',
     category: 'Braking', eyebrow: 'Braking · ABS',
     title: 'ABS', title2: 'Sensor.',
     heroAsset: 'sensor',
-    summary: "ABS that flickers on a wet morning is ABS you cannot trust on a wet afternoon. Active Hall-effect element on a sealed IC, square-wave output, OE connector, drop-in fit.",
     bullets: [
       'Active Hall-effect sensor. Element, amplifier and signal conditioning on a single hermetically-sealed IC.',
       'Square-wave digital output. Module reads the same edge from 0.1 km/h to top speed.',
@@ -572,29 +562,35 @@ const NEW_PRODUCTS = [
       'OEM connector and mounting boss. No harness changes, no scan-tool reset.',
       'Pre-calibrated to OE air-gap tolerance. Fit it and the ABS light clears on the first drive cycle.',
     ],
-    intro: "Our wheel-speed sensor replaces the passive variable-reluctance coil that wears out in the original with an active Hall-effect element sealed inside an overmolded IC head. The integrated circuit packages the Hall element, signal amplifier and conditioning logic onto a single chip — so the output stays a clean square wave from crawl-speed all the way to top speed, instead of the analog sinusoid the OE part puts out (which gets noisier as the reluctor ring wears). OEM electrical connector, OEM mounting geometry, sealed against the salt and grit that kill the one you are replacing.",
+    intro: "Our wheel-speed sensor replaces the passive variable-reluctance coil that wears out in the original with an active Hall-effect element sealed inside an overmolded IC head. The integrated circuit packages the Hall element, signal amplifier and conditioning logic onto a single chip, so the output stays a clean square wave from crawl-speed all the way to top speed, instead of the analog sinusoid the OE part puts out (which gets noisier as the reluctor ring wears). OEM electrical connector, OEM mounting geometry, sealed against the salt and grit that kill the one you are replacing.",
     numberedFeatures: [
-      { title: 'Hall-Effect IC',         body: 'Hall-sensing element, signal amplifier and conditioning logic combined on one hermetically-sealed silicon chip. Output is digital from the first wheel revolution — no analog-to-digital conversion losses at the module.' },
+      { title: 'Hall-Effect IC',         body: 'Hall-sensing element, signal amplifier and conditioning logic combined on one hermetically-sealed silicon chip. Output is digital from the first wheel revolution, no analog-to-digital conversion losses at the module.' },
       { title: 'Universal Encoder',      body: 'Reads both multipole magnetic encoder rings and traditional steel toothed-wheel reluctors. One sensor covers both wheel-bearing generations across the application range.' },
-      { title: 'Sealed Housing',         body: 'Overmolded plastic body rated IP6K9K — fully sealed against pressure-wash water, road salt, brake dust and grit. The OE failure mode (corrosion creeping in at the connector seam) is engineered out.' },
+      { title: 'Sealed Housing',         body: 'Overmolded plastic body rated IP6K9K, fully sealed against pressure-wash water, road salt, brake dust and grit. The OE failure mode (corrosion creeping in at the connector seam) is engineered out.' },
       { title: 'OEM Drop-In Fit',        body: 'Same mounting boss, same connector pinout, same harness clip routing. Pre-calibrated to OE air-gap tolerance, so no scan-tool calibration is needed after install.' },
     ],
-    closing: "ABS sensors fail one of two ways: the connector corrodes and the signal cuts in and out, or the reluctor coil ages and the sinusoidal output gets noisy enough that the module gives up and lights the dash. An IP6K9K-sealed Hall-effect IC with a square-wave output closes off both failure modes at the source.",
+    closing: "ABS sensors fail one of two ways: the connector corrodes and the signal cuts in and out, or the reluctor coil ages and the sinusoidal output gets noisy enough that the module gives up and lights the dash. An IP6K9K-sealed Hall-effect IC with a square-wave output takes both of those failure modes out of the picture.",
     benefitsTitle: 'Reads Clean. Every Condition.',
     benefits: [
       { icon: 'activity',  body: 'Clean digital square wave from first wheel revolution to top speed. No false triggers in the wet.' },
       { icon: 'shield',    body: 'IP6K9K overmolded housing. Salt, dust and steam-clean cannot reach the element or the connector.' },
-      { icon: 'sparkles',  body: 'OEM connector and mount. Fit it, clear the code, drive away — no scan-tool calibration.' },
+      { icon: 'sparkles',  body: 'OEM connector and mount. Fit it, clear the code, drive away, no scan-tool calibration.' },
       { icon: 'zap',       body: 'Hall-effect IC. No signal fade as the reluctor ring wears, no drift with temperature.' },
     ],
-    outro: 'Each sensor is bench-tested across the full speed range for signal linearity and edge-jitter, then pull-tested at the connector seal before it ships. Built on the line that supplies our OE brake program, the same QC standard that backs every Braking SKU in the ample range.',
+    outro: 'Each sensor is bench-tested across the full speed range for signal linearity and edge jitter, then the connector seal is pull-tested before it ships.',
   }),
   makeProduct({
     slug: 'pad-sensor',
     category: 'Braking', eyebrow: 'Braking · Wear',
     title: 'Brake Pad', title2: 'Wear Sensor.',
     heroAsset: 'sensor',
-    summary: 'The dashboard light that says you’re at 2 mm. Loop-break circuit. No false alarms, no missed warnings.',
+    /* Simple layout: short `description` block under the hero, no rich
+       callouts. Copy grounded in OE wear-sensor literature (Delphi, Brake
+       & Front End): low-current loop at the minimum-thickness line, rotor
+       breaks the loop -> dash light before metal-on-metal; sensor is a
+       consumable (heat degrades the lead and clip), replace with every pad
+       set; OE connector + correct-length lead for plug-in fit. */
+    description: "The wear sensor is your dashboard's early warning. A low-current loop sits in the brake pad at the minimum-thickness line, and when the friction material wears down to it the rotor breaks the loop and trips the brake light before metal ever touches metal. Built with an OE connector and a heat-resistant lead cut to your car's length, it plugs in without splicing and clears the warning on the first drive cycle. The sensor is a consumable by design, so fit a fresh one every time the pads come off.",
     bullets: [
       'Loop-break circuit. Fails open, lights the dash.',
       'Front-axle universal.',
@@ -607,20 +603,41 @@ const NEW_PRODUCTS = [
     category: 'Steering', eyebrow: 'Steering · Hydraulic',
     title: 'Power Steering', title2: 'Pump.',
     heroAsset: 'water-pump',
-    summary: 'A hydraulic power-steering pump that doesn’t whine in a parking lot. Vane-type, sealed bearing, OEM-pressure spec.',
     bullets: [
-      'Vane pump. Quiet at low rpm, full pressure at idle.',
-      'OEM-pressure spec. No over-assist, no over-feel.',
-      'Sealed bearing. No fluid leak, no service interval.',
-      'Pulley pre-fitted; bracket included.',
+      'Rotary-vane pump. Full assist at idle, quiet as the revs climb.',
+      'Relief and flow valves set to your car’s OE pressure. No over-boost, no line hammer.',
+      'High-temp shaft seal and sealed drive bearing. No weep, no service interval.',
+      'Pulley pressed on and trued. Bracket and O-rings in the box.',
     ],
+    /* Rich callout layout (same shape as caliper-npc and brake-pads).
+       Copy grounded in OE / premium-reman power-steering literature
+       (CARDONE, Toyota OE guides, HowStuffWorks): rotary-vane assembly in a
+       precision cam ring, spring-loaded relief + flow-control valves at OE
+       pressure, HNBR high-temp shaft seal, cast-iron body, 100% flow-bench
+       test. Lead with the moment the driver feels it (full lock at idle),
+       then the build. No em-dashes anywhere in this block. */
+    intro: 'A power steering pump earns its keep at the worst moment: full lock in a tight space with the engine barely off idle. Ours is a rotary-vane design that holds full assist right there, where a tired pump groans and the wheel turns to stone. The vanes ride in a precision-ground cam ring and feed the rack the volume the engine speed calls for, and a spring-loaded relief valve caps the peak so nothing hammers the lines at high rpm. Cast-iron body, high-temperature shaft seal, sealed drive bearing, pulley pressed on and trued at the factory. It bolts to the original bracket, takes the original lines, and runs on the same fluid.',
+    numberedFeatures: [
+      { title: 'Rotary-Vane Assembly', body: 'Hardened vanes ride in a precision-ground cam ring. Steady, full assist at idle and parking speed, the exact spot where a worn pump starts to groan and the wheel goes heavy.' },
+      { title: 'OE Pressure & Flow', body: 'Relief and flow-control valves set to the pressure your steering rack was tuned for. No over-boost numbing the wheel on the highway, no spike hammering the high-pressure line.' },
+      { title: 'High-Temp Seals', body: 'HNBR shaft seal and a sealed drive bearing rated for the heat under the hood. They hold their grip where a conventional seal hardens and starts weeping down the pulley.' },
+      { title: 'Bolt-On Fit', body: 'Cast-iron body on the OE bracket pattern, pulley pressed on and trued, correct pressure-port fittings. Mount it, fill, bleed, and the whine is gone.' },
+    ],
+    closing: 'A bad pump tells on itself. It whines louder as the revs climb, the wheel stiffens at the worst possible moment, and the fluid drops with no puddle on the driveway because the pump is bleeding pressure inside itself. A vane assembly built to OE pressure with high-temperature seals fixes the noise and the feel in one part.',
+    benefitsTitle: 'Quiet Assist. Every Turn.',
+    benefits: [
+      { icon: 'compass',  body: 'Built to OE pressure. The wheel weights up the way the car was calibrated for, no vague over-boost.' },
+      { icon: 'activity', body: 'Full assist at idle and parking speed. No groan at full lock, no stiffening when the revs drop.' },
+      { icon: 'shield',   body: 'High-temp seal and sealed bearing. No weep down the pulley, no bearing rattle, no service interval.' },
+      { icon: 'sparkles', body: 'Pulley pre-fitted and trued, bracket and O-rings in the box. Bolt it on, fill, bleed, done.' },
+    ],
+    outro: 'Every pump runs on a flow bench before it ships. We check the output pressure against the OE spec, measure flow across the rpm range, verify the relief point, and leak-test the shaft seal. The ones that pass get the pulley pressed on and trued. The ones that do not go back.',
   }),
   makeProduct({
     slug: 'radiator-urk',
     category: 'Cooling', eyebrow: 'Cooling · Replacement',
     title: 'Cooling', title2: 'Radiator.',
     heroAsset: 'radiator',
-    summary: "CAB-brazed aluminium core, double-folded fins, reinforced plastic tanks. Every unit 100% leak-tested before the box is sealed. The day the original lets go, this is what goes back in.",
     bullets: [
       'Controlled Atmosphere Brazing (CAB) aluminium core. The same joining process used by Behr, Nissens and other OE suppliers.',
       'Double-folded fin geometry. Reinforces the fin stack and increases total heat-exchange surface area.',
@@ -629,14 +646,14 @@ const NEW_PRODUCTS = [
       '100% leak-tested at 2 bar. Validated through thermal cycling, vibration and salt-spray.',
       'Hose adapters, O-rings and mounting hardware in the box.',
     ],
-    intro: "Our OEM-replacement radiator drops into the bracket the original used, takes the same hose paths and holds the coolant volume the engine was tuned for. Brazed aluminium core joined in a controlled-atmosphere brazing furnace, double-folded fins for additional heat-exchange surface, ribbed plastic end tanks built against the OE seam-failure mode. Engineered to ISO/TS 16949 — the automotive quality standard used by Behr, Mahle, Nissens and the rest of the OE supply chain. Every unit ships pressure-tested at 2 bar.",
+    intro: "Our OEM-replacement radiator drops into the bracket the original used, takes the same hose paths and holds the coolant volume the engine was tuned for. Brazed aluminium core joined in a controlled-atmosphere brazing furnace, double-folded fins for additional heat-exchange surface, ribbed plastic end tanks built against the OE seam-failure mode. Engineered to ISO/TS 16949, the automotive quality standard used by Behr, Mahle, Nissens and the rest of the OE supply chain. Every unit ships pressure-tested at 2 bar.",
     numberedFeatures: [
-      { title: 'CAB-Brazed Aluminium Core',  body: 'Tubes and fins joined in a controlled-atmosphere brazing furnace — the same process used by OE suppliers. Strong, leak-tight joints that hold under thermal cycling without the flux residue that promotes corrosion.' },
+      { title: 'CAB-Brazed Aluminium Core',  body: 'Tubes and fins joined in a controlled-atmosphere brazing furnace, the same process used by OE suppliers. Strong, leak-tight joints that hold under thermal cycling without the flux residue that promotes corrosion.' },
       { title: 'Double-Folded Fin Stack',    body: 'Fins folded twice into the air path. Reinforces the stack against vibration damage and increases the total heat-exchange surface area in the same frontal footprint.' },
-      { title: 'Reinforced Tank Seam',       body: 'Plastic end tanks with a ribbed reinforcement at the aluminium-to-plastic crimp — built against the exact seam that opens up on the OE radiator after a few summers of expansion cycles.' },
+      { title: 'Reinforced Tank Seam',       body: 'Plastic end tanks with a ribbed reinforcement at the aluminium-to-plastic crimp, built against the exact seam that opens up on the OE radiator after a few summers of expansion cycles.' },
       { title: '100% Leak-Tested',           body: 'Every unit pressure-tested at 2 bar and dye-checked at every weld before it ships. Validated through corrosion, vibration, pressure-impulse and thermal-expansion testing.' },
     ],
-    closing: "Stock radiators fail one way. The crimp where the aluminium core meets the plastic tank opens up, coolant drips down the front of the engine, and the temp gauge climbs in traffic. A CAB-brazed core with a reinforced tank seam closes off both halves of the failure mode at the source.",
+    closing: "Stock radiators fail one way. The crimp where the aluminium core meets the plastic tank opens up, coolant drips down the front of the engine, and the temp gauge climbs in traffic. A CAB-brazed core with a reinforced tank seam shuts down both halves of that failure.",
     benefitsTitle: 'Built for the Replacement Day',
     benefits: [
       { icon: 'thermometer-sun', body: 'CAB-brazed aluminium. Faster heat shed and lighter than copper-brass at the same surface area.' },
@@ -644,14 +661,13 @@ const NEW_PRODUCTS = [
       { icon: 'activity',        body: 'OE drop-in fit. Same mounts, same hose nipples, same fan-shroud clearance.' },
       { icon: 'sparkles',        body: 'Hose adapters, O-rings and clips in the box. Open it, drop it in, fill, bleed, drive.' },
     ],
-    outro: 'Built on an ISO/TS 16949 manufacturing line and validated through thermal cycling, vibration, pressure-impulse and salt-spray corrosion testing. Every unit is pressure-tested at 2 bar, dye-checked at every weld and serial-stamped before it leaves the line — the same QC program that backs every cooling SKU in the ample range.',
+    outro: 'Built on an ISO/TS 16949 line and validated through thermal cycling, vibration, pressure-impulse and salt-spray corrosion testing. Every unit is pressure-tested at 2 bar, dye-checked at every weld, and serial-stamped before it leaves the line.',
   }),
   makeProduct({
     slug: 'condenser',
     category: 'HVAC', eyebrow: 'HVAC · Heat Out',
     title: 'A/C', title2: 'Condenser.',
     heroAsset: 'radiator',
-    summary: "Parallel-flow aluminium. Refrigerant runs through dozens of pin-bore tubes instead of one serpentine loop — about a third more heat out per pass than the OE design.",
     bullets: [
       'True parallel-flow core. Dozens of pin-bore micro-channel tubes maximise refrigerant-to-fin contact.',
       '~33% more heat rejection per pass than the OE serpentine tube-and-fin layout.',
@@ -660,45 +676,44 @@ const NEW_PRODUCTS = [
       'OEM-spec mounting points, refrigerant fittings and fan-shroud clearance.',
       'Pressure-tested for leak-down before shipping. Cap-sealed to keep moisture out in transit.',
     ],
-    intro: "Our parallel-flow aluminium condenser replaces the serpentine-core unit the car left the factory with, trading it for the design that has powered every new OE A/C system since the early 2000s. Instead of one long refrigerant loop, the refrigerant splits across dozens of pin-bore micro-channel tubes — roughly a third more heat-exchange surface per pass than the original. Integrated receiver-dryer and desiccant bag, OEM mounting tabs and fitting locations, drops in with no bracket fabrication.",
+    intro: "Our parallel-flow aluminium condenser replaces the serpentine-core unit the car left the factory with, trading it for the design that has powered every new OE A/C system since the early 2000s. Instead of one long refrigerant loop, the refrigerant splits across dozens of pin-bore micro-channel tubes, which is roughly a third more heat-exchange surface per pass than the original. It carries an integrated receiver-dryer and desiccant bag and keeps the OEM mounting tabs and fitting locations, so it drops in with no bracket fabrication.",
     numberedFeatures: [
-      { title: 'Parallel Micro-Channel',  body: 'Refrigerant splits across dozens of pin-bore aluminium tubes running in parallel — the same architecture every new OE condenser has used since the early 2000s. Higher refrigerant-to-fin contact, lower pressure drop, shorter compressor duty cycles.' },
+      { title: 'Parallel Micro-Channel',  body: 'Refrigerant splits across dozens of pin-bore aluminium tubes running in parallel, the same architecture every new OE condenser has used since the early 2000s. Higher refrigerant-to-fin contact, lower pressure drop, shorter compressor duty cycles.' },
       { title: 'Dual Refrigerant',        body: 'Engineered to spec for both R134a and R1234yf. One part number covers retrofits and model-year variants across the application range without guessing which refrigerant your VIN was built for.' },
       { title: 'Integrated Desiccant',    body: 'Receiver-dryer cartridge integrated into the condenser body, with a sealed desiccant bag inside. Removes one separately-mounted part and eliminates the bracket-and-line seam that corrodes loose on the OE setup.' },
-      { title: 'OEM Bracket & Fittings',  body: 'Mounting tabs, fan-shroud clearance and refrigerant fitting positions match OE. Fit it, evacuate the system, charge it, drive — no custom brackets, no adapter fittings.' },
+      { title: 'OEM Bracket & Fittings',  body: 'Mounting tabs, fan-shroud clearance and refrigerant fitting positions match OE. Fit it, evacuate the system, charge it, drive. No custom brackets, no adapter fittings.' },
     ],
-    closing: "Parallel-flow condensers cannot be flushed clean once they have debris in them — the micro-channels trap it forever. So when the OE one fails, the right answer is replacement, not service. This one is built to drop in once and stay there for the life of the next compressor.",
+    closing: "Once a parallel-flow condenser has debris in it, you cannot flush it clean. The micro-channels trap it for good. So when the OE one fails, the answer is replacement, not service, and this one is built to drop in once and stay there for the life of the next compressor.",
     benefitsTitle: 'Engineered to Keep It Cold',
     benefits: [
       { icon: 'thermometer-snowflake', body: 'Micro-channel parallel flow. ~33% more heat out per pass than the OE serpentine layout.' },
       { icon: 'sparkles',              body: 'Integrated receiver-dryer. One fewer part to source, one fewer bracket to corrode.' },
       { icon: 'activity',              body: 'Dual-refrigerant compatible. R134a and R1234yf out of the same SKU.' },
-      { icon: 'shield',                body: 'OEM mounting and fittings. Bolt in, evacuate, charge, done — no fabrication.' },
+      { icon: 'shield',                body: 'OEM mounting and fittings. Bolt in, evacuate, charge, done, no fabrication.' },
     ],
-    outro: 'Each condenser is pressure-tested for leak-down at the fittings and seams, then cap-sealed to keep moisture and contamination out during transit. Built on the line that supplies our OE HVAC program and validated through thermal cycling and vibration — the same QC standard that backs every ample HVAC SKU.',
+    outro: 'Each condenser is leak-tested at the fittings and seams, then cap-sealed to keep moisture and grit out in transit. Validated on the HVAC line through thermal cycling and vibration.',
   }),
   makeProduct({
     slug: 'heater-core',
     category: 'HVAC', eyebrow: 'HVAC · Cabin Heat',
     title: 'Heater', title2: 'Core.',
     heroAsset: 'radiator',
-    summary: "Brass-tube, copper-finned heater core. The dashboard-removal part you replace ONCE — not in 50,000 km, not again in 70,000 km. Pressure-tested at every joint.",
     bullets: [
       'Brass-tube core with copper fins. The traditional pairing that outlasts aluminium under heat cycling and electrolysis.',
       'Soldered tube-to-header joints, not crimped. Reseals on its own under thermal expansion.',
       'OEM external dimensions and tab geometry. Drops into the heater box without trimming or bracket changes.',
-      'Hose nipples sized for OEM clamps — standard hose, no adapters, no improvised fittings.',
+      'Hose nipples sized for OEM clamps, standard hose, no adapters, no improvised fittings.',
       '100% pressure-tested at every joint before shipping.',
       'Salt-spray and electrolysis tested. Validated against the OE failure modes (pinhole corrosion + stress fracture).',
     ],
-    intro: "Our heater core pairs brass tubes with copper fins — the traditional pairing that aluminium cores in late-model cars were supposed to replace but routinely outlast. Aluminium heater cores look good on a spec sheet (better raw thermal conductivity) but they fail two ways the brass-copper combination resists: electrolysis corrodes the tubes into pinholes within a few seasons, and stress fractures open at the tube-to-header joints under repeat heat cycling. OEM external dimensions, hose nipples sized for the original clamps, drops into the heater box on the original tabs.",
+    intro: "Our heater core pairs brass tubes with copper fins, the traditional pairing that aluminium cores in late-model cars were supposed to replace but routinely outlast. Aluminium heater cores look good on a spec sheet (better raw thermal conductivity) but they fail two ways the brass-copper combination resists: electrolysis corrodes the tubes into pinholes within a few seasons, and stress fractures open at the tube-to-header joints under repeat heat cycling. OEM external dimensions and hose nipples sized for the original clamps, so it drops into the heater box on the original tabs.",
     numberedFeatures: [
-      { title: 'Brass-Tube Core',        body: 'Brass tubes resist the electrolysis corrosion that eats aluminium cores from the inside. Engineered for the typical 5-to-7-year replacement cycle to become the LAST replacement cycle — not a stop on the way to the next one.' },
+      { title: 'Brass-Tube Core',        body: 'Brass tubes resist the electrolysis corrosion that eats aluminium cores from the inside. Engineered for the typical 5-to-7-year replacement cycle to become the LAST replacement cycle, not a stop on the way to the next one.' },
       { title: 'Soldered Header Joints', body: 'Tube-to-header connections soldered, not crimped. The soldered joints reseal themselves under thermal expansion, where the OE crimps open up as a stress fracture and start weeping into the evaporator box.' },
       { title: 'Copper Fin Matrix',      body: 'Copper fins bonded to the tube bundle. High surface area transfers heat efficiently into the blower-fan airflow, defrosts the windshield faster on a cold morning, and resists corrosion in the salt-laden cabin condensate.' },
       { title: 'OEM Footprint',          body: 'External dimensions, mounting tabs, hose-nipple positions and hose-nipple sizes match OE. Sits in the heater box on the original locating ribs, takes the original hose clamps without adapters.' },
     ],
-    closing: "Heater cores fail slowly and expensively. A pinhole opens, coolant weeps into the evaporator box, and by the time the windshield fogs from inside the carpet is already soaked. Brass tubes, copper fins and soldered joints close off the electrolysis-and-stress-fracture failure path at the source — so the next dashboard-out service interval gets pushed past the rest of the car.",
+    closing: "Heater cores fail slowly and expensively. A pinhole opens, coolant weeps into the evaporator box, and by the time the windshield fogs from inside the carpet is already soaked. Brass tubes, copper fins and soldered joints shut down the electrolysis-and-stress-fracture path, so the next dashboard-out job gets pushed past the rest of the car's life.",
     benefitsTitle: 'Built to Hold. Every Season.',
     benefits: [
       { icon: 'thermometer-sun', body: 'Brass tubes + copper fins. Resists electrolysis corrosion that eats aluminium cores in 5-7 years.' },
@@ -706,40 +721,62 @@ const NEW_PRODUCTS = [
       { icon: 'activity',        body: 'OEM footprint. Drop into the heater box on the original tabs with no trimming.' },
       { icon: 'sparkles',        body: 'Hose nipples sized for OE clamps. Standard hose, no adapters, no improvised fittings.' },
     ],
-    outro: 'Each core is pressure-cycled across the operating temperature range, electrolysis-tested for tube-wall corrosion resistance, and leak-tested at every joint before it ships. Built on the line that supplies our OE cabin-heat program — the same QC standard that backs every ample HVAC SKU in the range.',
+    outro: 'Each core is pressure-cycled across its operating temperature range, electrolysis-tested for tube-wall corrosion, and leak-checked at every joint before it ships.',
   }),
   makeProduct({
     slug: 'rack-pinion',
     category: 'Steering', eyebrow: 'Steering · OE Spec',
     title: 'Rack', title2: '& Pinion.',
     heroAsset: 'rack-pinion',
-    summary: 'Brand-new rack with fresh bushings and seals. OEM geometry. The steering feel you remember from when the car was new.',
     bullets: [
-      'Brand-new OEM-spec unit. OE-geometry preserved.',
-      'New bushings and seals throughout.',
-      'Bench-tested before shipping.',
-      'OEM mounting points and tie-rod fitment.',
+      'Induction-hardened rack bar. Tight on-center feel that holds for the life of the unit.',
+      'New inner tie-rod sockets, rack support bushing, bellows boots and seals throughout.',
+      'Rotary valve flow-tested for crossover and leak-down; 100% hydraulic-tested.',
+      'Centered on the test stand and serial-stamped. OE mounts and tie-rod tapers.',
     ],
+    /* Rich callout layout (same shape as caliper-npc and brake-pads).
+       Copy grounded in OE / premium-reman steering literature (ZF-TRW,
+       CARDONE, Maval): induction-hardened rack bar, rotary valve sleeve +
+       spool flow-tested for crossover, new inner tie-rod sockets + support
+       bushing + bellows boots, 100% hydraulic test, centered on the stand,
+       serial-stamped, ISO 9001 / 14001. Steering voice: lead with the
+       on-center feel and the failure the driver notices, then the build.
+       No em dashes anywhere in this block. */
+    intro: 'Our rack and pinion assembly replaces the worn unit that puts the slop in your steering. An induction-hardened rack bar meshes with the pinion gear, turning wheel input into the linear motion that points the front wheels, while a matched rotary valve meters the hydraulic assist left and right. We build to OE geometry with new inner tie-rod sockets, a fresh rack support bushing, new bellows boots and seals throughout, then flow-test the valve and cycle every unit lock-to-lock for internal leakage. Centered on the test stand, serial-stamped for traceability, finished in a protective coating. Drops into the subframe the factory unit came out of, on OE mounts and tie-rod tapers.',
+    numberedFeatures: [
+      { title: 'Induction-Hardened Rack', body: 'Rack teeth and pinion induction-hardened for low friction and wear resistance. Holds the OE ratio and travel, so the on-center feel stays tight long past the point the original went vague.' },
+      { title: 'Flow-Tested Rotary Valve', body: 'Valve sleeve and spool matched and flow-tested for crossover and leak-down. Assist comes on smooth and symmetric left and right, no dead spot off-center, no heavy pull to one side.' },
+      { title: 'New Sockets, Bushing & Boots', body: 'Fresh inner tie-rod sockets, rack support bushing, bellows boots and fasteners. Takes out the play that makes the car wander and seals out the grit that scores the bar.' },
+      { title: 'Centered & Bench-Tested', body: '100% hydraulic-tested for internal leakage, cycled lock-to-lock, then centered on the test stand so it bolts in on-center and the alignment lands on the first pull.' },
+    ],
+    closing: 'Steering racks fail at three points and you feel all of them. The support bushing and inner tie-rod sockets wear, the on-center feel goes vague, and the car wanders while you saw at the wheel. The pinion seal weeps, the assist fades, and parking turns into a workout. The rotary valve O-rings score on contaminated fluid and the steering goes heavy to one side. New bushings, new sockets, fresh seals and a flow-tested valve shut all three down.',
+    benefitsTitle: 'Tight Steering. Every Input.',
+    benefits: [
+      { icon: 'compass',  body: 'Induction-hardened rack holds OE geometry. Ratio and travel match factory, alignment lands in spec the first time.' },
+      { icon: 'shield',   body: 'New tie-rod sockets, support bushing and boots. No play at center, no clunk over bumps, no grit in the gears.' },
+      { icon: 'activity', body: 'Rotary valve flow-tested for crossover and leak-down. Smooth, symmetric assist at idle, no weep down the pinion.' },
+      { icon: 'sparkles', body: 'Centered on the test stand and serial-stamped. Drops in on-center, bolts to OE mounts, no alignment guesswork.' },
+    ],
+    outro: 'Every unit is cycled lock-to-lock on the bench, hydraulic-tested for internal leakage and valve crossover, then centered and serial-stamped before it ships. It is built to OE steering geometry under an ISO 9001 and ISO 14001 program, with wear, environmental and road testing behind it.',
   }),
   makeProduct({
     slug: 'air-filter',
     category: 'Service', eyebrow: 'Service · Air',
     title: 'Air', title2: 'Filter.',
     heroAsset: 'filter',
-    summary: "Dual-layer synthetic depth-loading media in an OE-dimension frame. ISO 5011 efficiency at 98% — paper-filter capture rate at roughly 40% lower pressure drop.",
     bullets: [
       'Dual-layer synthetic depth-loading media. Captures particles through the depth of the pleat, not just at the surface.',
       '98% efficiency tested to the ISO 5011 lab standard.',
       '~40% lower pressure drop than premium paper-pleat at the same airflow.',
       'OEM frame geometry. Drops into the airbox with no spacers, no shims, no trimming.',
       'Service interval ~30,000 km. Roughly double a paper element of the same fitment.',
-      'Dry media — no oil, no wax, no resin. Compatible with MAF-sensor airboxes.',
+      'Dry media, no oil, no wax, no resin. Compatible with MAF-sensor airboxes.',
     ],
-    intro: "Our air filter uses a two-layer synthetic depth-loading medium in place of the single surface-loading paper pleat that ships from the factory. Depth loading captures particles all the way through the pleat instead of just on the upstream face — the filter holds more dust before pressure drop climbs out of spec, which means a longer service interval at the same engine vacuum. Frame and gasket dimensions match the original airbox so the seal at the lid lands the same way it always did.",
+    intro: "Our air filter uses a two-layer synthetic depth-loading medium in place of the single surface-loading paper pleat that ships from the factory. Depth loading captures particles all the way through the pleat instead of just on the upstream face. It holds more dust before the pressure drop climbs out of spec, which buys a longer service interval at the same engine vacuum. Frame and gasket dimensions match the original airbox so the seal at the lid lands the same way it always did.",
     numberedFeatures: [
       { title: 'Depth-Loading Synthetic', body: 'Two layers of synthetic media trap particles throughout the thickness of the pleat. Surface loading clogs at the face and chokes airflow fast; depth loading holds far more dust before pressure drop climbs.' },
-      { title: 'ISO 5011 98% Efficient',  body: 'Tested per the ISO 5011 lab protocol — the same standard OE suppliers test against. 98% capture across the test dust size range, with no oil bypass and no aftermarket re-oiling required.' },
-      { title: 'Lower Pressure Drop',     body: 'Engineered for ~40% lower static pressure drop than a premium paper pleat at the same airflow. Engine sees the airbox the way the calibration expects — no MAF drift, no fuel-trim shift.' },
+      { title: 'ISO 5011 98% Efficient',  body: 'Tested per the ISO 5011 lab protocol, the same standard OE suppliers test against. 98% capture across the test dust size range, with no oil bypass and no aftermarket re-oiling required.' },
+      { title: 'Lower Pressure Drop',     body: 'Engineered for ~40% lower static pressure drop than a premium paper pleat at the same airflow. Engine sees the airbox the way the calibration expects, no MAF drift, no fuel-trim shift.' },
       { title: 'OEM Frame & Seal',        body: 'Same outer dimensions, same gasket geometry, same airbox-clip cutouts as the original. Lid seats and seals on the OE bead with no foam shims and no silicone touch-up.' },
     ],
     closing: "Cheap aftermarket filters cut one of two corners: they let pressure drop spike so the airbox sounds good but the engine pulls a depression that hurts low-end torque, or they let oversized particles through the media and the long-term cost shows up as turbo wear and cylinder scuff. A depth-loading synthetic at OE efficiency closes off both.",
@@ -750,38 +787,37 @@ const NEW_PRODUCTS = [
       { icon: 'activity', body: 'Double the service interval of a paper element. Less downtime, fewer parts changes.' },
       { icon: 'sparkles', body: 'OEM frame and seal. Drop in, clip the lid, drive.' },
     ],
-    outro: 'Each filter lot is sample-tested at the ISO 5011 dust-loading rig for efficiency, capacity and pressure drop. Built on the line that supplies our OE filtration program, the same QC standard that backs every Service SKU in the ample range.',
+    outro: 'Each filter lot is sample-tested on the ISO 5011 dust rig for efficiency, capacity and pressure drop before it ships.',
   }),
   makeProduct({
     slug: 'cabin-filter',
     category: 'Service', eyebrow: 'Service · Cabin Air',
     title: 'Cabin', title2: 'Filter.',
     heroAsset: 'filter',
-    summary: "HEPA-grade pleat with activated carbon and a polyphenol allergen coating. Captures 99.97% of particles at 0.3 microns and adsorbs the gas-phase pollutants the OE cabin filter ignores.",
     bullets: [
-      'HEPA-grade synthetic pleat. ISO 29463-3 efficiency of 99.97% at 0.3 microns — medical-lab standard.',
+      'HEPA-grade synthetic pleat. ISO 29463-3 efficiency of 99.97% at 0.3 microns, medical-lab standard.',
       'Activated carbon layer. Adsorbs nitrogen oxides, ozone, exhaust fumes and other VOCs.',
       'Polyphenol allergen-blocking coating. Neutralises >95% of pollen, mould spore and pet-dander allergens on contact.',
       'Anti-microbial treatment. Prevents mould and bacterial growth on the downstream face.',
       'OEM frame geometry. Drops into the cabin filter housing on the original clips.',
       'Service interval ~15,000 km. Replace at every other oil change.',
     ],
-    intro: "Our cabin air filter is a four-stage media stack: a coarse pre-filter that catches leaves and insects, a HEPA-grade synthetic pleat that captures fine particulate down to 0.3 microns, an activated-carbon layer that adsorbs gas-phase pollutants the pleat cannot stop, and a polyphenol surface coating that breaks down airborne allergens on contact. The HEPA stage is tested to the ISO 29463-3 standard — the same protocol used for medical and laboratory cleanrooms — at 99.97% efficiency.",
+    intro: "Our cabin air filter is a four-stage media stack: a coarse pre-filter that catches leaves and insects, a HEPA-grade synthetic pleat that captures fine particulate down to 0.3 microns, an activated-carbon layer that adsorbs gas-phase pollutants the pleat cannot stop, and a polyphenol surface coating that breaks down airborne allergens on contact. The HEPA stage is tested to the ISO 29463-3 standard, the same protocol used for medical and laboratory cleanrooms, at 99.97% efficiency.",
     numberedFeatures: [
       { title: 'HEPA-Grade Pleat',         body: 'Synthetic pleat tested to ISO 29463-3 at 99.97% efficiency for 0.3 micron particles. Captures PM2.5, diesel soot, brake dust and tyre particulate that the OE single-layer cabin filter passes straight through.' },
-      { title: 'Activated Carbon Layer',   body: 'Bonded activated-carbon layer adsorbs gas-phase pollutants — nitrogen oxides, ozone, exhaust fumes, fuel vapour and other VOCs. The smell that hits when a diesel pulls in front of you in traffic, stopped at the filter.' },
-      { title: 'Polyphenol Allergen Coat', body: 'Polyphenol surface coating neutralises pollen, mould spore and pet-dander allergens on contact — more than 95% of common allergens broken down rather than just trapped, so the filter does not become a reservoir.' },
+      { title: 'Activated Carbon Layer',   body: 'Bonded activated-carbon layer adsorbs gas-phase pollutants, nitrogen oxides, ozone, exhaust fumes, fuel vapour and other VOCs. The smell that hits when a diesel pulls in front of you in traffic, stopped at the filter.' },
+      { title: 'Polyphenol Allergen Coat', body: 'Polyphenol surface coating neutralises pollen, mould spore and pet-dander allergens on contact. More than 95% of common allergens get broken down rather than just trapped, so the filter does not turn into a reservoir of its own.' },
       { title: 'OEM Frame & Seal',         body: 'Same outer dimensions, same edge gasket, same retaining tabs as the original. Drops into the cabin filter housing on the OE clips with no spacers, no trimming and no foam shims.' },
     ],
-    closing: "The HVAC blower pulls 10-20 times more air across the cabin filter every minute than the engine pulls through the air cleaner. A cabin filter that just catches leaves and dust is letting everything sub-micron — exhaust soot, brake particulate, diesel fumes — go straight into the lungs of everyone in the car. HEPA-grade media plus activated carbon plus an allergen coating closes off the gap.",
+    closing: "The HVAC blower pulls 10 to 20 times more air across the cabin filter every minute than the engine pulls through the air cleaner. A filter that only catches leaves and dust lets the sub-micron stuff (exhaust soot, brake particulate, diesel fumes) go straight into the lungs of everyone in the car. HEPA-grade media, activated carbon and an allergen coating close that gap.",
     benefitsTitle: 'Clean Air in the Cabin',
     benefits: [
-      { icon: 'wind',     body: 'HEPA-grade capture. 99.97% efficiency at 0.3 microns — PM2.5, soot, allergens all stopped.' },
+      { icon: 'wind',     body: 'HEPA-grade capture. 99.97% efficiency at 0.3 microns, PM2.5, soot, allergens all stopped.' },
       { icon: 'sparkles', body: 'Activated carbon. Adsorbs exhaust fumes, ozone and VOCs the OE filter ignores.' },
       { icon: 'shield',   body: 'Polyphenol coating + anti-microbial. Neutralises allergens, prevents mould and bacterial growth.' },
       { icon: 'activity', body: 'OEM fit. Drops into the cabin filter housing on the original clips.' },
     ],
-    outro: 'Each cabin filter lot is sample-tested for HEPA efficiency at 0.3 microns per ISO 29463-3, carbon adsorption capacity per ASTM D3467, and allergen-neutralisation rate against ragweed and cat-dander challenge profiles. Built on the line that supplies our OE cabin-air program, the same QC standard that backs every Service SKU in the ample range.',
+    outro: 'Each cabin-filter lot is sample-tested for HEPA efficiency at 0.3 microns per ISO 29463-3, carbon adsorption per ASTM D3467, and allergen neutralisation against ragweed and cat-dander challenge profiles.',
   }),
 ];
 
@@ -789,7 +825,7 @@ NEW_PRODUCTS.forEach(p => { PRODUCTS[p.slug] = p; });
 
 const PRODUCT_ORDER = [
   // 'calipers', 'wiper-linkage', 'exhaust', 'radiators', 'oil-cooler',
-  // 'blower-motor' intentionally omitted — kept in PRODUCTS so a direct URL
+  // 'blower-motor' intentionally omitted, kept in PRODUCTS so a direct URL
   // (#/product/<slug>) still renders, but hidden from catalog + featured
   // listings.
   'brake-pads', 'caliper-npc', 'abs-sensor', 'pad-sensor',
