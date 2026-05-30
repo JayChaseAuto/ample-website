@@ -94,15 +94,15 @@
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=56"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=56"></script>
-<script type="text/babel" src="src/Animations.jsx?v=56"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=56"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=56"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=56"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=56"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=56"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=56"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=57"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=57"></script>
+<script type="text/babel" src="src/Animations.jsx?v=57"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=57"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=57"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=57"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=57"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=57"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=57"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -1838,10 +1838,13 @@ function App() {
                 </>
               )}
 
-              {/* Banner gallery editor — available for every product (rich or
-                  simple). Add/reorder/remove full-width graphics shown below
-                  the callouts on the page via <ProductBanners>. */}
-              <ProductBannerEditor slug={productSlug} />
+              {/* Banner gallery editor. Gated to rich-layout products because
+                  the carousel only mounts inside CalloutLayout (which renders
+                  when the product has numberedFeatures); showing it for simple
+                  products would let banners be saved but never appear. */}
+              {productData?.numberedFeatures && productData.numberedFeatures.length > 0 && (
+                <ProductBannerEditor slug={productSlug} />
+              )}
             </>
           )}
           {routeKey === 'gold' && (

@@ -466,6 +466,9 @@ function BannerCarousel({ banners, p }) {
   // (served from cache) before React could fire onLoad — the common case on
   // revisit, where relying on the load event alone leaves the ratio unset.
   React.useEffect(() => {
+    // If the banner list shrank (e.g. removed in the editor) and the active
+    // index is now out of range, clamp it instead of showing a blank slide.
+    if (idx > n - 1) { setIdx(Math.max(0, n - 1)); return; }
     const node = trackRef.current;
     if (node) {
       node.querySelectorAll('img').forEach((im, i) => {
@@ -522,8 +525,12 @@ function BannerCarousel({ banners, p }) {
            onPointerDown={onPointerDown} onPointerMove={onPointerMove}
            onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
            style={{
+             // Always render the index-based transform. During a drag,
+             // onPointerMove overrides it imperatively (no re-render fires),
+             // and the next re-render restores it — so a press that doesn't
+             // move never jumps to slide 0 (which `undefined` here caused).
              display: 'flex', height: '100%', width: `${n * 100}%`,
-             transform: dragging ? undefined : `translateX(-${idx * (100 / n)}%)`,
+             transform: `translateX(-${idx * (100 / n)}%)`,
              transition: dragging ? 'none' : `transform ${transBase}`,
              cursor: n > 1 ? 'grab' : 'default',
            }}>
