@@ -94,15 +94,15 @@
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=57"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=57"></script>
-<script type="text/babel" src="src/Animations.jsx?v=57"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=57"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=57"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=57"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=57"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=57"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=57"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=58"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=58"></script>
+<script type="text/babel" src="src/Animations.jsx?v=58"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=58"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=58"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=58"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=58"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=58"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=58"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -698,12 +698,17 @@ function applyTweaksToDOM(t) {
   // truth so both first-paint (pre-React shim) and live edits stay in sync.
   // Escape backslash and double-quote so a path containing either does not
   // break out of the url() argument and let stray characters become CSS.
-  // Force a leading slash on relative paths: the .atm-bg rule lives in
-  // /styles/colors_and_type.css, and url() inside a var() resolves against
-  // the stylesheet's URL, so "assets/x.webp" would 404 at /styles/assets/.
+  // The .atm-bg rule consumes this via var() inside /styles/colors_and_type.css,
+  // where a relative url() resolves against the STYLESHEET (so "assets/x" would
+  // 404 at /styles/assets/x). Resolve to a fully-qualified URL against the
+  // document base — correct both on a localhost root deploy AND a GitHub Pages
+  // project deploy served from /<repo>/ (a root-absolute "/assets/x" points at
+  // the domain root and 404s there).
   if (t.siteBackgroundImage) {
     let raw = String(t.siteBackgroundImage);
-    if (!/^([a-z]+:|\/\/|\/|data:|blob:)/i.test(raw)) raw = '/' + raw;
+    if (!/^(data:|blob:|[a-z][a-z0-9.+-]*:)/i.test(raw)) {
+      try { raw = new URL(raw.replace(/^\/+/, ''), document.baseURI).href; } catch (e) {}
+    }
     const safe = raw.replace(/\\/g, '\\\\').replace(/"/g, '\\"');
     root.style.setProperty('--site-bg-image', `url("${safe}")`);
   } else {
