@@ -512,15 +512,18 @@ function ContactForm() {
         maxLength={5000} required
         disabled={submitting} />
 
-      {/* Honeypot. Off-screen + aria-hidden + tabIndex -1 so real users
-          never see or focus it. Obscure field name (_ample_referral_url)
-          avoids both browser autofill and the common "website" name that
-          spam-bot training sets recognize. */}
-      <input
-        type="text" name="_ample_referral_url" tabIndex={-1} autoComplete="off"
-        value={form._ample_referral_url} onChange={setField('_ample_referral_url')}
-        aria-hidden="true"
-        style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0, pointerEvents: 'none' }} />
+      {/* Honeypot. Wrapped in a display:none container — unlike the old
+          off-screen (position:absolute) trick, display:none subtrees are
+          skipped by browser autofill and password managers, so real users
+          (and their tools) never fill it, while bots that parse the HTML and
+          fill every field still get caught. aria-hidden + tabIndex -1 keep it
+          out of the accessibility tree and tab order. The worker also only
+          flags URL-like content as spam, as a second layer of safety. */}
+      <div aria-hidden="true" style={{ display: 'none' }}>
+        <input
+          type="text" name="_ample_referral_url" tabIndex={-1} autoComplete="off"
+          value={form._ample_referral_url} onChange={setField('_ample_referral_url')} />
+      </div>
 
       <Button variant="primary" type="submit" disabled={submitting}>
         {submitting ? 'Sending…' : 'Submit'}
