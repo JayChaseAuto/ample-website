@@ -221,9 +221,20 @@ export default {
 
     /* Honeypot. Hidden field with an obscure name (not in common
        honeypot training lists). Real users leave it blank, bots fill it.
-       We return 200 ok so the bot does not retry but skip sending. */
-    if (body._ample_referral_url && String(body._ample_referral_url).trim().length > 0) {
-      console.log('Honeypot triggered, skipping send');
+       We return 200 ok so the bot does not retry but skip sending.
+
+       IMPORTANT: a non-empty value alone is NOT proof of a bot. Browser
+       autofill and password managers routinely populate hidden fields with
+       the user's name or email, which would false-positive every genuine
+       submission. Link-spam bots, on the other hand, dump URLs into every
+       field they find. So we only treat URL-like content as a bot signal.
+       (The frontend also hides this field with display:none, which stops
+       autofill from filling it in the first place — this is the backstop.) */
+    const honeypotValue = body._ample_referral_url
+      ? String(body._ample_referral_url).trim()
+      : '';
+    if (/https?:\/\/|www\.|\[url|<a\s|\.[a-z]{2,}\/|mailto:/i.test(honeypotValue)) {
+      console.log('Honeypot triggered (url-like content), skipping send');
       return json({ ok: true }, 200, origin);
     }
 
