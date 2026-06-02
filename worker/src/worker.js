@@ -79,7 +79,7 @@ function isPartnerSubject(subject) {
 
    Window: WINDOW_SECONDS rolling. Cap: MAX_PER_WINDOW submissions per IP.
    Tune in the constants if 5/hour feels wrong for your traffic. */
-const RATE_MAX_PER_WINDOW = 5;
+const RATE_MAX_PER_WINDOW = 20;
 const RATE_WINDOW_SECONDS = 3600;
 
 async function checkRateLimit(ip) {
