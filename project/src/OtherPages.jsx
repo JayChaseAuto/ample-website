@@ -420,7 +420,7 @@ function StoryPage() {
    (see worker/README.md), replace this with your live worker URL — either
    the workers.dev preview URL or the custom domain (api.ampleproducts.ca).
    Until it's set to a real URL, the form will fail with a clear error. */
-const CONTACT_ENDPOINT = 'https://ample-contact.YOUR-ACCOUNT.workers.dev';
+const CONTACT_ENDPOINT = 'https://ample-contact.ampleproducts.workers.dev';
 
 function ContactForm() {
   const [form, setForm] = React.useState({
