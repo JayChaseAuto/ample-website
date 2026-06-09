@@ -584,6 +584,9 @@ const NEW_PRODUCTS = [
     category: 'Braking', eyebrow: 'Braking · Wear',
     title: 'Brake Pad', title2: 'Wear Sensor.',
     heroAsset: 'sensor',
+    // Fill the showcase frame by default (the photo has its own backdrop, so
+    // covering reads cleaner than a letterboxed fit). Editable in the panel.
+    calloutImageFit: 'cover',
     /* Simple layout: short `description` block under the hero, no rich
        callouts. Copy grounded in OE wear-sensor literature (Delphi, Brake
        & Front End): low-current loop at the minimum-thickness line, rotor
@@ -662,6 +665,42 @@ const NEW_PRODUCTS = [
       { icon: 'sparkles',        body: 'Hose adapters, O-rings and clips in the box. Open it, drop it in, fill, bleed, drive.' },
     ],
     outro: 'Built on an ISO/TS 16949 line and validated through thermal cycling, vibration, pressure-impulse and salt-spray corrosion testing. Every unit is pressure-tested at 2 bar, dye-checked at every weld, and serial-stamped before it leaves the line.',
+  }),
+  makeProduct({
+    slug: 'radiator-fans',
+    category: 'Cooling', eyebrow: 'Cooling · Brushless Module',
+    title: 'Radiator', title2: 'Fan Assembly.',
+    heroAsset: 'blower-motor',
+    bullets: [
+      'Brushless DC motor. No brushes or commutator to wear out.',
+      'PWM variable-speed control matched to the factory signal.',
+      'OE blade count, pitch and shroud geometry for matched airflow.',
+      'Sealed motor housing and bearings against moisture and corrosion.',
+      'Spin-balanced fan with the original connector and mounting points.',
+    ],
+    /* Rich callout layout (same shape as radiator-urk / water pump). Copy
+       researched against Dorman and OE-supplier (Denso, Continental, Valeo)
+       radiator-fan literature: brushless motor removes the brush/commutator
+       wear path, PWM variable speed, OE-matched blade/shroud airflow, sealed
+       bearings against moisture seizure, spin-balanced rotor, OE connector +
+       mounting. Closing leads with the real failure modes (brush wear, seized
+       bearing, melted connector, cracked blades). No em-dashes in this block. */
+    intro: "Our radiator fan assembly drives a brushless DC motor through the factory PWM signal, so it ramps with coolant temperature instead of slamming on and off. The shroud geometry, blade count and pitch match the original, pulling the same airflow across the core at idle and at speed. It carries the OE electrical connector and the same mounting footprint, so it drops into the bracket and the harness plugs in without an adapter.",
+    numberedFeatures: [
+      { title: 'Brushless Motor', body: 'No carbon brushes to wear down and no commutator to arc, which removes the single most common failure point in a cooling fan. It runs cooler, draws less current and holds rated speed far longer under sustained high-temp duty.' },
+      { title: 'OE-Matched Airflow', body: 'Blade count, pitch and shroud profile copy the original module, so it moves the same air through the radiator and condenser. Airflow stays consistent at idle and in stop-and-go traffic, when the engine needs it most.' },
+      { title: 'Sealed Against Moisture', body: 'The motor housing and bearings are sealed to keep out road spray, salt and humidity. That protects the windings and bearing from the corrosion-driven seizure that kills cheap fans.' },
+      { title: 'Balanced Rotating Assembly', body: 'Each fan is spin-balanced so the motor bearing is not fighting a wobble. Less vibration means quieter operation and a longer bearing life.' },
+    ],
+    closing: "Cheap fans fail in predictable ways. The brushes wear down and the motor stalls, the bearing dries out and seizes, a motor that runs hot and draws too much current cooks its own connector until the pins corrode or melt, and thin blades crack while a warped shroud chews them up. Once the fan quits, the engine cooks itself in traffic and the A/C dies at the curb. A brushless motor removes the brushes and the high current draw that cause most of those failures, the sealed bearing resists seizure, and the matched blades and shroud keep the air where it belongs.",
+    benefitsTitle: 'Airflow When It Counts',
+    benefits: [
+      { icon: 'wind',            body: 'Pulls OE-equivalent airflow across the radiator and condenser at every fan speed.' },
+      { icon: 'thermometer-sun', body: 'Holds rated speed under sustained high coolant temperatures and heavy idle load.' },
+      { icon: 'zap',             body: 'Brushless design lowers current draw and protects the connector and harness.' },
+      { icon: 'activity',        body: 'Balanced rotor and sealed bearing keep vibration and fan noise down for the long haul.' },
+    ],
+    outro: 'Every assembly is run before it ships. The motor is powered and verified across its speed range, the fan is spin-balanced to keep vibration off the bearing, and the connector and mounting points are checked against the OE part so it plugs in and bolts up the first time. Nothing leaves the line until it spins true and pulls air.',
   }),
   makeProduct({
     slug: 'condenser',
@@ -829,7 +868,7 @@ const PRODUCT_ORDER = [
   // (#/product/<slug>) still renders, but hidden from catalog + featured
   // listings.
   'brake-pads', 'caliper-npc', 'abs-sensor', 'pad-sensor',
-  'radiator-urk', 'water-pump-awn',
+  'radiator-urk', 'radiator-fans', 'water-pump-awn',
   'compressor', 'condenser', 'heater-core',
   'alternator', 'starter', 'ignition-coil', 'lighting',
   'wiper-motor',

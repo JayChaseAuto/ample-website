@@ -103,9 +103,12 @@ function CatalogCard({ slug, ratio = '4/3' }) {
   const p = PRODUCTS[slug];
   const { tweaks, setProductTweak, mergeImageBag } = useTweakState();
   const cardImage = (tweaks.catalogCardImages || {})[slug];
-  const imageFit = tweaks.cardImageFit || 'contain';
   // Per-product overrides win over the global card defaults.
   const overrides = (tweaks.productOverrides || {})[slug] || {};
+  // Per-product fit override (Fit/Fill) so one card can show its whole image
+  // (contain) and be tuned with scale/padding without the border cropping it,
+  // even when the global default is Fill.
+  const imageFit = overrides.cardImageFit || tweaks.cardImageFit || 'contain';
   const cardScale = typeof overrides.cardScale === 'number'
     ? overrides.cardScale
     : (typeof tweaks.catalogCardScale === 'number' ? tweaks.catalogCardScale : 1);

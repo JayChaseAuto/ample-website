@@ -9,13 +9,16 @@ function ProductDetailPage({ slug }) {
   const p = { ...base };
   for (const k of ['eyebrow', 'title', 'title2', 'heroAsset', 'description',
                    'intro', 'closing', 'benefitsTitle', 'outro',
-                   'heroImageFit', 'heroImagePosition', 'calloutImageFit']) {
+                   'heroImageFit', 'heroImagePosition', 'calloutImageFit', 'bannerFit']) {
     if (overrides[k] != null && overrides[k] !== '') p[k] = overrides[k];
   }
   // Numeric hero knobs — 0 is a valid value (no overlay) so gate on type,
   // not truthiness.
   if (typeof overrides.heroOverlay === 'number') p.heroOverlay = overrides.heroOverlay;
   if (typeof overrides.heroHeight === 'number') p.heroHeight = overrides.heroHeight;
+  // Banner display: fixed pixel height (0/unset = auto-size to each image's
+  // natural ratio). Drives BannerCarousel; pairs with bannerFit.
+  if (typeof overrides.bannerHeight === 'number') p.bannerHeight = overrides.bannerHeight;
   // Arrays: replace whole-list when an override exists; falsy/empty means
   // "use base". The tweaks panel always sends a 4-item array.
   if (Array.isArray(overrides.numberedFeatures) && overrides.numberedFeatures.length) {
@@ -99,10 +102,13 @@ function ProductDetailPage({ slug }) {
             )}
           </div>
 
-          {/* Drop hero — only for products WITHOUT the rich callout layout.
-              Rich-layout products skip the big dropped image since the
-              callouts already show a centered product shot. */}
-          {!usesRichLayout && (
+          {/* Drop hero — only for bare products with NO rich callout layout
+              AND no description showcase. Rich-layout products show a centered
+              product shot inside the callouts; description-layout products
+              (e.g. the brake-pad wear sensor) show one in DescriptionLayout.
+              For both, this big hero banner would just be a redundant empty
+              box, so skip it and keep the title + the product itself. */}
+          {!usesRichLayout && !p.description && (
             <Reveal delay={2}>
               <div ref={heroDropRef} className="drop-target product-hero"
                    data-ample-slot="product-hero"
@@ -157,32 +163,16 @@ function ProductDetailPage({ slug }) {
           )}
         </section>
 
-        {/* Simple-layout description — a short copy block under the hero for
-            products that don't use the rich callout layout (e.g. the wear
-            sensor). Renders only when the product defines `description` AND
-            isn't a rich-layout SKU, so it never doubles up with intro/closing. */}
-        {!usesRichLayout && p.description && (
-          <section style={{
-            padding: 'clamp(28px, 5vw, 44px) 0 clamp(40px, 8vw, 64px)',
-            borderTop: '1px solid var(--border-1)',
-          }}>
-            <Reveal>
-              <div style={{ maxWidth: 760 }}>
-                <Eyebrow>About the part</Eyebrow>
-                <p style={{ color: 'var(--fg-2)', fontSize: 15, lineHeight: 1.75, margin: '14px 0 0' }}>
-                  {p.description}
-                </p>
-              </div>
-            </Reveal>
-          </section>
-        )}
-
-        {/* Rich layout (callouts + benefits) — opt-in via product.numberedFeatures.
-            Falls back to the legacy FeatureCard grid for products that haven't
-            been upgraded yet. Simple-layout products keep just the hero
-            banner above — no extra center/showcase image. */}
-        {p.numberedFeatures && p.numberedFeatures.length > 0 ? (
+        {/* Body layout. Rich (numbered callouts + benefits) when the product
+            defines numberedFeatures; otherwise a description showcase that
+            keeps the same centered product-image format as the rich layout
+            but drops the 1·2·3·4 callouts and shows just the description
+            (e.g. the brake-pad wear sensor). Legacy FeatureCard grid is the
+            final fallback for un-upgraded SKUs. */}
+        {usesRichLayout ? (
           <CalloutLayout slug={slug} p={p} calloutImage={p.calloutImage} />
+        ) : p.description ? (
+          <DescriptionLayout slug={slug} p={p} calloutImage={p.calloutImage} />
         ) : p.features && p.features.length > 0 ? (
           <section style={{ padding: '32px 0 48px', borderTop: '1px solid var(--border-1)' }}>
             <div style={{
@@ -231,6 +221,99 @@ function FeatureCard({ icon, title, body }) {
       </div>
       <p style={{ color: 'var(--fg-2)', fontSize: 13, lineHeight: 1.55, margin: 0 }}>{body}</p>
     </div>
+  );
+}
+
+/* ---------- Description layout (showcase + description, no callouts) ----------
+   Same visual format as the rich callout layout — a centered product showcase
+   image (drop-to-set, or a banner carousel when the product has banners) — but
+   WITHOUT the 1·2·3·4 numbered callouts. The body is just the product's
+   `description`. Optional intro/closing/benefits/outro still render if present,
+   so it degrades gracefully; the wear sensor uses only the description. */
+function DescriptionLayout({ slug, p, calloutImage }) {
+  const { setProductTweak } = useTweakState();
+  const banners = p.banners || [];
+  const hasBanners = banners.length > 0;
+  const calloutDropRef = React.useRef(null);
+  useImageDrop(calloutDropRef, (path, opts) => {
+    setProductTweak(slug, 'calloutImage', path, opts);
+  }, { namePrefix: `callout-${slug}` });
+  return (
+    <>
+      <section style={{ padding: '40px 0 24px', borderTop: '1px solid var(--border-1)' }}>
+        {p.intro && (
+          <Reveal>
+            <p style={{ color: 'var(--fg-3)', fontSize: 14, lineHeight: 1.7,
+                        maxWidth: 920, margin: '0 auto 36px', textAlign: 'center' }}>{p.intro}</p>
+          </Reveal>
+        )}
+        <Reveal>
+          {hasBanners ? (
+            <div className="callout-showcase">
+              <div className="callout-stage" style={{
+                position: 'relative',
+                background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #050608 80%)',
+                overflow: 'hidden', borderRadius: 6, border: '1px solid var(--border-1)',
+              }}>
+                <div className="callout-stage-reflection" aria-hidden="true" />
+                <BannerCarousel banners={banners} p={p} />
+              </div>
+            </div>
+          ) : (
+            <div style={{ maxWidth: 380, margin: '0 auto' }}>
+              <div ref={calloutDropRef} className="callout-stage drop-target"
+                   data-ample-slot="product-callout" style={{
+                position: 'relative', aspectRatio: '1/1',
+                background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #050608 80%)',
+                overflow: 'hidden', borderRadius: 4, border: '1px solid var(--border-1)',
+              }}>
+                <div className="callout-stage-reflection" aria-hidden="true" />
+                <div className="drop-hint">Drop image to set product photo</div>
+                <div style={{ position: 'absolute', inset: 0,
+                              transform: `scale(${p.calloutImageScale || 1})`,
+                              transformOrigin: 'center' }}>
+                  <ProductCardMedia slug={slug} heroAsset={p.heroAsset}
+                    fit={p.calloutImageFit || 'contain'}
+                    size={280} override={calloutImage}
+                    padding={(p.calloutImageFit || 'contain') === 'cover' ? 0 : 24}
+                    position={p.calloutImagePosition || '50% 50%'}
+                    onPositionChange={window.__ampleEditor
+                      ? (pos) => setProductTweak(slug, 'calloutImagePosition', pos)
+                      : undefined} />
+                </div>
+              </div>
+            </div>
+          )}
+        </Reveal>
+        {p.description && (
+          <Reveal delay={1}>
+            <p style={{ color: 'var(--fg-2)', fontSize: 15, lineHeight: 1.75,
+                        maxWidth: 760, margin: '28px auto 0', textAlign: 'center' }}>
+              {p.description}
+            </p>
+          </Reveal>
+        )}
+      </section>
+      {p.closing && (
+        <section style={{ padding: '8px 0 24px' }}>
+          <Reveal>
+            <p style={{ color: 'var(--fg-2)', fontSize: 14, lineHeight: 1.7,
+                        maxWidth: 820, margin: '0 auto', textAlign: 'center' }}>{p.closing}</p>
+          </Reveal>
+        </section>
+      )}
+      {p.benefits && p.benefits.length > 0 && (
+        <BenefitsBlock title={p.benefitsTitle} items={p.benefits} />
+      )}
+      {p.outro && (
+        <section style={{ padding: '0 0 32px' }}>
+          <Reveal>
+            <p style={{ color: 'var(--fg-3)', fontSize: 13, lineHeight: 1.7,
+                        maxWidth: 820, margin: '0 auto', textAlign: 'center' }}>{p.outro}</p>
+          </Reveal>
+        </section>
+      )}
+    </>
   );
 }
 
@@ -448,6 +531,11 @@ function CalloutLayout({ slug, p, calloutImage }) {
    ratio so each graphic shows full, uncropped, regardless of its dimensions. */
 function BannerCarousel({ banners, p }) {
   const n = banners.length;
+  // Optional manual sizing from the Tweaks panel: a fixed pixel height
+  // (0/unset = auto-resize to each image's natural ratio) and an object-fit
+  // mode. Lets the editor lock banner height + choose Fill/Fit.
+  const fixedH = (typeof p.bannerHeight === 'number' && p.bannerHeight > 0) ? p.bannerHeight : 0;
+  const fit = p.bannerFit || 'contain';
   const [idx, setIdx] = React.useState(0);
   const [ratio, setRatio] = React.useState(16 / 9);
   const [dragging, setDragging] = React.useState(false);
@@ -517,7 +605,8 @@ function BannerCarousel({ banners, p }) {
          onKeyDown={(e) => { if (e.key === 'ArrowLeft') go(idx - 1); else if (e.key === 'ArrowRight') go(idx + 1); }}
          style={{
            position: 'relative', width: '100%',
-           aspectRatio: String(ratio),
+           aspectRatio: fixedH ? undefined : String(ratio),
+           height: fixedH ? fixedH : undefined,
            transition: reduce ? 'none' : `aspect-ratio 320ms cubic-bezier(0.22, 1, 0.36, 1)`,
            overflow: 'hidden', touchAction: 'pan-y',
          }}>
@@ -544,7 +633,7 @@ function BannerCarousel({ banners, p }) {
                 swipe and never measures their ratio for the auto-resize. */}
             <img src={b.url} alt={altFor(b, i)} draggable={false} onLoad={onLoad(i)}
                  loading="eager" decoding="async"
-                 style={{ width: '100%', height: '100%', objectFit: 'contain',
+                 style={{ width: '100%', height: '100%', objectFit: fit,
                           display: 'block', userSelect: 'none', pointerEvents: 'none' }} />
           </div>
         ))}

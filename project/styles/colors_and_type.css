@@ -783,7 +783,10 @@ html.lenis, html.lenis body { height: auto; }
    with the numbered callouts as a supporting row beneath. Used when a product
    has banners; image-only products keep the .callout-grid flank layout. */
 .callout-showcase {
-  max-width: min(100%, 1000px);
+  /* Banner showcase width on desktop, scaled by the global Banner-size slider
+     (--banner-scale, default 0.75). On narrow screens the 100% term wins, so
+     phones and tablets always fill the width regardless of the slider. */
+  max-width: min(100%, calc(1000px * var(--banner-scale, 0.75)));
   margin: 0 auto;
 }
 .callout-row {

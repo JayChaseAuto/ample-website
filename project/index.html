@@ -94,22 +94,22 @@
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=58"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=58"></script>
-<script type="text/babel" src="src/Animations.jsx?v=58"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=58"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=58"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=58"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=58"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=58"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=58"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=59"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=59"></script>
+<script type="text/babel" src="src/Animations.jsx?v=59"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=59"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=59"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=59"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=59"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=59"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=59"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "accentColor": "#E92024",
   "theme": "dark",
   "heroImage": "assets\/hero-d3c3d9c4.webp",
-  "heroOverlay": 35,
+  "heroOverlay": 23,
   "heroHeadline1": "oem+",
   "heroHeadlineAccent": "parts",
   "heroHeadline2": "",
@@ -124,19 +124,19 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "showGoldBanner": false,
   "catalogEyebrow": "Our Inventory",
   "catalogTitle": "Our Catalog.",
-  "catalogIntro": "A curated selection of our precision components, organized by system. For fitment, pricing, or availability on any part, get in touch.",
+  "catalogIntro": " Selection of our premium parts, Organized by category.",
   "catalogHeaderSize": 73,
   "catalogLayout": "grouped",
   "catalogFilter": "all",
   "catalogSort": "category",
-  "catalogCardCols": 3,
-  "catalogCardRatio": "4\/3",
+  "catalogCardCols": 2,
+  "catalogCardRatio": "1\/1",
   "cardImageFit": "cover",
   "catalogShowBlurbs": true,
   "categoryImages": {
     "Braking": {
-      "url": "assets\/cat-braking-aeef19c2.webp",
-      "position": "52.3% 100.0%",
+      "url": "assets\/cat-braking-fa0da62b.webp",
+      "position": "43.5% 100.0%",
       "fit": "cover"
     },
     "Cooling": "assets\/cat-cooling-711bfc91.webp",
@@ -151,17 +151,19 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "url": "assets\/cat-steering-f5ec687b.webp",
       "position": "100.0% 75.7%"
     },
-    "Service": "assets\/cat-service-c289f552.webp"
+    "Service": {
+      "url": "assets\/cat-service-4b5353cc.webp"
+    }
   },
   "catalogCardImages": {
     "brake-pads": "assets\/card-brake-pads-45d7c1f2.webp",
-    "caliper-npc": "assets\/card-caliper-npc-34df2d94.webp",
+    "caliper-npc": "assets\/card-caliper-npc-c6876459.webp",
     "abs-sensor": "assets\/card-abs-sensor-a28e5d04.webp",
-    "pad-sensor": "assets\/card-pad-sensor-78535a6c.webp",
+    "pad-sensor": "assets\/card-pad-sensor-9bfdc8c5.webp",
     "water-pump-awn": "assets\/card-water-pump-awn-bf9d322d.webp",
     "compressor": "assets\/card-compressor-b04f024a.webp",
     "alternator": "assets\/card-alternator-fe236578.webp",
-    "starter": "assets\/card-starter-544cf15d.webp",
+    "starter": "assets\/card-starter-8fe5405d.webp",
     "ignition-coil": "assets\/card-ignition-coil-ccb1cb69.webp",
     "lighting": "assets\/card-lighting-3f4b4811.webp",
     "power-steering-pump": "assets\/card-power-steering-pump-982668a3.webp",
@@ -171,24 +173,26 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "wiper-motor": "assets\/card-wiper-motor-6692e449.webp",
     "heater-core": "assets\/card-heater-core-36993be8.webp",
     "gasket": "assets\/card-gasket-51104de0.webp",
-    "radiator-urk": "assets\/card-radiator-urk-e1a379e8.webp",
+    "radiator-urk": "assets\/card-radiator-urk-949abd21.webp",
     "tensioner": "assets\/card-tensioner-cc18be79.webp",
-    "rack-pinion": "assets\/card-rack-pinion-9bd31313.webp"
+    "rack-pinion": "assets\/card-rack-pinion-9bd31313.webp",
+    "radiator-fans": "assets\/card-radiator-fans-a2420cbe.webp"
   },
   "productOverrides": {
     "brake-pads": {
-      "heroBgImage": "assets\/product-brake-pads-hero-2658a817.webp",
+      "heroBgImage": "assets\/product-brake-pads-hero-97edef69.webp",
       "heroAsset": "brake-pads",
       "cardScale": 1.3,
       "calloutImageFit": "cover",
       "calloutImageScale": 1.4,
       "heroImageFit": "contain",
+      "calloutImage": "assets\/callout-brake-pads-fa0da62b.webp",
       "heroImagePosition": "center",
       "heroOverlay": 40,
       "heroHeight": 520,
       "cardPadding": 22,
       "cardPosition": "99.5% 0.0%",
-      "calloutImagePosition": "53.6% 93.8%",
+      "calloutImagePosition": "53.6% 100.0%",
       "heroBgImageScale": 1.3,
       "summary": "Brake pads that feel the same way every time. Cold morning commute, third lap of a canyon road, traffic on the way home.",
       "bullets": [
@@ -218,27 +222,45 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
           "body": "ABE + ECE R90 certified. Inspection and insurance friendly."
         }
       ],
-      "calloutImage": "assets\/callout-brake-pads-ffb98608.webp"
+      "banners": [
+        {
+          "url": "assets\/product-brake-pads-banner-1-97edef69.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-brake-pads-banner-2-fa0da62b.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-brake-pads-banner-3-918abc9c.webp",
+          "alt": ""
+        }
+      ]
     },
     "pad-sensor": {
-      "heroBgImage": "assets\/product-pad-sensor-hero-aaf8d397.webp",
+      "heroBgImage": "",
       "bullets": [
         "OEM connectors"
       ],
-      "heroImageFit": "cover",
+      "heroImageFit": "contain",
       "summary": "Ample sensors informs drivers about the brake pads' remaining life and when they need to be replaced. The electronic wear sensor keeps track of the thickness of your car's brake pads and alerts you when they are too thin and should be replaced. Your new Ample brake pad wear sensors will function exactly like the original wear sensors on your car because they are made to OE specifications. Every time a brake pad is replaced, Ample strongly advises replacing the wear sensors.",
-      "cardScale": 1.1,
-      "cardPadding": 10,
-      "cardPosition": "50.7% 51.6%",
-      "heroBgImageScale": 0.95,
+      "cardScale": 1.2,
+      "cardPadding": 28,
+      "cardPosition": "56.4% 29.7%",
+      "heroBgImageScale": 1.2,
       "heroOverlay": 0,
-      "heroImagePosition": "21.8% 26.2%"
+      "heroImagePosition": "21.8% 26.2%",
+      "calloutImagePosition": "57.5% 54.0%",
+      "calloutImage": "assets\/callout-pad-sensor-341eff2e.webp",
+      "heroHeight": 560
     },
     "starter": {
       "heroBgImage": "assets\/product-starter-hero-ff47eda2.webp",
       "calloutImageFit": "cover",
       "cardScale": 1.1,
-      "calloutImageScale": 1.25
+      "calloutImage": "assets\/callout-starter-5023f537.webp",
+      "calloutImageScale": 1.2,
+      "banners": []
     },
     "cabin-filter": {
       "heroBgImage": "assets\/product-cabin-filter-hero-f69bf462.webp",
@@ -250,30 +272,46 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroImagePosition": "49.8% 54.3%",
       "cardPadding": 14,
       "heroBgImageScale": 0.9,
-      "calloutImage": "assets\/callout-cabin-filter-60ed47be.webp",
+      "calloutImage": "assets\/callout-cabin-filter-e2410fc5.webp",
       "calloutImageFit": "contain",
       "calloutImagePosition": "50.0% 50.9%",
-      "calloutImageScale": 1.25
+      "banners": [
+        {
+          "url": "assets\/product-cabin-filter-banner-1-ac4a9871.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-cabin-filter-banner-2-de895b8b.webp",
+          "alt": ""
+        }
+      ]
     },
     "air-filter": {
       "heroBgImage": "assets\/product-air-filter-hero-ccc3bf87.webp",
       "heroImageFit": "cover",
       "cardScale": 1,
-      "calloutImage": "assets\/callout-air-filter-86753cdc.webp",
-      "cardPadding": 0,
-      "calloutImageScale": 1.25,
-      "calloutImageFit": "cover"
+      "calloutImage": "assets\/callout-air-filter-da85a203.webp",
+      "banners": [
+        {
+          "url": "assets\/product-air-filter-banner-2-564061fe.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-air-filter-banner-1-b28f8243.webp",
+          "alt": ""
+        }
+      ]
     },
     "caliper-npc": {
       "heroBgImage": "assets\/brake-disc-caliper.jpg",
       "heroAsset": "radiator",
       "outro": "It is not greasy, forms a very thin layer, and does not compromise braking performance. The coating withstands temperatures up to 400 °C (750 °F), maintaining its protective qualities through heat cycling without crystallization or organic resin buildup. Applied in a closed system that recycles leftover liquids, making it a sustainable choice for high-performance brake calipers.",
-      "calloutImageScale": 2.5,
+      "calloutImageScale": 1.2,
       "cardScale": 1.5,
-      "calloutImageFit": "contain",
+      "calloutImageFit": "cover",
       "heroHeight": 500,
       "cardPosition": "50.8% 42.2%",
-      "calloutImagePosition": "50.0% 48.6%",
+      "calloutImagePosition": "48.4% 0.0%",
       "cardPadding": 2,
       "heroOverlay": 0,
       "heroBgImageScale": 0.9,
@@ -285,34 +323,26 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
         "Cadmium-plated finish. Won’t rust through.",
         "OEM bracket compatible"
       ],
-      "intro": "Our brand-new brake calipers offer a very high degree of corrosion resistance. New pistons, slider pins, new seals and a pre-fitted bleeder mean an easier, quicker, safer install and no core return. Built to match OE standards and subject to rigorous QC testing."
+      "intro": "Our brand-new brake calipers offer a very high degree of corrosion resistance. New pistons, slider pins, new seals and a pre-fitted bleeder mean an easier, quicker, safer install and no core return. Built to match OE standards and subject to rigorous QC testing.",
+      "calloutImage": "assets\/callout-caliper-npc-9e138274.webp",
+      "banners": [
+        {
+          "url": "assets\/product-caliper-npc-banner-1-484d5230.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-caliper-npc-banner-2-ad2c7fbe.webp",
+          "alt": ""
+        }
+      ],
+      "bannerFit": "cover",
+      "bannerHeight": 520
     },
     "lighting": {
       "heroBgImage": "assets\/product-lighting-hero-d63a17b8.webp",
       "heroImageFit": "contain",
       "cardPosition": "61.1% 65.6%",
-      "cardScale": 1.05,
-      "calloutImage": "assets\/callout-lighting-0f92d99c.webp",
-      "heroBgImageScale": 1,
-      "calloutImageScale": 1.15,
-      "numberedFeatures": [
-        {
-          "title": "Optical Centre Match",
-          "body": "The LED chip array sits at the exact focal point of the original filament. Reflector and projector lenses focus the beam the way the engineers drew it up: clean cutoff, wide hot spot, no scatter into the oncoming lane."
-        },
-        {
-          "title": "CAN-Bus Integration",
-          "body": "The driver board sinks the same current the OE halogen drew, so the body computer never throws a bulb-out code, never strobes the indicator and never needs a resistor pack inline. Drop in, drive, done."
-        },
-        {
-          "title": "Active Thermal Management",
-          "body": "Bonded aluminium heat sink and PWM-controlled fan keep the LED junction at its design temperature. Maintains rated output past 500 hours of operation, no dimming, no colour shift."
-        },
-        {
-          "title": "IP68 Sealed Housing",
-          "body": "Fully sealed against pressure-wash, salt spray and the freeze-thaw cycles of a Canadian winter. The original failure mode of moisture creeping in at the bulb base is engineered out."
-        }
-      ]
+      "cardScale": 1.05
     },
     "ignition-coil": {
       "heroBgImage": "assets\/product-ignition-coil-hero-ac25edda.webp",
@@ -321,8 +351,16 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroImagePosition": "49.2% 46.5%",
       "heroBgImageScale": 1.4,
       "cardPadding": 0,
-      "calloutImageScale": 1.2,
-      "calloutImageFit": "contain"
+      "banners": [
+        {
+          "url": "assets\/product-ignition-coil-banner-2-29b4d099.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-ignition-coil-banner-1-9d93c393.webp",
+          "alt": ""
+        }
+      ]
     },
     "heater-core": {
       "heroBgImage": "assets\/product-heater-core-hero-de510721.webp",
@@ -332,10 +370,16 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroBgImageScale": 1.05,
       "heroImagePosition": "54.1% 34.0%",
       "heroOverlay": 8,
-      "cardPosition": "49.2% 53.6%",
-      "calloutImage": "assets\/callout-heater-core-f431de5b.webp",
-      "calloutImageFit": "cover",
-      "calloutImageScale": 1.5
+      "banners": [
+        {
+          "url": "assets\/product-heater-core-banner-1-78eb50fd.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-heater-core-banner-2-f8f4ebc4.webp",
+          "alt": ""
+        }
+      ]
     },
     "condenser": {
       "heroBgImage": "assets\/product-condenser-hero-e703d2a9.webp",
@@ -344,10 +388,12 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardPadding": 0,
       "heroBgImageScale": 1.45,
       "heroImagePosition": "49.5% 51.2%",
-      "calloutImage": "assets\/callout-condenser-95d2c2b8.webp",
-      "calloutImageFit": "contain",
-      "calloutImageScale": 1.4,
-      "calloutImagePosition": "82.8% 55.3%"
+      "banners": [
+        {
+          "url": "assets\/product-condenser-banner-1-7f202406.webp",
+          "alt": ""
+        }
+      ]
     },
     "compressor": {
       "heroBgImage": "assets\/product-compressor-hero-c74443d3.webp",
@@ -364,28 +410,88 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroImagePosition": "50.2% 50.9%",
       "calloutImageScale": 1.2,
       "calloutImagePosition": "51.5% 90.6%",
-      "calloutImageFit": "cover"
+      "calloutImageFit": "cover",
+      "banners": [
+        {
+          "url": "assets\/product-compressor-banner-1-78e87fd9.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-compressor-banner-2-5c5cd242.webp",
+          "alt": ""
+        }
+      ],
+      "intro": "Our compressor delivers OEM-equivalent cooling for long periods of time. Each unit ships preoiled with the correct PAG oil also being full vacuum tested. Drops into the bracket the original used, takes the same electrical connector, runs on the same refrigerant.",
+      "numberedFeatures": [
+        {
+          "title": "Premium Swash-Plate",
+          "body": "Smooth engagement at every cycle, no clutch shock to the accessory drive."
+        },
+        {
+          "title": "Pre-Charged PAG Oil",
+          "body": "Correct viscosity oil dosed to OE spec at the factory. Vacuum the system, charge it, drive away."
+        },
+        {
+          "title": "tested",
+          "body": "Factory vacuum sealed and pressure tested to ensure completely leak-tight and free of internal moisture before shipment"
+        },
+        {
+          "title": "OEM Fitment",
+          "body": "Same bracket, same connector, same belt path, same refrigerant. No harness, hose or mount modifications."
+        }
+      ],
+      "closing": "Compressors fail the same way every summer. We bench-test each unit at temperature and pressure before it ships,",
+      "benefits": [
+        {
+          "icon": "thermometer-snowflake",
+          "body": "Sustained cooling under heat soak."
+        },
+        {
+          "icon": "activity",
+          "body": "Smooth engagement at every cycle. No clutch shock, no surge into the belt."
+        },
+        {
+          "icon": "shield",
+          "body": "Sealed bearing and clutch. Quiet at every rpm, dry at every gasket."
+        },
+        {
+          "icon": "sparkles",
+          "body": "Pre-charged with the correct PAG oil. Drop in, vacuum, charge, done."
+        }
+      ]
     },
     "gasket": {
       "heroBgImage": "assets\/product-gasket-hero-aa42c23f.webp",
       "heroImageFit": "contain",
-      "calloutImage": "assets\/callout-gasket-a7ce8bad.webp",
-      "calloutImageFit": "cover",
-      "cardPadding": 0,
-      "cardScale": 1.4,
-      "calloutImageScale": 1.15,
-      "calloutImagePosition": "45.4% 57.1%"
+      "calloutImage": "assets\/callout-gasket-07739347.webp",
+      "cardScale": 1.45,
+      "heroOverlay": 0,
+      "calloutImageFit": "contain",
+      "calloutImageScale": 1.35
     },
     "abs-sensor": {
       "heroBgImage": "assets\/product-abs-sensor-hero-ca125d58.webp",
       "heroImageFit": "contain",
-      "cardScale": 1.5,
+      "cardScale": 1.25,
       "cardPadding": 6,
       "cardPosition": "50.8% 76.6%",
-      "calloutImage": "assets\/callout-abs-sensor-eb04873e.webp",
+      "calloutImage": "assets\/callout-abs-sensor-f20ace13.webp",
       "calloutImageFit": "cover",
-      "calloutImageScale": 1.2,
-      "calloutImagePosition": "57.0% 44.9%"
+      "calloutImageScale": 1.25,
+      "banners": [
+        {
+          "url": "assets\/product-abs-sensor-banner-3-e49ef7d7.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-abs-sensor-banner-1-f20ace13.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-abs-sensor-banner-2-8f0d1cca.webp",
+          "alt": ""
+        }
+      ]
     },
     "water-pump-awn": {
       "heroBgImage": "assets\/product-water-pump-awn-hero-fdc31b04.webp",
@@ -399,7 +505,9 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "alternator": {
       "heroBgImage": "assets\/product-alternator-hero-75502ff2.webp",
       "cardPadding": 0,
-      "cardScale": 1.3
+      "cardScale": 1.3,
+      "calloutImage": "assets\/callout-alternator-bcf859d9.webp",
+      "calloutImageScale": 1.3
     },
     "wiper-motor": {
       "cardScale": 1,
@@ -409,7 +517,15 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "calloutImageFit": "cover",
       "calloutImagePosition": "54.1% 54.7%",
       "calloutImageScale": 1.2,
-      "calloutImage": "assets\/callout-wiper-motor-569eb848.webp"
+      "banners": [
+        {
+          "url": "assets\/product-wiper-motor-banner-1-635a86ed.webp",
+          "alt": ""
+        }
+      ],
+      "bannerFit": "cover",
+      "bannerHeight": 520,
+      "cardPadding": 0
     },
     "radiator-urk": {
       "heroBgImage": "assets\/product-radiator-urk-hero-fe17d7ad.webp",
@@ -417,17 +533,40 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroImagePosition": "51.0% 57.5%",
       "heroBgImageScale": 1.1,
       "cardScale": 1.25,
-      "cardPosition": "49.9% 74.2%",
+      "cardPosition": "50.8% 79.7%",
       "cardPadding": 20,
       "calloutImageScale": 1.2,
-      "calloutImageFit": "cover"
+      "calloutImage": "assets\/callout-radiator-urk-1ce2a828.webp",
+      "calloutImageFit": "cover",
+      "banners": [
+        {
+          "url": "assets\/product-radiator-urk-banner-1-949abd21.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-radiator-urk-banner-2-42f3b675.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-radiator-urk-banner-3-1ce2a828.webp",
+          "alt": ""
+        }
+      ]
     },
     "tensioner": {
       "heroBgImage": "assets\/product-tensioner-hero-66fb3844.webp",
       "heroImageFit": "contain",
       "cardScale": 1.15,
-      "calloutImage": "assets\/callout-tensioner-91680a58.webp",
-      "calloutImageScale": 1.3
+      "calloutImage": "assets\/callout-tensioner-af7d4d4e.webp",
+      "calloutImagePosition": "47.5% 54.3%",
+      "banners": [
+        {
+          "url": "assets\/product-tensioner-banner-1-6f88c60a.webp",
+          "alt": ""
+        }
+      ],
+      "bannerHeight": 0,
+      "bannerFit": "cover"
     },
     "power-steering-pump": {
       "cardScale": 1,
@@ -436,16 +575,49 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroBgImage": "assets\/product-power-steering-pump-hero-982668a3.webp",
       "heroBgImageScale": 1.4,
       "heroImageFit": "contain",
-      "heroImagePosition": "48.2% 48.1%"
+      "heroImagePosition": "48.2% 48.1%",
+      "bannerHeight": 0,
+      "banners": [
+        {
+          "url": "assets\/product-power-steering-pump-banner-1-20e583e8.webp",
+          "alt": ""
+        }
+      ]
     },
     "rack-pinion": {
       "cardScale": 1,
-      "calloutImage": "assets\/callout-rack-pinion-a4c09fba.webp",
-      "calloutImageScale": 1.3
+      "calloutImageFit": "cover",
+      "calloutImageScale": 1.25,
+      "calloutImagePosition": "3.7% 49.8%",
+      "banners": [
+        {
+          "url": "assets\/product-rack-pinion-banner-1-a4c09fba.webp",
+          "alt": ""
+        }
+      ],
+      "bannerHeight": 430,
+      "bannerFit": "cover"
+    },
+    "radiator-fans": {
+      "cardScale": 1.1,
+      "banners": [
+        {
+          "url": "assets\/product-radiator-fans-banner-3-a2420cbe.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-radiator-fans-banner-1-53247e6a.webp",
+          "alt": ""
+        },
+        {
+          "url": "assets\/product-radiator-fans-banner-2-5dc14e09.webp",
+          "alt": ""
+        }
+      ]
     }
   },
   "atmosphere": "grid",
-  "atmosphereGlow": 10,
+  "atmosphereGlow": 4,
   "siteBackgroundImage": "assets\/site-bg-a860fc28.webp",
   "goldHeroEyebrow": "The Standard",
   "goldHeroTitleAccent": "The Gold Standard.",
@@ -468,22 +640,22 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "position": "39.3% 0.0%"
     },
     "material": {
-      "url": "assets\/gold-material-f0855f13.webp",
+      "url": "assets\/gold-material-433db0a2.webp",
       "position": "57.2% 28.1%"
     }
   },
   "storyImages": {
     "2009": {
-      "url": "assets\/history-2009-55b51cab.webp",
+      "url": "assets\/history-2009-433db0a2.webp",
       "position": "79.2% 89.9%"
     },
     "2011": {
-      "url": "assets\/history-2011-0755a0e1.webp",
+      "url": "assets\/history-2011-756ec9ce.webp",
       "position": "93.6% 38.1%",
       "fit": "cover"
     },
     "2019": {
-      "url": "assets\/history-2019-4f4a1f87.webp",
+      "url": "assets\/history-2019-2703a9f4.webp",
       "position": "65.6% 44.0%",
       "fit": "cover"
     },
@@ -493,7 +665,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "fit": "contain"
     }
   },
-  "catalogCardScale": 1.3,
+  "catalogCardScale": 1.4,
   "catalogCardPadding": 0,
   "siteLogo": "",
   "siteLogoHeight": 28,
@@ -693,6 +865,13 @@ function applyTweaksToDOM(t) {
   root.style.setProperty('--accent', t.accentColor);
   root.style.setProperty('--border-hot', t.accentColor);
   root.setAttribute('data-theme', t.theme);
+  // Global banner-showcase scale (desktop only — the CSS clamps to 100% width
+  // on narrow screens, so mobile is unaffected). Default 75% since the
+  // full-width banners ran large on desktop.
+  {
+    const bs = (typeof t.bannerScale === 'number') ? t.bannerScale : 75;
+    root.style.setProperty('--banner-scale', String(Math.max(40, Math.min(100, bs)) / 100));
+  }
   // Site-wide background image. Set the CSS variable .atm-bg consumes —
   // empty/unset → no image, anything else → wrap in url(). Single source of
   // truth so both first-paint (pre-React shim) and live edits stay in sync.
@@ -875,6 +1054,68 @@ function SiteBgDropCard() {
   );
 }
 
+/* ImageDropSlot — generic in-panel drag-and-drop image slot. Generalises
+   SiteBgDropCard so ANY per-product image (catalog card, hero background,
+   callout/center photo) can be added by dropping a file straight into the
+   Tweaks panel: useImageDrop uploads it into project/assets/ and hands the
+   resolved path to onPath(path, opts). Shows a thumbnail, a load-status dot,
+   the file name, and a Clear button. Purely additive — every existing
+   select/knob stays; this just adds a drop affordance that works for every
+   product from one place. */
+function ImageDropSlot({ url, onPath, onClear, namePrefix, placeholder, hint, aspect }) {
+  const dropRef = React.useRef(null);
+  const [status, setStatus] = React.useState('idle'); // idle | loading | ok | err
+  React.useEffect(() => {
+    if (!url) { setStatus('idle'); return; }
+    setStatus('loading');
+    const img = new Image();
+    img.onload = () => setStatus('ok');
+    img.onerror = () => setStatus('err');
+    img.src = url;
+    return () => { img.onload = img.onerror = null; img.removeAttribute('src'); };
+  }, [url]);
+  // Optimistic blob fire + canonical assets/ path fire both route through
+  // onPath; callers pass opts straight to their setter so the undo stack
+  // stays clean (matches SiteBgDropCard / ProductBannerRow).
+  useImageDrop(dropRef, (path, opts) => onPath(path, opts),
+               { namePrefix: namePrefix || 'image' });
+  const dot = status === 'ok' ? '#34c759'
+            : status === 'err' ? '#c33a2a'
+            : status === 'loading' ? '#c9ad3b'
+            : 'rgba(0,0,0,0.2)';
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div ref={dropRef} className="drop-target" style={{
+        position: 'relative', aspectRatio: aspect || '16 / 9', borderRadius: 8,
+        border: '1px dashed rgba(0,0,0,0.25)',
+        background: url
+          ? `url("${url}") center / cover no-repeat, rgba(0,0,0,0.06)`
+          : 'rgba(0,0,0,0.06)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        color: 'rgba(41,38,27,0.55)', fontSize: 10.5, lineHeight: 1.3,
+        textAlign: 'center', padding: 8 }}>
+        {!url && <span>{placeholder || 'Drop an image here'}</span>}
+        <div className="drop-hint" style={{ borderRadius: 8 }}>{hint || 'Drop image to replace'}</div>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 10,
+                     color: 'rgba(41,38,27,0.6)' }}>
+        <span style={{ display: 'inline-block', width: 8, height: 8, borderRadius: '50%',
+                        background: dot, flexShrink: 0,
+                        boxShadow: '0 0 0 2px rgba(255,255,255,.6)' }} />
+        <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis',
+                        whiteSpace: 'nowrap', fontFamily: 'ui-monospace,monospace' }}>
+          {url ? url.split('/').pop() : 'No image set'}
+        </span>
+        {url && onClear && (
+          <button type="button" className="twk-btn secondary"
+                  style={{ height: 20, padding: '0 8px', fontSize: 10 }}
+                  onClick={onClear}>Clear</button>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Product banner editor — a variable-length, reorderable list of full-width
    marketing banners for one product (productOverrides[slug].banners, each
@@ -962,17 +1203,31 @@ function AddBannerSlot({ slug, count, update }) {
 }
 
 function ProductBannerEditor({ slug }) {
-  const { tweaks } = useTweakState();
+  const { tweaks, setProductTweak } = useTweakState();
   const baseBanners = (window.PRODUCTS && window.PRODUCTS[slug] && window.PRODUCTS[slug].banners) || [];
   const update = useBannerUpdater(slug, baseBanners);
-  const ov = ((tweaks.productOverrides || {})[slug] || {}).banners;
+  const pov = (tweaks.productOverrides || {})[slug] || {};
+  const ov = pov.banners;
   // Mirror what's on the page: show the override list once it exists, else the
   // product's base banners from ProductData.
   const banners = (Array.isArray(ov) && ov.length) ? ov : baseBanners;
+  // Banner display knobs: fit (Fill/Fit) + a fixed pixel height. Height 0 =
+  // auto-size to each image's natural ratio (the default carousel behaviour).
+  const bannerFit = pov.bannerFit || 'contain';
+  const bannerHeight = typeof pov.bannerHeight === 'number' ? pov.bannerHeight : 0;
   return (
     <>
       <TweakSection label="Product · Banners"
                     subtitle="Full-width graphics shown below the callouts. Drop, reorder (↑ ↓), or remove (×)." />
+      <TweakRadio label="Image fit" value={bannerFit}
+                  options={[{ value: 'contain', label: 'Fit' }, { value: 'cover', label: 'Fill' }]}
+                  onChange={(v) => setProductTweak(slug, 'bannerFit', v)} />
+      <TweakSlider label="Image height" value={bannerHeight}
+                   min={0} max={520} step={10} unit={bannerHeight ? 'px' : ''}
+                   onChange={(v) => setProductTweak(slug, 'bannerHeight', v)} />
+      <div style={{ fontSize: 10, color: 'rgba(41,38,27,.55)', lineHeight: 1.4, marginTop: -2 }}>
+        Height 0 = auto-fit each image. “Fill” crops to the set height; “Fit” shows the whole image.
+      </div>
       {banners.map((b, i) => (
         <ProductBannerRow key={`banner-${i}`} slug={slug} banner={b || {}} index={i}
                           count={banners.length} update={update} />
@@ -1396,6 +1651,13 @@ function App() {
                        value={t.atmosphereGlow != null ? t.atmosphereGlow : 6}
                        min={0} max={20} unit="%"
                        onChange={(v) => setTweak('atmosphereGlow', v)} />
+
+          <TweakSection label="Banners"
+                        subtitle="Scales the banner showcase on desktop for every product. Mobile always fills the screen." />
+          <TweakSlider label="Banner size (desktop)"
+                       value={t.bannerScale != null ? t.bannerScale : 75}
+                       min={40} max={100} step={5} unit="%"
+                       onChange={(v) => setTweak('bannerScale', v)} />
         </TweakTab>
 
         {/* ─────────────────────── LAYOUT ─────────────────────── */}
@@ -1532,13 +1794,21 @@ function App() {
                             slot={catalogEditingSlug ? `catalog-card-${catalogEditingSlug}` : undefined} />
               <TweakSelect label="Edit product"
                            value={catalogEditingSlug}
-                           options={(window.PRODUCT_ORDER || []).map((slug) => {
-                             const prod = (window.PRODUCTS || {})[slug] || {};
-                             return {
-                               value: slug,
-                               label: `${prod.title || slug}${prod.title2 ? ' ' + prod.title2 : ''}`,
-                             };
-                           })}
+                           options={(() => {
+                             // Every product, not just the catalog-visible ones:
+                             // PRODUCT_ORDER first, then any remaining (hidden)
+                             // products so images are editable for ALL of them.
+                             const order = window.PRODUCT_ORDER || [];
+                             const extra = Object.keys(window.PRODUCTS || {})
+                               .filter((s) => !order.includes(s));
+                             return [...order, ...extra].map((slug) => {
+                               const prod = (window.PRODUCTS || {})[slug] || {};
+                               return {
+                                 value: slug,
+                                 label: `${prod.title || slug}${prod.title2 ? ' ' + prod.title2 : ''}`,
+                               };
+                             });
+                           })()}
                            onChange={setCatalogEditingSlug} />
               {catalogEditingSlug && (() => {
                 const slug = catalogEditingSlug;
@@ -1558,10 +1828,27 @@ function App() {
                     <div style={{ fontSize: 10.5, color: 'rgba(41,38,27,.6)', lineHeight: 1.4 }}>
                       Drag onto the card on the grid to upload, or paste a path below. Scale/Padding/Position override the global Catalog · Card image defaults for {prod.title || slug}.
                     </div>
-                    <TweakText label="Image path"
+                    <ImageDropSlot
+                      url={url}
+                      namePrefix={`card-${slug}`}
+                      placeholder="Drop a card image here"
+                      hint="Drop to set the catalog thumbnail"
+                      onPath={(p, o) => mergeImageBag('catalogCardImages', slug, p, o)}
+                      onClear={() => mergeImageBag('catalogCardImages', slug, '')} />
+                    <TweakText label="…or paste image path"
                                value={url}
                                placeholder={`assets/${slug}.png`}
                                onChange={(v) => mergeImageBag('catalogCardImages', slug, v)} />
+                    <TweakRadio label="Image fit"
+                                value={ov.cardImageFit || t.cardImageFit || 'contain'}
+                                options={[
+                                  { value: 'contain', label: 'Fit' },
+                                  { value: 'cover', label: 'Fill' },
+                                ]}
+                                onChange={(v) => setProductTweak(slug, 'cardImageFit', v)} />
+                    <div style={{ fontSize: 10, color: 'rgba(41,38,27,.55)', lineHeight: 1.4, marginTop: -2 }}>
+                      “Fit” shows the whole image (use Scale/Padding to frame it). “Fill” crops to fill the card.
+                    </div>
                     <TweakSlider label="Scale"
                                  value={cardScale}
                                  min={0.5} max={1.5} step={0.05}
@@ -1573,6 +1860,49 @@ function App() {
                     <TweakPositionPad label="Position"
                                       value={cardPosition}
                                       onChange={(v) => setProductTweak(slug, 'cardPosition', v)} />
+
+                    <TweakSection label="Hero background"
+                                  subtitle="Big photo behind the title on this product's page." />
+                    <ImageDropSlot
+                      url={ov.heroBgImage || ''}
+                      namePrefix={`product-${slug}-hero`}
+                      placeholder="Drop a hero photo here"
+                      hint="Drop to set the hero background"
+                      onPath={(p, o) => setProductTweak(slug, 'heroBgImage', p, o)}
+                      onClear={() => setProductTweak(slug, 'heroBgImage', '')} />
+                    {ov.heroBgImage && (
+                      <TweakRadio label="Hero fit"
+                                  value={ov.heroImageFit || 'cover'}
+                                  options={[
+                                    { value: 'cover', label: 'Fill' },
+                                    { value: 'contain', label: 'Fit' },
+                                  ]}
+                                  onChange={(v) => setProductTweak(slug, 'heroImageFit', v)} />
+                    )}
+
+                    {(prod.numberedFeatures || ov.numberedFeatures || prod.description || ov.description) && (
+                      <>
+                        <TweakSection label="Center / product image"
+                                      subtitle="The centered product photo on the product page." />
+                        <ImageDropSlot
+                          url={ov.calloutImage || ''}
+                          namePrefix={`callout-${slug}`}
+                          aspect="1 / 1"
+                          placeholder="Drop a center image here"
+                          hint="Drop to set the callout image"
+                          onPath={(p, o) => setProductTweak(slug, 'calloutImage', p, o)}
+                          onClear={() => setProductTweak(slug, 'calloutImage', '')} />
+                        <TweakRadio label="Callout fit"
+                                    value={ov.calloutImageFit || 'contain'}
+                                    options={[
+                                      { value: 'contain', label: 'Fit' },
+                                      { value: 'cover', label: 'Fill' },
+                                    ]}
+                                    onChange={(v) => setProductTweak(slug, 'calloutImageFit', v)} />
+                      </>
+                    )}
+
+                    <ProductBannerEditor slug={slug} />
                   </>
                 );
               })()}
@@ -1583,7 +1913,14 @@ function App() {
               <TweakSection label="Hero background"
                             subtitle="Big photo behind the title at the top of this page"
                             slot="product-hero" />
-              <TweakSelect label="Background photo"
+              <ImageDropSlot
+                url={productData?.heroBgImage || ''}
+                namePrefix={`product-${productSlug}-hero`}
+                placeholder="Drop a hero photo here"
+                hint="Drop to set the hero background"
+                onPath={(p, o) => setProductTweak(productSlug, 'heroBgImage', p, o)}
+                onClear={() => setProductTweak(productSlug, 'heroBgImage', '')} />
+              <TweakSelect label="…or pick an existing photo"
                            value={productData?.heroBgImage || ''}
                            options={productHeroPhotoOpts}
                            onChange={(v) => setProductTweak(productSlug, 'heroBgImage', v)} />
@@ -1635,11 +1972,19 @@ function App() {
                                 value={productData?.cardPosition || '50% 50%'}
                                 onChange={(v) => setProductTweak(productSlug, 'cardPosition', v)} />
 
-              {productData?.numberedFeatures && (
+              {(productData?.numberedFeatures || productData?.description) && (
                 <>
                   <TweakSection label="Center photo"
-                                subtitle="The image with the 1·2·3·4 callouts around it"
+                                subtitle="The centered product photo on this page"
                                 slot="product-callout" />
+                  <ImageDropSlot
+                    url={productData?.calloutImage || ''}
+                    namePrefix={`callout-${productSlug}`}
+                    aspect="1 / 1"
+                    placeholder="Drop a center image here"
+                    hint="Drop to set the callout image"
+                    onPath={(p, o) => setProductTweak(productSlug, 'calloutImage', p, o)}
+                    onClear={() => setProductTweak(productSlug, 'calloutImage', '')} />
                   <TweakRadio label="Image fit"
                               value={productData?.calloutImageFit || 'contain'}
                               options={[
