@@ -339,7 +339,9 @@ html.lenis, html.lenis body { height: auto; }
   background: var(--ample-coal);
   border: 1px solid var(--border-1);
   border-left: 1px solid var(--border-1);
-  border-radius: 4;
+  /* was `4` (unitless = invalid, computed to 0) — category cards rendered
+     square next to the 4px-rounded product cards on the same page. */
+  border-radius: 4px;
   overflow: hidden;
   transition: border-color 200ms var(--ease-sharp),
               border-left-width 200ms var(--ease-sharp),
@@ -624,6 +626,11 @@ html.lenis, html.lenis body { height: auto; }
 .site-nav-link.is-active {
   color: var(--ample-red);
   border-bottom-color: var(--ample-red);
+}
+/* The 120ms color transition existed but no hover rule did — nav links were
+   the only interactive element on the site with zero hover feedback. */
+@media (hover: hover) {
+  .site-nav-link:hover { color: var(--ample-red); }
 }
 
 .site-burger {

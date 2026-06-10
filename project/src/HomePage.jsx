@@ -142,6 +142,10 @@ function Stat({ k, v }) {
   const [display, setDisplay] = React.useState(() => parsed ? '0' + (parsed.plus || '') : k);
   const ref = React.useRef(null);
   const startedRef = React.useRef(false);
+  // rAF id lives in a ref reachable by the effect cleanup — previously it
+  // was scoped inside the IO callback, so navigating away mid-count left
+  // the animation ticking setDisplay on an unmounted component.
+  const rafRef = React.useRef(0);
 
   React.useEffect(() => {
     if (!parsed || !ref.current) { setDisplay(k); return; }
@@ -154,22 +158,24 @@ function Stat({ k, v }) {
         startedRef.current = true;
         const duration = 1600;
         const start = performance.now();
-        let raf;
         const tick = (now) => {
           const t = Math.min(1, (now - start) / duration);
           // easeOutCubic — fast start, settles into the final value
           const eased = 1 - Math.pow(1 - t, 3);
           setDisplay(formatStat(eased * parsed.target, parsed.plus));
-          if (t < 1) raf = requestAnimationFrame(tick);
+          if (t < 1) rafRef.current = requestAnimationFrame(tick);
           else setDisplay(k); // snap to the exact author-formatted value at end
         };
-        raf = requestAnimationFrame(tick);
+        rafRef.current = requestAnimationFrame(tick);
         io.disconnect();
         return;
       }
     }, { threshold: 0.4 });
     io.observe(ref.current);
-    return () => io.disconnect();
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(rafRef.current);
+    };
   }, [k]);
 
   return (
@@ -184,10 +190,12 @@ function FeaturedCard({ slug }) {
   const p = PRODUCTS[slug];
   const { tweaks, setProductTweak, mergeImageBag } = useTweakState();
   const cardImage = (tweaks.catalogCardImages || {})[slug];
-  const imageFit = tweaks.cardImageFit || 'contain';
   // Per-product overrides win over the global card defaults. Falls back to
   // 1.0 / 16 if neither is set so existing cards render unchanged.
   const overrides = (tweaks.productOverrides || {})[slug] || {};
+  // Per-product fit override — same precedence as CatalogCard so a product
+  // renders identically on the home rail and the catalog grid.
+  const imageFit = overrides.cardImageFit || tweaks.cardImageFit || 'contain';
   const cardScale = typeof overrides.cardScale === 'number'
     ? overrides.cardScale
     : (typeof tweaks.catalogCardScale === 'number' ? tweaks.catalogCardScale : 1);
@@ -218,7 +226,7 @@ function FeaturedCard({ slug }) {
       }
       <div style={{ position: 'relative', aspectRatio: '4/3', background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', overflow: 'hidden' }}>
         <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240}
-          override={cardImage} scale={cardScale} padding={cardPadding}
+          override={cardImage || p.cardImage} scale={cardScale} padding={cardPadding}
           position={cardPosition}
           onPositionChange={window.__ampleEditor
             ? (pos) => setProductTweak(slug, 'cardPosition', pos)
@@ -239,7 +247,11 @@ function GoldBanner() {
   return (
     <section style={{ position: 'relative', background: '#000', borderTop: '1px solid var(--border-1)', borderBottom: '1px solid var(--border-1)' }}>
       <Stripes color="gold" height={6} />
-      <div style={{ maxWidth: 1440, margin: '0 auto', padding: '56px 40px', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 40, alignItems: 'center' }}>
+      {/* stack-on-mobile + clamped padding: this was the only top-level grid
+          without them — on phones the headline and the 220px medallion were
+          crushed into two columns with fixed 40px gutters. Desktop values
+          are unchanged (clamp tops out at the old 56/40). */}
+      <div className="stack-on-mobile" style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(36px, 7vw, 56px) clamp(16px, 4vw, 40px)', display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 40, alignItems: 'center' }}>
         <div>
           <Eyebrow color="gold">The Gold Standard Program</Eyebrow>
           <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 48, textTransform: 'uppercase', margin: '10px 0 14px', lineHeight: 1 }}>

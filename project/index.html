@@ -16,7 +16,7 @@
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js" integrity="sha384-eD5ubmuCcvTdCADWuSchJYE7wcj2nzNr0itbrh6w/KJyBiltSZ8w3VFRBSWu5YQ8" crossorigin="anonymous"></script>
 </head>
 <body>
 <div id="root"></div>
@@ -75,34 +75,39 @@
 <!-- Build tag — bump to bust browser cache for JSX scripts. -->
 <script>window.__BUILD__ = 'v6-' + Date.now();</script>
 <!-- Editor mode gate. The whole drag-drop + Tweaks panel only renders when
-     this flag is true. Visitors never see authoring affordances.
-     Enable: visit any URL with ?edit=1 (persists to localStorage).
-     Disable: visit with ?edit=0.
-     Default: on for localhost / 127.0.0.1 / file://; off everywhere else. -->
+     this flag is true. LOCAL-ONLY: the editor (and the ?edit flag) is
+     honored exclusively on loopback hosts, so a crafted ?edit=1 link can
+     never enable authoring UI — or persist any flag — on the published
+     site. On localhost it defaults ON; visit with ?edit=0 to disable for
+     that load. -->
 <script>
 (function () {
   try {
+    var host = window.location.hostname;
+    var isLocal = !host || host === 'localhost' || host === '127.0.0.1';
+    if (!isLocal) {
+      window.__ampleEditor = false;
+      return;
+    }
     var params = new URLSearchParams(window.location.search);
     var flag = params.get('edit');
     if (flag === '1') localStorage.setItem('__ampleEditor', '1');
     if (flag === '0') localStorage.removeItem('__ampleEditor');
     var stored = localStorage.getItem('__ampleEditor') === '1';
-    var host = window.location.hostname;
-    var isLocal = !host || host === 'localhost' || host === '127.0.0.1';
-    window.__ampleEditor = flag === '1' || stored || (isLocal && flag !== '0');
+    window.__ampleEditor = flag === '1' || stored || flag !== '0';
   } catch (e) { window.__ampleEditor = false; }
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
 })();
 </script>
-<script type="text/babel" src="src/tweaks-panel.jsx?v=59"></script>
-<script type="text/babel" src="src/Primitives.jsx?v=59"></script>
-<script type="text/babel" src="src/Animations.jsx?v=59"></script>
-<script type="text/babel" src="src/Chrome.jsx?v=59"></script>
-<script type="text/babel" src="src/ProductData.jsx?v=59"></script>
-<script type="text/babel" src="src/ProductHero.jsx?v=59"></script>
-<script type="text/babel" src="src/ProductDetailPage.jsx?v=59"></script>
-<script type="text/babel" src="src/HomePage.jsx?v=59"></script>
-<script type="text/babel" src="src/OtherPages.jsx?v=59"></script>
+<script type="text/babel" src="src/tweaks-panel.jsx?v=60"></script>
+<script type="text/babel" src="src/Primitives.jsx?v=60"></script>
+<script type="text/babel" src="src/Animations.jsx?v=60"></script>
+<script type="text/babel" src="src/Chrome.jsx?v=60"></script>
+<script type="text/babel" src="src/ProductData.jsx?v=60"></script>
+<script type="text/babel" src="src/ProductHero.jsx?v=60"></script>
+<script type="text/babel" src="src/ProductDetailPage.jsx?v=60"></script>
+<script type="text/babel" src="src/HomePage.jsx?v=60"></script>
+<script type="text/babel" src="src/OtherPages.jsx?v=60"></script>
 
 <script type="text/babel">
 const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
@@ -120,7 +125,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "stat2Label": "SKUs in range",
   "stat3Value": "20+",
   "stat3Label": "years of experience",
-  "gridCols": 4,
+  "gridCols": 2,
   "showGoldBanner": false,
   "catalogEyebrow": "Our Inventory",
   "catalogTitle": "Our Catalog.",
@@ -129,7 +134,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "catalogLayout": "grouped",
   "catalogFilter": "all",
   "catalogSort": "category",
-  "catalogCardCols": 2,
+  "catalogCardCols": 3,
   "catalogCardRatio": "1\/1",
   "cardImageFit": "cover",
   "catalogShowBlurbs": true,
@@ -163,10 +168,10 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "water-pump-awn": "assets\/card-water-pump-awn-bf9d322d.webp",
     "compressor": "assets\/card-compressor-b04f024a.webp",
     "alternator": "assets\/card-alternator-fe236578.webp",
-    "starter": "assets\/card-starter-8fe5405d.webp",
+    "starter": "assets\/card-starter-81b3a9b6.webp",
     "ignition-coil": "assets\/card-ignition-coil-ccb1cb69.webp",
     "lighting": "assets\/card-lighting-3f4b4811.webp",
-    "power-steering-pump": "assets\/card-power-steering-pump-982668a3.webp",
+    "power-steering-pump": "assets\/card-power-steering-pump-20e583e8.webp",
     "air-filter": "assets\/card-air-filter-50144740.webp",
     "cabin-filter": "assets\/card-cabin-filter-ac665ad4.webp",
     "condenser": "assets\/card-condenser-f60c7f04.webp",
@@ -174,7 +179,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "heater-core": "assets\/card-heater-core-36993be8.webp",
     "gasket": "assets\/card-gasket-51104de0.webp",
     "radiator-urk": "assets\/card-radiator-urk-949abd21.webp",
-    "tensioner": "assets\/card-tensioner-cc18be79.webp",
+    "tensioner": "assets\/card-tensioner-d39eb8ae.webp",
     "rack-pinion": "assets\/card-rack-pinion-9bd31313.webp",
     "radiator-fans": "assets\/card-radiator-fans-a2420cbe.webp"
   },
@@ -182,7 +187,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "brake-pads": {
       "heroBgImage": "assets\/product-brake-pads-hero-97edef69.webp",
       "heroAsset": "brake-pads",
-      "cardScale": 1.3,
+      "cardScale": 1,
       "calloutImageFit": "cover",
       "calloutImageScale": 1.4,
       "heroImageFit": "contain",
@@ -190,8 +195,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroImagePosition": "center",
       "heroOverlay": 40,
       "heroHeight": 520,
-      "cardPadding": 22,
-      "cardPosition": "99.5% 0.0%",
+      "cardPadding": 0,
+      "cardPosition": "33.5% 52.4%",
       "calloutImagePosition": "53.6% 100.0%",
       "heroBgImageScale": 1.3,
       "summary": "Brake pads that feel the same way every time. Cold morning commute, third lap of a canyon road, traffic on the way home.",
@@ -235,7 +240,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
           "url": "assets\/product-brake-pads-banner-3-918abc9c.webp",
           "alt": ""
         }
-      ]
+      ],
+      "cardImageFit": "cover"
     },
     "pad-sensor": {
       "heroBgImage": "",
@@ -260,14 +266,17 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardScale": 1.1,
       "calloutImage": "assets\/callout-starter-5023f537.webp",
       "calloutImageScale": 1.2,
-      "banners": []
+      "banners": [],
+      "cardImageFit": "cover",
+      "cardPosition": "44.6% 38.5%",
+      "cardPadding": 40
     },
     "cabin-filter": {
       "heroBgImage": "assets\/product-cabin-filter-hero-f69bf462.webp",
       "heroImageFit": "cover",
       "heroHeight": 460,
       "heroAsset": "brake-pads",
-      "cardScale": 1.2,
+      "cardScale": 1.05,
       "heroOverlay": 0,
       "heroImagePosition": "49.8% 54.3%",
       "cardPadding": 14,
@@ -300,7 +309,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
           "url": "assets\/product-air-filter-banner-1-b28f8243.webp",
           "alt": ""
         }
-      ]
+      ],
+      "cardImageFit": "cover"
     },
     "caliper-npc": {
       "heroBgImage": "assets\/brake-disc-caliper.jpg",
@@ -384,7 +394,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     "condenser": {
       "heroBgImage": "assets\/product-condenser-hero-e703d2a9.webp",
       "heroImageFit": "contain",
-      "cardScale": 1.15,
+      "cardScale": 1,
       "cardPadding": 0,
       "heroBgImageScale": 1.45,
       "heroImagePosition": "49.5% 51.2%",
@@ -393,7 +403,9 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
           "url": "assets\/product-condenser-banner-1-7f202406.webp",
           "alt": ""
         }
-      ]
+      ],
+      "cardImageFit": "cover",
+      "cardPosition": "49.8% 56.3%"
     },
     "compressor": {
       "heroBgImage": "assets\/product-compressor-hero-c74443d3.webp",
@@ -464,7 +476,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "heroBgImage": "assets\/product-gasket-hero-aa42c23f.webp",
       "heroImageFit": "contain",
       "calloutImage": "assets\/callout-gasket-07739347.webp",
-      "cardScale": 1.45,
+      "cardScale": 1,
       "heroOverlay": 0,
       "calloutImageFit": "contain",
       "calloutImageScale": 1.35
@@ -507,7 +519,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "cardPadding": 0,
       "cardScale": 1.3,
       "calloutImage": "assets\/callout-alternator-bcf859d9.webp",
-      "calloutImageScale": 1.3
+      "calloutImageScale": 1.3,
+      "calloutImagePosition": "17.8% 53.7%"
     },
     "wiper-motor": {
       "cardScale": 1,
@@ -525,16 +538,17 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       ],
       "bannerFit": "cover",
       "bannerHeight": 520,
-      "cardPadding": 0
+      "cardPadding": 0,
+      "cardPosition": "50.1% 49.7%"
     },
     "radiator-urk": {
       "heroBgImage": "assets\/product-radiator-urk-hero-fe17d7ad.webp",
       "heroImageFit": "cover",
       "heroImagePosition": "51.0% 57.5%",
       "heroBgImageScale": 1.1,
-      "cardScale": 1.25,
-      "cardPosition": "50.8% 79.7%",
-      "cardPadding": 20,
+      "cardScale": 1.5,
+      "cardPosition": "54.6% 60.3%",
+      "cardPadding": 0,
       "calloutImageScale": 1.2,
       "calloutImage": "assets\/callout-radiator-urk-1ce2a828.webp",
       "calloutImageFit": "cover",
@@ -551,12 +565,14 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
           "url": "assets\/product-radiator-urk-banner-3-1ce2a828.webp",
           "alt": ""
         }
-      ]
+      ],
+      "cardImageFit": "contain",
+      "intro": "Our OEM-replacement radiator drops into the bracket the original used, takes the same hose paths and holds the coolant volume the engine was tuned for. Brazed aluminum core joined in a controlled atmosphere brazing furnace, double-folded fins for additional heat-exchange surface, ribbed plastic end tanks built against the OE seam-failure mode. Engineered to ISO\/TS 16949, the automotive quality standard used by Behr, Mahle, Nissens and the rest of the OE supply chain."
     },
     "tensioner": {
       "heroBgImage": "assets\/product-tensioner-hero-66fb3844.webp",
       "heroImageFit": "contain",
-      "cardScale": 1.15,
+      "cardScale": 1,
       "calloutImage": "assets\/callout-tensioner-af7d4d4e.webp",
       "calloutImagePosition": "47.5% 54.3%",
       "banners": [
@@ -570,7 +586,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
     },
     "power-steering-pump": {
       "cardScale": 1,
-      "cardPosition": "44.9% 73.4%",
+      "cardPosition": "45.8% 60.4%",
       "cardPadding": 0,
       "heroBgImage": "assets\/product-power-steering-pump-hero-982668a3.webp",
       "heroBgImageScale": 1.4,
@@ -582,7 +598,8 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
           "url": "assets\/product-power-steering-pump-banner-1-20e583e8.webp",
           "alt": ""
         }
-      ]
+      ],
+      "cardImageFit": "cover"
     },
     "rack-pinion": {
       "cardScale": 1,
@@ -660,12 +677,12 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
       "fit": "cover"
     },
     "2024": {
-      "url": "assets\/history-2024-c7497883.webp",
+      "url": "assets\/history_2024_1778520797001.png",
       "position": "55.2% 48.7%",
       "fit": "contain"
     }
   },
-  "catalogCardScale": 1.4,
+  "catalogCardScale": 0.75,
   "catalogCardPadding": 0,
   "siteLogo": "",
   "siteLogoHeight": 28,
@@ -693,6 +710,14 @@ const HERO_ASSET_OPTIONS = [
   'blower-motor', 'lighting', 'ignition-coil', 'compressor', 'exhaust',
   'gasket', 'rack-pinion', 'wiper-motor'
 ];
+
+/* Escape a URL for interpolation inside a CSS url("...") — backslashes and
+   double quotes would otherwise break out of the quoted argument and let
+   the rest of the string parse as style declarations. Matches the escaping
+   applyTweaksToDOM already does for the site background. */
+function cssUrl(u) {
+  return String(u).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
+}
 
 /* exportTweaksState — normalises the in-memory tweak state for source.
    1. Walks the object for stragglers (blob: URLs, data: URLs).
@@ -797,9 +822,17 @@ async function exportTweaksState(t) {
     }
   }
 
+  // Any straggler blob:/data: URL that survived the lifts (an upload failed)
+  // must never reach source — it would be a permanently dead reference for
+  // every visitor. Strip them; the failures array tells the save UI exactly
+  // which slots were dropped.
+  const cleaned = (typeof __stripDataUrls === 'function')
+    ? (__stripDataUrls(clone) || {})
+    : clone;
+
   // Format JSON to match the existing TWEAK_DEFAULTS style: 2-space indent,
   // forward slashes escaped (matches what Claude Design writes back).
-  const json = JSON.stringify(clone, null, 2).replace(/\//g, '\\/');
+  const json = JSON.stringify(cleaned, null, 2).replace(/\//g, '\\/');
 
   return { json, uploads, failures };
 }
@@ -814,8 +847,15 @@ async function saveTweaksToSource(t) {
   try {
     const exported = await exportTweaksState(t);
     if (exported.failures.length) {
-      // We still attempt to save the JSON (with whichever URLs we couldn't
-      // promote), but the caller surfaces the failures so the user knows.
+      // Refuse to save when any image failed to land on disk. Proceeding
+      // would bake a stripped (missing) image into source for every visitor;
+      // better to fail loudly and let the user retry once uploads work.
+      const slots = exported.failures.map((f) => f.prefix).join(', ');
+      return {
+        ok: false,
+        error: `Save aborted — ${exported.failures.length} image upload(s) failed (${slots}). ` +
+               'Is the dev server running? Fix the uploads and save again.',
+      };
     }
     const resp = await fetch('/__editor/save_index', {
       method: 'POST',
@@ -1019,7 +1059,7 @@ function SiteBgDropCard() {
           borderRadius: 8,
           border: '1px dashed rgba(0,0,0,0.25)',
           background: url
-            ? `url("${url}") center / cover no-repeat, rgba(0,0,0,0.06)`
+            ? `url("${cssUrl(url)}") center / cover no-repeat, rgba(0,0,0,0.06)`
             : 'rgba(0,0,0,0.06)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           color: 'rgba(41,38,27,0.55)',
@@ -1089,7 +1129,7 @@ function ImageDropSlot({ url, onPath, onClear, namePrefix, placeholder, hint, as
         position: 'relative', aspectRatio: aspect || '16 / 9', borderRadius: 8,
         border: '1px dashed rgba(0,0,0,0.25)',
         background: url
-          ? `url("${url}") center / cover no-repeat, rgba(0,0,0,0.06)`
+          ? `url("${cssUrl(url)}") center / cover no-repeat, rgba(0,0,0,0.06)`
           : 'rgba(0,0,0,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         color: 'rgba(41,38,27,0.55)', fontSize: 10.5, lineHeight: 1.3,
@@ -1131,9 +1171,11 @@ function useBannerUpdater(slug, baseBanners) {
     setTweak((prev) => {
       const ov = prev.productOverrides || {};
       const existing = (ov[slug] && Array.isArray(ov[slug].banners)) ? ov[slug].banners : null;
-      // Seed from the product's base banners on the first edit, so reordering
-      // or adding doesn't silently wipe the default set defined in ProductData.
-      const cur = (existing && existing.length) ? existing : (baseBanners || []);
+      // Seed from the product's base banners only when NO override exists.
+      // An existing empty array is authoritative ("all banners removed") —
+      // length-checking here used to resurrect deleted base banners on the
+      // next edit. Matches the page renderer's semantics.
+      const cur = existing !== null ? existing : (baseBanners || []);
       const next = fn(cur.slice());
       return { productOverrides: { ...ov, [slug]: { ...(ov[slug] || {}), banners: next } } };
     }, undefined, opts);
@@ -1142,10 +1184,40 @@ function useBannerUpdater(slug, baseBanners) {
 
 function ProductBannerRow({ slug, banner, index, count, update }) {
   const dropRef = React.useRef(null);
-  // Replace-in-place: the optimistic blob fire and the canonical assets fire
-  // both target this index, so the double-fire just overwrites the slot.
+  // Replace-in-place, addressed by VALUE not index: uploads take seconds and
+  // the ↑/↓/× buttons sit on the same row, so a reorder/remove mid-upload
+  // would land the canonical path on the wrong banner if we trusted the
+  // render-time index. Track the URL this drop is replacing — the first
+  // (optimistic blob) fire replaces the row's current URL, the second
+  // (canonical assets/ path) fire replaces the blob — and find it in the
+  // array at write time. Falls back to the index only if the value vanished.
+  const dropTargetUrlRef = React.useRef(null);
   useImageDrop(dropRef, (path, opts) => {
-    update((arr) => { arr[index] = { ...(arr[index] || {}), url: path }; return arr; }, opts);
+    // The two fires are distinguishable: the canonical (assets/ path) fire
+    // always carries skipHistory. The optimistic fire trusts the fresh
+    // banner.url closure (useImageDrop keeps callbacks fresh) and records
+    // the blob URL it wrote; the canonical fire looks up that exact blob —
+    // so reorders/removals mid-upload can't misroute it — and clears the
+    // ref so a LATER drop on this row never chases a stale URL. If the
+    // target row was removed mid-upload, the upload is dropped rather than
+    // clobbering an unrelated banner by index.
+    const canonical = !!(opts && opts.skipHistory);
+    update((arr) => {
+      const prev = canonical && dropTargetUrlRef.current != null
+        ? dropTargetUrlRef.current
+        : (banner.url || '');
+      let j = (arr[index] && (arr[index].url || '') === prev)
+        ? index
+        : arr.findIndex((b) => b && (b.url || '') === prev);
+      if (j < 0) {
+        if (canonical) return arr;
+        j = Math.min(index, arr.length - 1);
+      }
+      if (j < 0) return arr;
+      arr[j] = { ...(arr[j] || {}), url: path };
+      dropTargetUrlRef.current = canonical ? null : path;
+      return arr;
+    }, opts);
   }, { namePrefix: `product-${slug}-banner-${index + 1}` });
   const url = banner.url || '';
   const btn = { height: 22, minWidth: 26, padding: '0 6px', fontSize: 12, lineHeight: 1 };
@@ -1169,7 +1241,7 @@ function ProductBannerRow({ slug, banner, index, count, update }) {
       <div ref={dropRef} className="drop-target" style={{
         position: 'relative', aspectRatio: '16 / 9', borderRadius: 6,
         border: '1px dashed rgba(0,0,0,0.25)',
-        background: url ? `url("${url}") center / cover no-repeat, rgba(0,0,0,0.06)` : 'rgba(0,0,0,0.06)',
+        background: url ? `url("${cssUrl(url)}") center / cover no-repeat, rgba(0,0,0,0.06)` : 'rgba(0,0,0,0.06)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         color: 'rgba(41,38,27,0.55)', fontSize: 10.5, textAlign: 'center', padding: 8 }}>
         {!url && <span>Drop image</span>}
@@ -1208,9 +1280,10 @@ function ProductBannerEditor({ slug }) {
   const update = useBannerUpdater(slug, baseBanners);
   const pov = (tweaks.productOverrides || {})[slug] || {};
   const ov = pov.banners;
-  // Mirror what's on the page: show the override list once it exists, else the
-  // product's base banners from ProductData.
-  const banners = (Array.isArray(ov) && ov.length) ? ov : baseBanners;
+  // Mirror what's on the page: ANY array override is authoritative (an empty
+  // one means "all banners deleted" — listing base banners here would lie
+  // and the next edit would write them back). Only no-override falls back.
+  const banners = Array.isArray(ov) ? ov : baseBanners;
   // Banner display knobs: fit (Fill/Fit) + a fixed pixel height. Height 0 =
   // auto-size to each image's natural ratio (the default carousel behaviour).
   const bannerFit = pov.bannerFit || 'contain';
@@ -1397,8 +1470,26 @@ function App() {
   };
   const [saveResult, setSaveResult] = React.useState(null);
   const handleSave = async () => {
+    // Set the window flag synchronously — the auto-reload poll (bottom of
+    // this file) reads it; the mirroring useEffect alone leaves a commit-lag
+    // window where a poll tick could reload mid-save.
+    window.__ampleSavePending = true;
     setSaveResult({ pending: true });
-    setSaveResult(await saveTweaksToSource(t));
+    const r = await saveTweaksToSource(t);
+    if (r && r.ok) {
+      // The in-memory state now equals the saved source. Drop the
+      // localStorage draft so the next load hydrates from the freshly
+      // saved defaults instead of a stale shadow copy that silently wins
+      // over source forever (the root of local-vs-live drift).
+      // The suppress flag stops the panel's pending debounce timer AND the
+      // pagehide flush (fired by the auto-reload moments later) from
+      // instantly re-creating the draft; the next real edit clears it.
+      window.__ampleTweaksSuppressPersist = true;
+      try {
+        localStorage.removeItem(window.__ampleTweaksStorageKey || '__ampleTweaks_v2');
+      } catch {}
+    }
+    setSaveResult(r);
   };
 
   // Dev server detection — controls whether drops can land on disk and
@@ -1462,6 +1553,19 @@ function App() {
   React.useEffect(() => {
     window.__ampleSavePending = !!(saveResult && saveResult.pending);
   }, [saveResult]);
+
+  // Per-route document.title — hash navigation otherwise leaves every page
+  // identically titled in tabs, history and bookmarks.
+  React.useEffect(() => {
+    const prod = productSlug && window.PRODUCTS && window.PRODUCTS[productSlug];
+    const section = prod ? `${prod.title} ${prod.title2 || ''}`.trim()
+      : (path === '/catalog' || path.startsWith('/catalog/')) ? 'Catalog'
+      : path === '/gold' ? 'Gold Standard'
+      : path === '/story' ? 'Our Story'
+      : path === '/contact' ? 'Contact Us'
+      : '';
+    document.title = section ? `ample. — ${section}` : 'ample. Road-ready precision';
+  }, [path, productSlug]);
 
   // Mobile preview mode: replace the page render with an iframe that
   // loads the same URL at 390px wide. The iframe child renders normally
@@ -1871,13 +1975,29 @@ function App() {
                       onPath={(p, o) => setProductTweak(slug, 'heroBgImage', p, o)}
                       onClear={() => setProductTweak(slug, 'heroBgImage', '')} />
                     {ov.heroBgImage && (
-                      <TweakRadio label="Hero fit"
-                                  value={ov.heroImageFit || 'cover'}
-                                  options={[
-                                    { value: 'cover', label: 'Fill' },
-                                    { value: 'contain', label: 'Fit' },
-                                  ]}
-                                  onChange={(v) => setProductTweak(slug, 'heroImageFit', v)} />
+                      <>
+                        <TweakRadio label="Hero fit"
+                                    value={ov.heroImageFit || 'cover'}
+                                    options={[
+                                      { value: 'cover', label: 'Fill' },
+                                      { value: 'contain', label: 'Fit' },
+                                    ]}
+                                    onChange={(v) => setProductTweak(slug, 'heroImageFit', v)} />
+                        {/* Same framing freedom as the product-page editor:
+                            overlay, scale and position — previously the
+                            catalog copy of this section silently did less. */}
+                        <TweakSlider label="Hero overlay"
+                                     value={typeof ov.heroOverlay === 'number' ? ov.heroOverlay : 0}
+                                     min={0} max={100} unit="%"
+                                     onChange={(v) => setProductTweak(slug, 'heroOverlay', v)} />
+                        <TweakSlider label="Hero scale"
+                                     value={typeof ov.heroBgImageScale === 'number' ? ov.heroBgImageScale : 1}
+                                     min={0.5} max={2} step={0.05}
+                                     onChange={(v) => setProductTweak(slug, 'heroBgImageScale', v)} />
+                        <TweakPositionPad label="Hero position"
+                                          value={typeof ov.heroImagePosition === 'string' ? ov.heroImagePosition : '50% 50%'}
+                                          onChange={(v) => setProductTweak(slug, 'heroImagePosition', v)} />
+                      </>
                     )}
 
                     {(prod.numberedFeatures || ov.numberedFeatures || prod.description || ov.description) && (
@@ -1902,7 +2022,17 @@ function App() {
                       </>
                     )}
 
-                    <ProductBannerEditor slug={slug} />
+                    {/* Banners only render on rich- and description-layout
+                        product pages (CalloutLayout / DescriptionLayout).
+                        Offering the editor for bare products would let you
+                        add banners that silently never appear. */}
+                    {(prod.numberedFeatures || ov.numberedFeatures || prod.description || ov.description) ? (
+                      <ProductBannerEditor slug={slug} />
+                    ) : (
+                      <div style={{ fontSize: 10, color: 'rgba(41,38,27,.5)', lineHeight: 1.4 }}>
+                        This product's page layout doesn't show banners.
+                      </div>
+                    )}
                   </>
                 );
               })()}
@@ -2277,6 +2407,18 @@ function App() {
 
         <TweakSection label="Save changes" />
         <TweakButton label="Save & lock to source" onClick={handleSave} />
+        <TweakButton secondary label="Reset all to saved defaults" onClick={() => {
+          // The localStorage draft shadows whatever is saved in index.html —
+          // until now there was NO way back to the saved state. Confirm,
+          // drop the draft, reload from source.
+          if (!window.confirm('Discard ALL unsaved tweaks and reload from the last saved source?')) return;
+          // Essential: reload fires pagehide, whose persistence flush would
+          // otherwise rewrite the draft we just removed — a silent no-op
+          // reset after the user confirmed a destructive dialog.
+          window.__ampleTweaksSuppressPersist = true;
+          try { localStorage.removeItem(window.__ampleTweaksStorageKey || '__ampleTweaks_v2'); } catch {}
+          location.reload();
+        }} />
         {saveResult && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
             {saveResult.pending ? (
@@ -2310,6 +2452,16 @@ function App() {
         )}
         {exportResult && !exportResult.pending && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+            {exportResult.failures && exportResult.failures.length > 0 && (
+              <div style={{ fontSize: 11, lineHeight: 1.5, color: '#a02a20',
+                            padding: '6px 8px', borderRadius: 6,
+                            background: 'rgba(195,58,42,0.08)',
+                            border: '1px solid rgba(195,58,42,0.25)' }}>
+                {exportResult.failures.length} image upload(s) failed and were stripped
+                from this JSON ({exportResult.failures.map((f) => f.prefix).join(', ')}).
+                Fix the uploads before pasting, or those slots ship empty.
+              </div>
+            )}
             {exportResult.uploads && exportResult.uploads.length > 0 && (
               <div style={{ fontSize: 11, lineHeight: 1.5, color: 'rgba(41,38,27,.78)' }}>
                 <div style={{ fontWeight: 600, marginBottom: 4 }}>

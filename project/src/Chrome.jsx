@@ -91,9 +91,12 @@ function SiteHeader({ active }) {
             also hide it on desktop, but JS-gating keeps the DOM clean and
             avoids any focus-order surprises for keyboard users). */}
         {isMobile && (
+          // aria-controls only while the nav node exists — it's pruned from
+          // the DOM when the drawer is closed, and a dangling reference is
+          // an ARIA violation.
           <button type="button"
                   className={'site-burger' + (open ? ' is-open' : '')}
-                  aria-controls="site-nav"
+                  aria-controls={open ? 'site-nav' : undefined}
                   aria-expanded={open}
                   aria-label={open ? 'Close menu' : 'Open menu'}
                   onClick={() => setOpen((v) => !v)}>

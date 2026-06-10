@@ -36,7 +36,9 @@ ASSETS = os.path.join(ROOT, 'assets')
 INDEX_HTML = os.path.join(ROOT, 'index.html')
 
 HOST = '127.0.0.1'
-PORT = int(os.environ.get('AMPLE_DEV_PORT', '8000'))
+# AMPLE_DEV_PORT wins; PORT supports launchers that assign one (so a second
+# instance can run for previews/tools without fighting your main 8000).
+PORT = int(os.environ.get('AMPLE_DEV_PORT') or os.environ.get('PORT') or '8000')
 
 # 16 MB. Retina photos easily reach 5-10 MB before re-encode; bigger than
 # that is almost certainly a mistake or abuse.
