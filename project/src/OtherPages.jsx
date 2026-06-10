@@ -78,7 +78,10 @@ function CatalogPage({ filter: filterProp } = {}) {
                     <Eyebrow color="red">{grouped[cat].length} {grouped[cat].length === 1 ? 'product' : 'products'}</Eyebrow>
                     <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(28px, 5.5vw, 44px)', textTransform: 'uppercase', margin: '8px 0 0', letterSpacing: '-0.01em' }}>{{ Braking: 'Ample Brakes', Cooling: 'Ample Cooling', HVAC: 'Ample AC', Engine: 'Ample Engine', Electrical: 'Ample Electrical', Lighting: 'Ample Lighting', Steering: 'Ample Steering Parts', Wipers: 'Ample Wipers', Service: 'Ample Filters' }[cat] || cat}</h2>
                   </div>
-                  {showBlurbs &&
+                  {/* Only render when the blurb has content — all blurbs are
+                      currently empty strings, which shipped an empty styled
+                      <p> beside every section heading. */}
+                  {showBlurbs && categoryBlurbs[cat] &&
               <p style={{ color: 'var(--fg-3)', fontSize: 13, lineHeight: 1.6, margin: 0, maxWidth: 420, textAlign: 'right' }}>{categoryBlurbs[cat]}</p>
               }
                 </Reveal>
@@ -141,7 +144,7 @@ function CatalogCard({ slug, ratio = '4/3' }) {
       }
       <div style={{ position: 'relative', aspectRatio: ratio, background: 'radial-gradient(ellipse at center, #1a1b1e 0%, #000 75%)', overflow: 'hidden' }}>
         <ProductCardMedia slug={slug} heroAsset={p.heroAsset} fit={imageFit} size={240}
-          override={cardImage} scale={cardScale} padding={cardPadding}
+          override={cardImage || p.cardImage} scale={cardScale} padding={cardPadding}
           position={cardPosition}
           onPositionChange={window.__ampleEditor
             ? (pos) => setProductTweak(slug, 'cardPosition', pos)
@@ -493,23 +496,26 @@ function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} style={{ display: 'grid', gap: 12, marginTop: 20 }} noValidate>
+      {/* aria-labels: the fields are placeholder-only by design (visual
+          minimalism), but placeholders vanish on input and aren't reliable
+          accessible names — WCAG 3.3.2. */}
       <input
-        placeholder="Name" style={{ ...inputStyle, ...disabledFieldStyle }}
+        placeholder="Name" aria-label="Name" style={{ ...inputStyle, ...disabledFieldStyle }}
         value={form.name} onChange={setField('name')}
         maxLength={100} required autoComplete="name"
         disabled={submitting} />
       <input
-        placeholder="Email" type="email" style={{ ...inputStyle, ...disabledFieldStyle }}
+        placeholder="Email" aria-label="Email" type="email" style={{ ...inputStyle, ...disabledFieldStyle }}
         value={form.email} onChange={setField('email')}
         maxLength={200} required autoComplete="email"
         disabled={submitting} />
       <input
-        placeholder="Subject" style={{ ...inputStyle, ...disabledFieldStyle }}
+        placeholder="Subject" aria-label="Subject" style={{ ...inputStyle, ...disabledFieldStyle }}
         value={form.subject} onChange={setField('subject')}
         maxLength={200} required
         disabled={submitting} />
       <textarea
-        placeholder="Message" rows={5}
+        placeholder="Message" aria-label="Message" rows={5}
         style={{ ...inputStyle, ...disabledFieldStyle, resize: 'vertical', fontFamily: 'var(--font-sans)' }}
         value={form.message} onChange={setField('message')}
         maxLength={5000} required
@@ -566,7 +572,7 @@ function ContactPage() {
           {/* Contact details */}
           <Reveal delay={1}>
             <Eyebrow>Reach The Team</Eyebrow>
-            <p style={{ color: 'var(--fg-2)', fontSize: 16, lineHeight: 1.6, marginTop: 14, maxWidth: 480 }}>This site showcases our product line it is not a storefront. For pricing, technical specifications, or to learn more about a component, get in touch with our team directly.
+            <p style={{ color: 'var(--fg-2)', fontSize: 16, lineHeight: 1.6, marginTop: 14, maxWidth: 480 }}>This site showcases our product line. It is not a storefront. For pricing, technical specifications, or to learn more about a component, get in touch with our team directly.
 
             </p>
 
@@ -574,12 +580,16 @@ function ContactPage() {
               {[
               { label: 'General Inquiries', v: 'support@ampleproducts.ca' },
               { label: 'Technical Support', v: 'support@ampleproducts.ca' },
-              { label: 'Buisness Inquiries', v: 'partners@ampleproducts.ca' },
+              { label: 'Business Inquiries', v: 'partners@ampleproducts.ca' },
               { label: 'Headquarters', v: 'Toronto, Canada' }].
               map((r) =>
               <div key={r.label} style={{ borderTop: '1px solid var(--border-1)', paddingTop: 16 }}>
                   <div style={{ fontFamily: 'var(--font-product)', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>{r.label}</div>
-                  <div style={{ fontFamily: 'var(--font-product)', fontSize: 22, fontWeight: 700, color: 'var(--fg-1)', marginTop: 6 }}>{r.v}</div>
+                  <div style={{ fontFamily: 'var(--font-product)', fontSize: 22, fontWeight: 700, color: 'var(--fg-1)', marginTop: 6, overflowWrap: 'anywhere' }}>
+                    {r.v.includes('@')
+                      ? <a href={`mailto:${r.v}`} style={{ color: 'inherit', textDecoration: 'none' }}>{r.v}</a>
+                      : r.v}
+                  </div>
                 </div>
               )}
             </div>
@@ -588,12 +598,8 @@ function ContactPage() {
           {/* Contact form */}
           <Reveal as="div" delay={2} id="contact" style={{ background: 'var(--ample-coal)', border: '1px solid var(--border-1)', padding: 32 }}>
             <h2 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 40, textTransform: 'uppercase', margin: 0 }}>Send a message</h2>
-            <div style={{ fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--fg-3)', marginTop: 4 }}></div>
             <p style={{ color: 'var(--fg-2)', fontSize: 14, marginTop: 16, lineHeight: 1.6 }}>We'll respond within two business days</p>
             <ContactForm />
-            <div style={{ marginTop: 24, paddingTop: 20, borderTop: '1px solid var(--border-1)', fontFamily: 'var(--font-product)', fontSize: 11, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--fg-3)' }}>
-
-            </div>
           </Reveal>
         </div>
       </main>
@@ -606,7 +612,9 @@ const inputStyle = {
   width: '100%', boxSizing: 'border-box',
   background: 'var(--ample-graphite)', border: '1px solid var(--border-1)',
   color: 'var(--fg-1)', borderRadius: 4, padding: '12px 14px',
-  fontFamily: 'var(--font-sans)', fontSize: 14, outline: 'none'
+  // 16px, not 14: iOS Safari force-zooms the viewport on focus for any
+  // input under 16px — the most common "mobile form feels broken" cause.
+  fontFamily: 'var(--font-sans)', fontSize: 16, outline: 'none'
 };
 
 Object.assign(window, { CatalogPage, GoldStandardPage, StoryPage, ContactPage });

@@ -292,6 +292,18 @@ async function writeImageToAssets(blob, namePrefix) {
   return `assets/${filename}`;
 }
 
+/* Optimistic-preview blob: URLs live for the whole session (see useImageDrop)
+   — undo-history snapshots may reference them long after the upload settled,
+   and revoking would turn Ctrl+Z into a permanently broken image. A handful
+   of preview blobs costs a few MB at most; all are released on unload. */
+const __ampleSessionBlobs = new Set();
+if (typeof window !== 'undefined') {
+  window.addEventListener('pagehide', () => {
+    __ampleSessionBlobs.forEach((u) => { try { URL.revokeObjectURL(u); } catch {} });
+    __ampleSessionBlobs.clear();
+  });
+}
+
 /* ---------- useImageDrop ---------- */
 /* Wire a ref to accept dragged images. Supports both OS file drops AND
    in-page asset drags (asset library panels, other tabs, links).
@@ -371,25 +383,15 @@ function useImageDrop(ref, onDrop, opts) {
         // another one (skipHistory: true), otherwise pressing Ctrl+Z lands
         // on the now-revoked blob: URL state and shows a broken image.
         onDropRef.current(path, { skipHistory: true });
-        // Defer the blob revoke past React's render of the new URL.
-        // Revoking synchronously here can briefly leave the DOM with a
-        // CSS background-image: url(blob:...) that points at a dead
-        // blob — visible as a one-frame flash to black (or transparent)
-        // between the revoke and React's next paint. The image() probe
-        // pre-loads the assets/ URL so by the time the timeout fires
-        // the new path is in the HTTP cache and React has rendered
-        // with it on screen.
-        const stale = previewUrl;
-        const finalize = () => { try { URL.revokeObjectURL(stale); } catch {} };
-        try {
-          const probe = new Image();
-          probe.onload = finalize;
-          probe.onerror = finalize;
-          probe.src = path;
-          // Belt-and-braces: if neither onload nor onerror fires (rare),
-          // free the blob after 4 seconds anyway so we do not leak.
-          setTimeout(finalize, 4000);
-        } catch { finalize(); }
+        // Do NOT revoke the preview blob here. Any edit made while the
+        // upload was in flight pushed an undo snapshot that still holds the
+        // blob: URL — revoking it made undo restore a permanently broken
+        // image. The blob stays alive for the session (small memory cost)
+        // and is released with all the others on pagehide.
+        __ampleSessionBlobs.add(previewUrl);
+        // Pre-warm the canonical assets/ URL so React's swap to it paints
+        // from cache instead of flashing while the file streams in.
+        try { const probe = new Image(); probe.src = path; } catch {}
         try {
           window.dispatchEvent(new CustomEvent('ample-upload-success', {
             detail: { namePrefix: prefixRef.current || null, path },

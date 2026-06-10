@@ -508,35 +508,34 @@ const HERO_RENDERERS = {
    ─────────────────
    Renders a product card's image area with this priority:
      1. `override` — explicit path. Source depends on where the component
-        renders: catalogCardImages[slug] on the grid cards (CatalogCard,
+        renders: catalogCardImages[slug] (falling back to the product's base
+        `cardImage` from ProductData) on the grid cards (CatalogCard,
         FeaturedCard, RelatedProductCard), productOverrides[slug].calloutImage
         on the product detail page's rich callout layout (CalloutLayout).
-     2. Convention — `assets/<slug>.png`, then `assets/<slug>.jpg`.
-     3. Fallback — stylized ProductHero illustration.
+     2. Fallback — stylized ProductHero illustration.
+   (The old step between them — probing `assets/<slug>.png` then `.jpg` —
+   was removed: only 1 of 21 products ever had a convention-named file, so
+   on the live site it fired ~40 guaranteed 404s per catalog view before
+   landing on the SVG anyway. Base `cardImage` data replaces it.)
 
    `fit` controls object-fit (contain = whole image visible, cover = fills card).
 */
 function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, override, padding = 16, scale = 1, position, onPositionChange }) {
-  const conventionalExts = ['png', 'jpg'];
-  const [extIdx, setExtIdx] = React.useState(0);
-  const [conventionFailed, setConventionFailed] = React.useState(false);
-
-  // Reset the probe whenever the slug or override changes.
-  const probeKey = slug + '|' + (override || '');
-  React.useEffect(() => {
-    setExtIdx(0);
-    setConventionFailed(false);
-  }, [probeKey]);
-
   // `scale` zooms the visible image inside the card frame without changing
   // the frame size. Useful for tightening up product shots that ship with
   // a lot of transparent margin baked in. Clamped to a safe range so a
-  // misconfigured tweak can't blow the image past the card chrome.
-  const safeScale = Math.max(0.5, Math.min(2, Number(scale) || 1));
+  // misconfigured tweak can't blow the image past the card chrome. Ceiling
+  // matches the callout knob's 2.5 — the two previously disagreed (2 vs 2.5),
+  // which silently rounded panel values down.
+  const safeScale = Math.max(0.5, Math.min(2.5, Number(scale) || 1));
   // `padding` insets the image inside the card frame. Previously the image
   // used inset:0, so wrapper padding was visually invisible — now padding
-  // lives here, on the image element, where it actually works.
+  // lives here, on the image element, where it actually works. The px value
+  // is tuned on desktop; min(px, 4vw) stops a large inset from eating most
+  // of a card on a 360px phone (4vw ≥ 51px on desktop, so nothing changes
+  // there).
   const safePadding = Math.max(0, Math.min(80, Number(padding) || 0));
+  const padCss = `min(${safePadding}px, 4vw)`;
 
   // Drag-to-pan. Only enabled when a callback is supplied — visitors never
   // get the editor handles, and non-editable callers (e.g. RelatedProductCard)
@@ -555,8 +554,11 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
     const wrapper = img.parentElement;
     if (!wrapper) return;
     const rect = wrapper.getBoundingClientRect();
-    const innerW = Math.max(1, rect.width - 2 * safePadding);
-    const innerH = Math.max(1, rect.height - 2 * safePadding);
+    // Mirror the CSS inset min(px, 4vw) so drag sensitivity matches the
+    // rendered geometry on narrow viewports.
+    const effPad = Math.min(safePadding, window.innerWidth * 0.04);
+    const innerW = Math.max(1, rect.width - 2 * effPad);
+    const innerH = Math.max(1, rect.height - 2 * effPad);
     const startX = e.clientX, startY = e.clientY;
     const [px0, py0] = parsePos(position);
     let dragged = false;
@@ -595,14 +597,39 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
     window.addEventListener('pointerup', up);
   };
 
+  // Pan + zoom. For fit:'cover', objectPosition pans the crop window and a
+  // plain transform scale zooms — unchanged behaviour. For fit:'contain'
+  // with zoom, objectPosition can't move an image that overflows its box,
+  // so the Position knob (and drag-to-pan) previously did nothing useful on
+  // zoomed "Fit" images — the inflexibility being fixed here. Map position
+  // onto a translate instead: the max useful offset per axis is the overflow
+  // share, (s−1)/(2s) of the box (translate % is pre-scale, the outer scale
+  // multiplies it back up). 50%/50% stays perfectly centered, so existing
+  // un-panned framings render identically.
+  let imgTransform;
+  const containZoom = fit === 'contain' && safeScale !== 1;
+  if (safeScale !== 1) {
+    if (fit === 'contain') {
+      const [fx, fy] = parsePos(effectivePos);
+      const range = ((safeScale - 1) / (2 * safeScale)) * 100;
+      const tx = ((50 - fx) / 50) * range;
+      const ty = ((50 - fy) / 50) * range;
+      imgTransform = `scale(${safeScale}) translate(${tx.toFixed(3)}%, ${ty.toFixed(3)}%)`;
+    } else {
+      imgTransform = `scale(${safeScale})`;
+    }
+  }
   const imgStyle = {
     position: 'absolute',
-    top: safePadding, left: safePadding,
-    width: `calc(100% - ${safePadding * 2}px)`,
-    height: `calc(100% - ${safePadding * 2}px)`,
-    objectFit: fit, objectPosition: effectivePos,
+    top: padCss, left: padCss,
+    width: `calc(100% - 2 * ${padCss})`,
+    height: `calc(100% - 2 * ${padCss})`,
+    // When the translate handles panning (contain+zoom), center the
+    // object-position — on the letterbox axis object-position would pan in
+    // the OPPOSITE visual direction and partially cancel the translate.
+    objectFit: fit, objectPosition: containZoom ? '50% 50%' : effectivePos,
     zIndex: 1, display: 'block',
-    transform: safeScale !== 1 ? `scale(${safeScale})` : undefined,
+    transform: imgTransform,
     transformOrigin: 'center',
     cursor: editable ? 'grab' : undefined,
     userSelect: editable ? 'none' : undefined,
@@ -642,36 +669,17 @@ function ProductCardMedia({ slug, heroAsset, fit = 'contain', size = 240, overri
     return (<>{backdrop(override)}<img src={override} alt="" loading="lazy" decoding="async" style={imgStyle} {...imgProps} />{overlay}</>);
   }
 
-  if (conventionFailed) {
-    return (
-      <div style={{
-        position: 'absolute', inset: 0, display: 'flex',
-        alignItems: 'center', justifyContent: 'center', zIndex: 1,
-        transform: safeScale !== 1 ? `scale(${safeScale})` : undefined,
-        transformOrigin: 'center',
-      }}>
-        <ProductHero type={heroAsset} size={size} />
-      </div>);
-  }
-
-  const conventionUrl = `assets/${slug}.${conventionalExts[extIdx]}`;
-  return (<>
-    {backdrop(conventionUrl)}
-    <img
-      key={extIdx}
-      src={conventionUrl}
-      alt=""
-      loading="lazy"
-      decoding="async"
-      onError={() => {
-        if (extIdx + 1 >= conventionalExts.length) setConventionFailed(true);
-        else setExtIdx(extIdx + 1);
-      }}
-      style={imgStyle}
-      {...imgProps}
-    />
-    {overlay}
-  </>);
+  // No image anywhere (tweak override or base cardImage): stylized SVG
+  // fallback, immediately — no 404 probes.
+  return (
+    <div style={{
+      position: 'absolute', inset: 0, display: 'flex',
+      alignItems: 'center', justifyContent: 'center', zIndex: 1,
+      transform: safeScale !== 1 ? `scale(${safeScale})` : undefined,
+      transformOrigin: 'center',
+    }}>
+      <ProductHero type={heroAsset} size={size} />
+    </div>);
 }
 
 Object.assign(window, { ProductHero, ProductCardMedia });

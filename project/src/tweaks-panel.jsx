@@ -246,6 +246,11 @@ const __TWEAKS_MIGRATIONS = {
 
 function __hydrateTweaks() {
   if (typeof localStorage === 'undefined') return null;
+  // Visitors always get pure saved defaults. Drafts are an authoring
+  // concept; hydrating them for non-editors would pin anyone with a stray
+  // legacy draft (from the era when ?edit=1 worked off-localhost) on stale
+  // content after every deploy.
+  if (typeof window !== 'undefined' && !window.__ampleEditor) return null;
   try {
     // Current-version hit
     const cur = localStorage.getItem(STORAGE_KEY);
@@ -275,6 +280,17 @@ function __hydrateTweaks() {
 const __TWEAKS_HISTORY_MAX = 30;
 const __TWEAKS_DEBOUNCE_MS = 350;
 
+// Module-level pointer to the active useTweaks instance's dirty ref —
+// __markTweaksDirty is called from setTweak/undo/redo so the persistence
+// layer knows a real edit happened this session (vs the mount-time render,
+// which must never create a draft). Also clears the suppress flag a Reset
+// or Save set, since a new edit means the user is authoring again.
+let dirtyRefShared = null;
+function __markTweaksDirty() {
+  if (dirtyRefShared) dirtyRefShared.current = true;
+  try { window.__ampleTweaksSuppressPersist = false; } catch {}
+}
+
 function useTweaks(defaults) {
   const [values, setValues] = React.useState(() => {
     const hydrated = __hydrateTweaks();
@@ -303,6 +319,7 @@ function useTweaks(defaults) {
   // undo restores the (now-revoked) blob: URL and the image breaks.
   const setTweak = React.useCallback((keyOrEditsOrFn, val, opts) => {
     const skipHistory = !!(opts && opts.skipHistory);
+    __markTweaksDirty();
     setValues((prev) => {
       let edits;
       if (typeof keyOrEditsOrFn === 'function') {
@@ -328,30 +345,28 @@ function useTweaks(defaults) {
         lastPushAtRef.current = now;
       }
 
-      // React state keeps the data URL so the image renders this session;
-      // localStorage only ever sees the stripped version.
-      try {
-        const persistable = __stripDataUrls(next) || {};
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
-      } catch {}
+      // Persistence happens OUTSIDE the updater (debounced effect below) —
+      // stripping + stringifying + writing the whole state per pointermove
+      // was the editor's single biggest lag source during slider drags.
       // Host protocol — fire inside the reducer so functional updaters'
-      // computed edits get reported correctly. Non-StrictMode app, so
-      // double-fire under reducer re-run isn't an issue.
-      try { window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*'); } catch {}
+      // computed edits get reported correctly. Only meaningful (and only
+      // sent) when we're actually embedded in a host frame.
+      try {
+        if (window.parent !== window) {
+          window.parent.postMessage({ type: '__edit_mode_set_keys', edits }, '*');
+        }
+      } catch {}
       return next;
     });
   }, []);
 
   const undo = React.useCallback(() => {
+    __markTweaksDirty();
     setValues((prev) => {
       if (pastRef.current.length === 0) return prev;
       const restored = pastRef.current.pop();
       futureRef.current.push(prev);
       if (futureRef.current.length > __TWEAKS_HISTORY_MAX) futureRef.current.shift();
-      try {
-        const persistable = __stripDataUrls(restored) || {};
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
-      } catch {}
       lastPushAtRef.current = 0; // next setTweak treats this as a fresh burst
       setHistoryTick((n) => n + 1);
       return restored;
@@ -359,20 +374,57 @@ function useTweaks(defaults) {
   }, []);
 
   const redo = React.useCallback(() => {
+    __markTweaksDirty();
     setValues((prev) => {
       if (futureRef.current.length === 0) return prev;
       const restored = futureRef.current.pop();
       pastRef.current.push(prev);
       if (pastRef.current.length > __TWEAKS_HISTORY_MAX) pastRef.current.shift();
-      try {
-        const persistable = __stripDataUrls(restored) || {};
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
-      } catch {}
       lastPushAtRef.current = 0;
       setHistoryTick((n) => n + 1);
       return restored;
     });
   }, []);
+
+  // Debounced persistence — one strip+stringify+localStorage write per burst
+  // of edits instead of one per pointermove. Covers setTweak, undo and redo
+  // alike (anything that changes `values`). pagehide flushes the tail write
+  // so closing the tab mid-burst can't lose the last edit.
+  //
+  // Heavily gated — every skip below guards a real failure mode:
+  //   !__ampleEditor      → visitors must NEVER persist. The mount-time timer
+  //                         would otherwise write TWEAK_DEFAULTS into every
+  //                         visitor's localStorage and pin them on stale
+  //                         content across future deploys.
+  //   !dirtyRef           → nothing was edited this session; don't create a
+  //                         draft out of thin air.
+  //   suppress flag       → Reset / post-save just discarded the draft; the
+  //                         pagehide flush (or a pending timer) must not
+  //                         immediately resurrect it. Cleared on next edit.
+  //   __ampleSavePending  → a Save & lock is settling; don't race it.
+  const persistRef = React.useRef(values);
+  persistRef.current = values;
+  const dirtyRef = React.useRef(false);
+  dirtyRefShared = dirtyRef; // module-level pointer; set by setTweak/undo/redo
+  const persistNow = React.useCallback(() => {
+    if (typeof window === 'undefined') return;
+    if (!window.__ampleEditor) return;
+    if (!dirtyRef.current) return;
+    if (window.__ampleTweaksSuppressPersist) return;
+    if (window.__ampleSavePending) return;
+    try {
+      const persistable = __stripDataUrls(persistRef.current) || {};
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(persistable));
+    } catch {}
+  }, []);
+  React.useEffect(() => {
+    const id = setTimeout(persistNow, 400);
+    return () => clearTimeout(id);
+  }, [values, persistNow]);
+  React.useEffect(() => {
+    window.addEventListener('pagehide', persistNow);
+    return () => window.removeEventListener('pagehide', persistNow);
+  }, [persistNow]);
 
   // Recomputed only when history changes (historyTick) — cheap.
   const canUndo = pastRef.current.length > 0;
@@ -480,9 +532,10 @@ function TweaksProvider({ value, children }) {
 // flips off in lockstep; the host echoes __deactivate_edit_mode back which
 // is what actually hides the panel.
 function TweaksPanel({ title = 'Tweaks', children }) {
-  // Editor-only — visitors never see the launcher or the panel. Bail before
-  // any state/effects so we don't run drag listeners, message bus, etc.
-  if (typeof window !== 'undefined' && !window.__ampleEditor) return null;
+  // Editor-only — visitors never see the launcher or the panel. The flag is
+  // constant per page load, but the bail-out must come AFTER the hooks
+  // (rules of hooks); effects below gate their bodies on it instead.
+  const editorOn = typeof window === 'undefined' || !!window.__ampleEditor;
   const [open, setOpen] = React.useState(false);
   const dragRef = React.useRef(null);
   const offsetRef = React.useRef({ x: 16, y: 16 });
@@ -515,7 +568,7 @@ function TweaksPanel({ title = 'Tweaks', children }) {
   }, []);
 
   React.useEffect(() => {
-    if (!open) return;
+    if (!editorOn || !open) return;
     clampToViewport();
     if (typeof ResizeObserver === 'undefined') {
       window.addEventListener('resize', clampToViewport);
@@ -527,13 +580,16 @@ function TweaksPanel({ title = 'Tweaks', children }) {
   }, [open, clampToViewport]);
 
   React.useEffect(() => {
+    if (!editorOn) return;
     const onMsg = (e) => {
       const t = e?.data?.type;
       if (t === '__activate_edit_mode') setOpen(true);
       else if (t === '__deactivate_edit_mode') setOpen(false);
     };
     window.addEventListener('message', onMsg);
-    window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+    }
 
     // Auto-open when running standalone (not embedded in Claude Design).
     // Also wire up `T` key as a toggle shortcut.
@@ -557,9 +613,14 @@ function TweaksPanel({ title = 'Tweaks', children }) {
     };
   }, []);
 
+  // Hooks are all above — safe to bail for visitors now.
+  if (!editorOn) return null;
+
   const dismiss = () => {
     setOpen(false);
-    window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+    if (window.parent !== window) {
+      window.parent.postMessage({ type: '__edit_mode_dismissed' }, '*');
+    }
   };
 
   const onDragStart = (e) => {
@@ -995,6 +1056,10 @@ function TweakTextarea({ label, value, placeholder, rows = 3, onChange }) {
 }
 
 Object.assign(window, {
+  // Storage key for the tweak draft — exported so the Save flow (index.html)
+  // can clear the draft after a successful Save & lock, and the Reset button
+  // can discard it.
+  __ampleTweaksStorageKey: STORAGE_KEY,
   useTweaks, TweaksPanel, TweakSection, TweakRow,
   TweakSlider, TweakToggle, TweakRadio, TweakSelect,
   TweakText, TweakTextarea, TweakNumber, TweakColor, TweakButton,

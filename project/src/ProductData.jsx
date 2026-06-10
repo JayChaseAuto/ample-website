@@ -8,6 +8,10 @@
      slug, category, eyebrow, title, title2
      goldStandard       (badge in catalog + detail page)
      heroAsset          (legacy enum, still used by tweak select option)
+     cardImage          (base catalog/card photo; the editor's
+                         catalogCardImages override wins when set. Baked-in
+                         so the LIVE site renders real photos instead of
+                         probing assets/<slug>.png → 404 → SVG fallback)
      callouts           (deprecated, kept as [] for compatibility)
      features           (optional, feature cards under hero)
      bullets            (engineering summary, full-width list)
@@ -16,6 +20,7 @@
 const PRODUCTS = {
   'brake-pads': {
     slug: 'brake-pads',
+    cardImage: 'assets/card-brake-pads-45d7c1f2.webp',
     category: 'Braking',
     title: 'Ceramic Composite',
     title2: 'Brake Pads.',
@@ -137,6 +142,7 @@ const PRODUCTS = {
 
   'alternator': {
     slug: 'alternator',
+    cardImage: 'assets/card-alternator-fe236578.webp',
     category: 'Electrical',
     title: 'High-Output',
     title2: 'Alternator.',
@@ -217,6 +223,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'wiper-motor',
+    cardImage: 'assets/card-wiper-motor-6692e449.webp',
     category: 'Wipers', eyebrow: 'Wipers · Park & Forget',
     title: 'Wiper', title2: 'Motor.',
     heroAsset: 'wiper-motor',
@@ -273,6 +280,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'tensioner',
+    cardImage: 'assets/card-tensioner-d39eb8ae.webp',
     category: 'Engine', eyebrow: 'Engine · No Squeal',
     title: 'Belt', title2: 'Tensioner.',
     heroAsset: 'tensioner',
@@ -303,6 +311,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'starter',
+    cardImage: 'assets/card-starter-81b3a9b6.webp',
     category: 'Electrical', eyebrow: 'Electrical · Cranks',
     title: 'Starter', title2: 'Motor.',
     heroAsset: 'starter',
@@ -331,6 +340,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'water-pump-awn',
+    cardImage: 'assets/card-water-pump-awn-bf9d322d.webp',
     category: 'Cooling', eyebrow: 'Cooling · Replacement',
     title: 'Water', title2: 'Pump.',
     heroAsset: 'water-pump',
@@ -377,6 +387,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'lighting',
+    cardImage: 'assets/card-lighting-3f4b4811.webp',
     category: 'Lighting', eyebrow: 'Lighting · Cleaner Beam',
     title: 'LED', title2: 'Lighting.',
     heroAsset: 'lighting',
@@ -417,6 +428,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'ignition-coil',
+    cardImage: 'assets/card-ignition-coil-ccb1cb69.webp',
     category: 'Engine', eyebrow: 'Engine · Hotter Spark',
     title: 'Ignition', title2: 'Coil.',
     heroAsset: 'ignition-coil',
@@ -447,6 +459,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'caliper-npc',
+    cardImage: 'assets/card-caliper-npc-c6876459.webp',
     category: 'Braking', eyebrow: 'Braking · OE Spec',
     title: 'Brake', title2: 'Caliper.',
     heroAsset: 'caliper',
@@ -475,6 +488,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'compressor',
+    cardImage: 'assets/card-compressor-b04f024a.webp',
     category: 'HVAC', eyebrow: 'HVAC · Cabin Cool',
     title: 'A/C', title2: 'Compressor.',
     heroAsset: 'compressor',
@@ -521,6 +535,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'gasket',
+    cardImage: 'assets/card-gasket-51104de0.webp',
     category: 'Engine', eyebrow: 'Engine · The Seal',
     title: 'Gaskets', title2: '',
     heroAsset: 'gasket',
@@ -551,6 +566,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'abs-sensor',
+    cardImage: 'assets/card-abs-sensor-a28e5d04.webp',
     category: 'Braking', eyebrow: 'Braking · ABS',
     title: 'ABS', title2: 'Sensor.',
     heroAsset: 'sensor',
@@ -581,6 +597,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'pad-sensor',
+    cardImage: 'assets/card-pad-sensor-9bfdc8c5.webp',
     category: 'Braking', eyebrow: 'Braking · Wear',
     title: 'Brake Pad', title2: 'Wear Sensor.',
     heroAsset: 'sensor',
@@ -603,6 +620,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'power-steering-pump',
+    cardImage: 'assets/card-power-steering-pump-20e583e8.webp',
     category: 'Steering', eyebrow: 'Steering · Hydraulic',
     title: 'Power Steering', title2: 'Pump.',
     heroAsset: 'water-pump',
@@ -638,6 +656,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'radiator-urk',
+    cardImage: 'assets/card-radiator-urk-949abd21.webp',
     category: 'Cooling', eyebrow: 'Cooling · Replacement',
     title: 'Cooling', title2: 'Radiator.',
     heroAsset: 'radiator',
@@ -668,6 +687,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'radiator-fans',
+    cardImage: 'assets/card-radiator-fans-a2420cbe.webp',
     category: 'Cooling', eyebrow: 'Cooling · Brushless Module',
     title: 'Radiator', title2: 'Fan Assembly.',
     heroAsset: 'blower-motor',
@@ -704,6 +724,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'condenser',
+    cardImage: 'assets/card-condenser-f60c7f04.webp',
     category: 'HVAC', eyebrow: 'HVAC · Heat Out',
     title: 'A/C', title2: 'Condenser.',
     heroAsset: 'radiator',
@@ -734,6 +755,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'heater-core',
+    cardImage: 'assets/card-heater-core-36993be8.webp',
     category: 'HVAC', eyebrow: 'HVAC · Cabin Heat',
     title: 'Heater', title2: 'Core.',
     heroAsset: 'radiator',
@@ -764,6 +786,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'rack-pinion',
+    cardImage: 'assets/card-rack-pinion-9bd31313.webp',
     category: 'Steering', eyebrow: 'Steering · OE Spec',
     title: 'Rack', title2: '& Pinion.',
     heroAsset: 'rack-pinion',
@@ -800,6 +823,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'air-filter',
+    cardImage: 'assets/card-air-filter-50144740.webp',
     category: 'Service', eyebrow: 'Service · Air',
     title: 'Air', title2: 'Filter.',
     heroAsset: 'filter',
@@ -830,6 +854,7 @@ const NEW_PRODUCTS = [
   }),
   makeProduct({
     slug: 'cabin-filter',
+    cardImage: 'assets/card-cabin-filter-ac665ad4.webp',
     category: 'Service', eyebrow: 'Service · Cabin Air',
     title: 'Cabin', title2: 'Filter.',
     heroAsset: 'filter',

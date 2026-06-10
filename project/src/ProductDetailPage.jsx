@@ -33,9 +33,11 @@ function ProductDetailPage({ slug }) {
     p.bullets = overrides.bullets;
   }
   // Banner gallery — ordered list of full-width marketing graphics shown
-  // below the callouts. Each entry is { url, alt }. Lives only in overrides
-  // (no base default), so a falsy/empty array means the section is hidden.
-  if (Array.isArray(overrides.banners) && overrides.banners.length) {
+  // below the callouts. Each entry is { url, alt }. ANY array override is
+  // authoritative — including [] — so the editor can remove every banner on
+  // a product that ships base banners (e.g. lighting) without them
+  // resurrecting. Only undefined/null falls back to the base set.
+  if (Array.isArray(overrides.banners)) {
     p.banners = overrides.banners.filter((b) => b && b.url);
   }
   // Centered callout image transform scale. 1.0 = exactly fits the box.
@@ -68,16 +70,38 @@ function ProductDetailPage({ slug }) {
   // different. Falls back to the catalog card image when no callout-
   // specific override is set, so existing products that only have a card
   // image keep rendering it in the callout slot.
-  p.calloutImage = overrides.calloutImage || (tweaks.catalogCardImages || {})[slug] || '';
+  p.calloutImage = overrides.calloutImage || (tweaks.catalogCardImages || {})[slug] || base.cardImage || '';
   const usesRichLayout = !!(p.numberedFeatures && p.numberedFeatures.length);
 
   const heroDropRef = React.useRef(null);
   useImageDrop(heroDropRef, (path, opts) => {
     setProductTweak(slug, 'heroBgImage', path, opts);
   }, { namePrefix: `product-${slug}-hero` });
+
+  // Unknown slug → a small not-found page instead of silently rendering
+  // brake-pads with the wrong product's overrides. Placed AFTER all hooks
+  // so the hook order stays stable across slug changes.
+  if (!PRODUCTS[slug]) {
+    return (
+      <div style={{ background: 'transparent', minHeight: '100vh', color: 'var(--fg-1)' }}>
+        <SiteHeader active="catalog" />
+        <main style={{ maxWidth: 1440, margin: '0 auto', padding: 'clamp(40px, 7vw, 56px) clamp(16px, 4vw, 40px) clamp(56px, 9vw, 80px)' }}>
+          <Eyebrow>Not Found</Eyebrow>
+          <h1 style={{ fontFamily: 'var(--font-product)', fontWeight: 800, fontSize: 'clamp(40px, 6vw, 84px)', lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: '-0.02em', margin: '14px 0 0' }}>
+            That part isn't<br />in the catalog.
+          </h1>
+          <p style={{ color: 'var(--fg-2)', fontSize: 15, lineHeight: 1.6, marginTop: 18 }}>
+            <a href="#/catalog" style={{ color: 'var(--ample-red)' }}>Browse the full catalog ›</a>
+          </p>
+        </main>
+        <SiteFooter />
+      </div>
+    );
+  }
+
   return (
     <div style={{ background: 'transparent', minHeight: '100vh', color: 'var(--fg-1)' }}>
-      <SiteHeader active="gold" />
+      <SiteHeader active="catalog" />
       <main style={{ maxWidth: 1440, margin: '0 auto', padding: '0 clamp(16px, 4vw, 40px)' }}>
         {/* Hero section. Left-aligned eyebrow + title on the left, optional
             gold medallion on the right. Wraps on narrow screens so the
@@ -107,12 +131,18 @@ function ProductDetailPage({ slug }) {
               product shot inside the callouts; description-layout products
               (e.g. the brake-pad wear sensor) show one in DescriptionLayout.
               For both, this big hero banner would just be a redundant empty
-              box, so skip it and keep the title + the product itself. */}
-          {!usesRichLayout && !p.description && (
+              box, so skip it and keep the title + the product itself.
+              Visitors additionally never see the no-photo state: without an
+              image this is a giant empty gradient box (the drop placeholder
+              is editor-only CSS), so it renders for editors only until a
+              photo is set. Height clamps on phones so a fixed desktop px
+              value can't fill the whole viewport. */}
+          {!usesRichLayout && !p.description &&
+           (p.heroBgImage || (typeof window !== 'undefined' && window.__ampleEditor)) && (
             <Reveal delay={2}>
               <div ref={heroDropRef} className="drop-target product-hero"
                    data-ample-slot="product-hero"
-                   style={p.heroHeight ? { minHeight: p.heroHeight } : undefined}>
+                   style={p.heroHeight ? { minHeight: `min(${p.heroHeight}px, 70vw)` } : undefined}>
                 <div className="drop-hint">Drop image to set product hero</div>
                 {p.heroBgImage ? (
                   <>
@@ -395,7 +425,11 @@ function BenefitsBlock({ title, items }) {
 
 function CalloutLayout({ slug, p, calloutImage }) {
   const { setProductTweak } = useTweakState();
-  const items = p.numberedFeatures || [];
+  // COPY before padding — p.numberedFeatures is the same array reference as
+  // PRODUCTS[slug].numberedFeatures (or the override array inside tweak
+  // state); pushing into it directly would permanently corrupt shared data
+  // for any product shipping fewer than 4 features.
+  const items = [...(p.numberedFeatures || [])];
   // Pad to 4 so layout placement is stable even if a product ships fewer.
   while (items.length < 4) items.push({ title: '', body: '' });
   // When the product has banners, the center stage becomes a swipeable
@@ -539,7 +573,10 @@ function BannerCarousel({ banners, p }) {
   const [idx, setIdx] = React.useState(0);
   const [ratio, setRatio] = React.useState(16 / 9);
   const [dragging, setDragging] = React.useState(false);
-  const ratios = React.useRef({});       // index -> naturalW/naturalH
+  // Keyed by URL, not index — reordering banners in the editor keeps the
+  // same length and active idx, so an index-keyed cache would serve a stale
+  // ratio for the slide that moved into this position.
+  const ratios = React.useRef({});       // url -> naturalW/naturalH
   const drag = React.useRef({ x: 0, dx: 0 });
   const trackRef = React.useRef(null);
   const reduce = typeof window !== 'undefined' && window.matchMedia &&
@@ -559,18 +596,21 @@ function BannerCarousel({ banners, p }) {
     if (idx > n - 1) { setIdx(Math.max(0, n - 1)); return; }
     const node = trackRef.current;
     if (node) {
-      node.querySelectorAll('img').forEach((im, i) => {
-        if (im.complete && im.naturalWidth) ratios.current[i] = im.naturalWidth / im.naturalHeight;
+      node.querySelectorAll('img').forEach((im) => {
+        if (im.complete && im.naturalWidth) {
+          ratios.current[im.getAttribute('src')] = im.naturalWidth / im.naturalHeight;
+        }
       });
     }
-    if (ratios.current[idx]) setRatio(ratios.current[idx]);
-  }, [idx, n]);
+    const key = banners[idx] && banners[idx].url;
+    if (key && ratios.current[key]) setRatio(ratios.current[key]);
+  }, [idx, n, banners]);
 
-  const onLoad = (i) => (e) => {
+  const onLoad = (url) => (e) => {
     const im = e.currentTarget;
     if (im.naturalWidth && im.naturalHeight) {
-      ratios.current[i] = im.naturalWidth / im.naturalHeight;
-      if (i === idx) setRatio(ratios.current[i]);
+      ratios.current[url] = im.naturalWidth / im.naturalHeight;
+      if (banners[idx] && banners[idx].url === url) setRatio(ratios.current[url]);
     }
   };
 
@@ -591,10 +631,16 @@ function BannerCarousel({ banners, p }) {
   const onPointerUp = () => {
     if (!dragging) return;
     setDragging(false);
+    // Explicitly restore the index-based transform. A sub-threshold drag
+    // otherwise sticks at the drag offset: React's style diffing skips the
+    // transform because the VDOM string never changed, so the imperative
+    // mid-drag write survives the re-render.
+    if (trackRef.current) {
+      trackRef.current.style.transform = `translateX(-${idx * (100 / n)}%)`;
+    }
     const T = 40; // px threshold to advance
     if (drag.current.dx <= -T) go(idx + 1);
     else if (drag.current.dx >= T) go(idx - 1);
-    else setIdx((x) => x); // snap back: re-render restores the prop transform
   };
 
   const transBase = reduce ? 'none' : '360ms cubic-bezier(0.22, 1, 0.36, 1)';
@@ -606,7 +652,9 @@ function BannerCarousel({ banners, p }) {
          style={{
            position: 'relative', width: '100%',
            aspectRatio: fixedH ? undefined : String(ratio),
-           height: fixedH ? fixedH : undefined,
+           // Fixed heights are tuned on desktop — clamp on phones so a
+           // 420px-locked banner can't letterbox most of a 360px screen.
+           height: fixedH ? `min(${fixedH}px, 56vw)` : undefined,
            transition: reduce ? 'none' : `aspect-ratio 320ms cubic-bezier(0.22, 1, 0.36, 1)`,
            overflow: 'hidden', touchAction: 'pan-y',
          }}>
@@ -631,7 +679,7 @@ function BannerCarousel({ banners, p }) {
             {/* Eager load: only a handful of small WebP, and lazy-loading
                 transform-shifted carousel slides leaves them blank on first
                 swipe and never measures their ratio for the auto-resize. */}
-            <img src={b.url} alt={altFor(b, i)} draggable={false} onLoad={onLoad(i)}
+            <img src={b.url} alt={altFor(b, i)} draggable={false} onLoad={onLoad(b.url)}
                  loading="eager" decoding="async"
                  style={{ width: '100%', height: '100%', objectFit: fit,
                           display: 'block', userSelect: 'none', pointerEvents: 'none' }} />
@@ -734,9 +782,13 @@ function RelatedProducts({ current }) {
           const scale = typeof ov.cardScale === 'number' ? ov.cardScale : globalScale;
           const padding = typeof ov.cardPadding === 'number' ? ov.cardPadding : globalPadding;
           const position = typeof ov.cardPosition === 'string' ? ov.cardPosition : '50% 50%';
+          // Per-product fit override — same precedence the catalog grid uses,
+          // so a product's framing is identical on every surface.
+          const fit = ov.cardImageFit || imageFit;
           return (
             <Reveal key={slug} delay={idx % 4}>
-              <RelatedProductCard slug={slug} imageFit={imageFit} override={cardImages[slug]}
+              <RelatedProductCard slug={slug} imageFit={fit}
+                override={cardImages[slug] || (PRODUCTS[slug] && PRODUCTS[slug].cardImage)}
                 scale={scale} padding={padding} position={position} />
             </Reveal>
           );
