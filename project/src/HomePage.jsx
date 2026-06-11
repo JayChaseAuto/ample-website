@@ -281,16 +281,85 @@ function CategoryCard({ card }) {
     mergeImageSlot('categoryImages', card.label, { url: path }, opts);
   }, { namePrefix: `cat-${card.label}` });
   const slot = readImageSlot(tweaks.categoryImages, card.label, card.defaultImage);
+
+  // Editor-only drag-to-pan, mirroring ProductCardMedia: live position drives
+  // the photo during the drag (no setTweak spam), one mergeImageSlot commit on
+  // release, and a capture-phase click swallow so the card link doesn't
+  // navigate after a pan.
+  const editable = typeof window !== 'undefined' && !!window.__ampleEditor && !!slot.url;
+  const [livePos, setLivePos] = React.useState(null);
+  const effectivePos = livePos || slot.position;
+  const parsePos = (s) => {
+    const m = String(s || '50% 50%').match(/(-?\d+(?:\.\d+)?)%\s+(-?\d+(?:\.\d+)?)%/);
+    return m ? [parseFloat(m[1]), parseFloat(m[2])] : [50, 50];
+  };
+  const onPointerDown = !editable ? undefined : (e) => {
+    if (e.button !== 0) return;
+    const photo = e.currentTarget.querySelector('.cat-photo');
+    if (!photo) return;
+    const rect = photo.getBoundingClientRect();
+    const innerW = Math.max(1, rect.width), innerH = Math.max(1, rect.height);
+    const startX = e.clientX, startY = e.clientY;
+    const [px0, py0] = parsePos(slot.position);
+    let dragged = false;
+    let currentPos = null;
+    const move = (ev) => {
+      const dx = ev.clientX - startX, dy = ev.clientY - startY;
+      if (!dragged && Math.hypot(dx, dy) < 4) return;
+      dragged = true;
+      const xPct = Math.max(0, Math.min(100, px0 + (dx / innerW) * 100));
+      const yPct = Math.max(0, Math.min(100, py0 + (dy / innerH) * 100));
+      currentPos = `${xPct.toFixed(1)}% ${yPct.toFixed(1)}%`;
+      setLivePos(currentPos);
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      if (dragged) {
+        const swallow = (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          window.removeEventListener('click', swallow, true);
+        };
+        window.addEventListener('click', swallow, true);
+        if (currentPos) mergeImageSlot('categoryImages', card.label, { position: currentPos });
+      }
+      setLivePos(null);
+    };
+    window.addEventListener('pointermove', move);
+    window.addEventListener('pointerup', up);
+  };
+
+  // Zoom rides the --cat-zoom CSS variable so the stylesheet's :hover scale
+  // bump multiplies on top instead of being clobbered by an inline transform.
+  // fit:'contain' + zoom maps position onto a translate (same math as
+  // ProductCardMedia) because background-position can't pan an image that
+  // overflows its box.
+  const zoomed = slot.scale !== 1;
+  const containZoom = slot.fit === 'contain' && zoomed;
+  let panX = '0%', panY = '0%';
+  if (containZoom) {
+    const [fx, fy] = parsePos(effectivePos);
+    const range = ((slot.scale - 1) / (2 * slot.scale)) * 100;
+    panX = `${(((50 - fx) / 50) * range).toFixed(3)}%`;
+    panY = `${(((50 - fy) / 50) * range).toFixed(3)}%`;
+  }
+  const photoStyle = slot.url ? {
+    backgroundImage: `url(${slot.url})`,
+    backgroundSize: slot.fit === 'contain' ? 'contain' : 'cover',
+    backgroundPosition: containZoom ? '50% 50%' : effectivePos,
+    backgroundRepeat: 'no-repeat',
+    ...(zoomed ? { '--cat-zoom': slot.scale, '--cat-pan-x': panX, '--cat-pan-y': panY } : {}),
+    ...(livePos ? { transition: 'none' } : {}),
+  } : {};
+
   return (
     <a ref={ref} href={`#/catalog/${encodeURIComponent(card.label)}`} className="cat-card drop-target"
-       data-ample-slot={`category-banner-${card.label}`}>
-      <div className="cat-photo"
-           style={slot.url ? {
-             backgroundImage: `url(${slot.url})`,
-             backgroundSize: slot.fit === 'contain' ? 'contain' : 'cover',
-             backgroundPosition: slot.position,
-             backgroundRepeat: 'no-repeat',
-           } : {}} />
+       data-ample-slot={`category-banner-${card.label}`}
+       onPointerDown={onPointerDown}
+       draggable={editable ? false : undefined}
+       style={editable ? { cursor: 'grab', touchAction: 'none', userSelect: 'none' } : undefined}>
+      <div className="cat-photo" style={photoStyle} />
       <div className="cat-shade" />
       <div className="cat-icon-chip">
         <Icon name={card.icon} size={18} />
