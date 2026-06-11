@@ -903,7 +903,11 @@ function TweakButton({ label, onClick, secondary = false }) {
 // gold standard features). Use after reading the slot with readImageSlot;
 // onPatch receives a partial like { fit: 'cover' } or { position: '50% 30%' }
 // that can be handed straight to mergeImageSlot.
-function TweakImageMeta({ slot, label, onPatch }) {
+//
+// showScale additionally exposes the slot's zoom knob. Only enable it for
+// slots whose renderer actually applies slot.scale (category banners) —
+// a knob that does nothing is worse than no knob.
+function TweakImageMeta({ slot, label, onPatch, showScale = false }) {
   const labelFor = (k) => label ? `${label} · ${k}` : (k.charAt(0).toUpperCase() + k.slice(1));
   return (
     <>
@@ -914,6 +918,12 @@ function TweakImageMeta({ slot, label, onPatch }) {
                     { value: 'contain', label: 'Fit' },
                   ]}
                   onChange={(v) => onPatch({ fit: v })} />
+      {showScale && (
+        <TweakSlider label={labelFor('zoom')}
+                     value={typeof slot.scale === 'number' ? slot.scale : 1}
+                     min={1} max={2.5} step={0.05}
+                     onChange={(v) => onPatch({ scale: v })} />
+      )}
       <TweakPositionPad label={labelFor('position')}
                         value={slot.position}
                         onChange={(v) => onPatch({ position: v })} />

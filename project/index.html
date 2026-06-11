@@ -1861,14 +1861,21 @@ function App() {
               <TweakSlider label="Overlay darkness" value={t.heroOverlay}
                            min={0} max={100} unit="%"
                            onChange={(v) => setTweak('heroOverlay', v)} />
-              <TweakSection label="Categories · Banners" />
+              <TweakSection label="Categories · Banners"
+                            subtitle="Drop an image on a card, then drag it in place to reframe. Zoom + fine-tune below." />
               {['Braking','Cooling','HVAC','Engine','Electrical','Lighting','Steering','Service'].map((cat) => {
                 const slot = readImageSlot(t.categoryImages, cat);
+                // Dropped images aren't in the static photo list — append the
+                // current value so the select reports it instead of silently
+                // showing the first option.
+                const opts = slot.url && !photoOpts.some((o) => o.value === slot.url)
+                  ? [...photoOpts, { value: slot.url, label: `Custom — ${slot.url.split('/').pop()}` }]
+                  : photoOpts;
                 return (
                   <React.Fragment key={cat}>
-                    <TweakSelect label={cat} value={slot.url} options={photoOpts}
+                    <TweakSelect label={cat} value={slot.url} options={opts}
                                  onChange={(v) => mergeImageSlot('categoryImages', cat, { url: v })} />
-                    {slot.url && <TweakImageMeta slot={slot} label={cat}
+                    {slot.url && <TweakImageMeta slot={slot} label={cat} showScale
                       onPatch={(p) => mergeImageSlot('categoryImages', cat, p)} />}
                   </React.Fragment>
                 );
