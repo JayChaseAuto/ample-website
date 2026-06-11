@@ -147,6 +147,11 @@
   --s-20: 80px;
   --s-24: 96px;
 
+  /* ---------- Layout ---------- */
+  /* Header bar height — the mobile nav drawer anchors to this, so they
+     must always change together. */
+  --header-h: 76px;
+
   /* ---------- Radii ---------- */
   /* The brand leans ENGINEERED: hard corners on panels, small rounds
      on inline chips, pill for tags. Avoid huge rounded-2xl softness. */
@@ -600,14 +605,14 @@ html.lenis, html.lenis body { height: auto; }
   border-bottom: 1px solid var(--border-1);
 }
 .site-header-inner {
-  height: 64px;
+  height: var(--header-h);
   display: flex; align-items: center;
   padding: 0 clamp(16px, 4vw, 40px);
   gap: clamp(16px, 3vw, 40px);
   max-width: 1440px; margin: 0 auto;
 }
 .site-logo { display: inline-flex; align-items: center; text-decoration: none; }
-.site-logo img { height: 22px; display: block; }
+.site-logo img { height: 36px; display: block; }
 
 .site-nav { display: flex; gap: 28px; flex: 1; }
 .site-nav-link {
@@ -620,7 +625,7 @@ html.lenis, html.lenis body { height: auto; }
   padding: 6px 0;
   transition: color 120ms;
   /* Touch target — keeps the link >=44px tall on mobile without bloating
-     the bar on desktop (header is 64px). */
+     the bar on desktop (header is var(--header-h)). */
   display: inline-flex; align-items: center;
 }
 .site-nav-link.is-active {
@@ -657,7 +662,7 @@ html.lenis, html.lenis body { height: auto; }
   .site-burger { display: inline-flex; }
   .site-nav {
     position: fixed;
-    top: 64px; left: 0; right: 0;
+    top: var(--header-h); left: 0; right: 0;
     flex-direction: column;
     gap: 0;
     background: rgba(11, 11, 13, 0.96);
