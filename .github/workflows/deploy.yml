@@ -24,6 +24,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install build deps
+        run: npm ci
+
+      # Compiles JSX (drops in-browser Babel), swaps React to production
+      # builds, tightens the CSP, and prerenders SEO stub pages + sitemap.
+      # The source tree stays zero-build for the localhost editor.
+      - name: Build deploy artifact
+        run: npm run build
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -31,10 +46,10 @@ jobs:
           # toggle in repo settings.
           enablement: true
 
-      - name: Upload project/ as Pages artifact
+      - name: Upload dist/ as Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./project
+          path: ./dist
 
       - name: Deploy to GitHub Pages
         id: deployment

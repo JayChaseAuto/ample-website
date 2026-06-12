@@ -1,0 +1,12 @@
+{
+  "name": "ample-website-build",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "audit-assets": "node scripts/audit-assets.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
