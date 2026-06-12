@@ -6,21 +6,26 @@
    ========================================================================== */
 
 /* ---------- Web fonts ---------- */
-/* Alibaba PuHuiTi — the primary UI typeface (Chinese + Latin).
-   Geometric, clean, industrial. Pairs naturally with the Ample wordmark. */
+/* Alibaba PuHuiTi — the primary UI typeface. Subset to Latin woff2
+   (~14KB each, was 7MB OTFs — originals kept at repo root /font-originals).
+   unicode-range means any future non-Latin character falls back to the
+   system font instead of rendering tofu; re-subset from the originals if
+   the site ever needs CJK. */
 @font-face {
   font-family: "AlibabaPuHuiTi";
-  src: url("fonts/AlibabaPuHuiTi-2-65-Medium.otf") format("opentype");
+  src: url("fonts/AlibabaPuHuiTi-2-65-Medium.latin.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
 }
 @font-face {
   font-family: "AlibabaPuHuiTi";
-  src: url("fonts/AlibabaPuHuiTi-2-75-SemiBold.otf") format("opentype");
+  src: url("fonts/AlibabaPuHuiTi-2-75-SemiBold.latin.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+2000-206F, U+20AC, U+2122, U+2212;
 }
 
 /* Proxima Sans Medium — used for Latin / product descriptor text on the

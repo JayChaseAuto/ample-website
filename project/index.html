@@ -28,6 +28,9 @@
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- crossorigin is required on font preloads even same-origin -->
+<link rel="preload" as="font" type="font/woff2" href="styles/fonts/AlibabaPuHuiTi-2-65-Medium.latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="styles/fonts/AlibabaPuHuiTi-2-75-SemiBold.latin.woff2" crossorigin>
 <!-- LCP: the homepage hero background. Keep in sync with
      TWEAK_DEFAULTS.heroImage — the CI build re-derives this automatically. -->
 <link rel="preload" as="image" href="assets/hero-d3c3d9c4.webp" fetchpriority="high">
@@ -746,7 +749,7 @@ const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
   "goldPromiseEyebrow": "Service Promise",
   "goldPromiseLine1": "We stand behind every part.",
   "goldPromiseLine2": "Trusted by professionals.",
-  "goldStandardMedia": "assets\/gold-dyno-094485be.mov",
+  "goldStandardMedia": "assets\/gold-dyno-094485be.mp4",
   "goldFeatureImages": {
     "precision": {
       "url": "assets\/gold-precision-11609917.webp",
