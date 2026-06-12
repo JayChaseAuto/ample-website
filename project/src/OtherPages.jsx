@@ -191,6 +191,9 @@ function LabMediaBox() {
         <video
           src={media}
           autoPlay loop muted playsInline
+          preload="metadata"
+          controlsList="nodownload"
+          disablePictureInPicture
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', background: '#000' }}
         />
       )}
