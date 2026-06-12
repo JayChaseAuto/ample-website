@@ -18,6 +18,7 @@ yarn-error.log*
 # Local build / cache
 *.log
 .cache/
+dist/
 
 # Local Claude/AI scratch
 .claude/
