@@ -1,4 +1,4 @@
 Contact: mailto:support@ampleproducts.ca
 Expires: 2027-06-12T00:00:00.000Z
-Canonical: https://jaychaseauto.github.io/ample-website/.well-known/security.txt
+Canonical: https://ampleproducts.ca/.well-known/security.txt
 Preferred-Languages: en

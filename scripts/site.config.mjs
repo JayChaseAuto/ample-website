@@ -5,7 +5,7 @@
 // index.html head metas, robots.txt, 404.html, .well-known/security.txt)
 // and set the domain in repo Settings -> Pages. The generated artifact
 // (sitemap, robots, prerendered stubs) follows this constant automatically.
-export const SITE_URL = 'https://jaychaseauto.github.io/ample-website/';
+export const SITE_URL = 'https://ampleproducts.ca/';
 
 // Production CSP for the deploy artifact. No unsafe-eval (babel-standalone
 // is gone after the build) and no unsafe-inline scripts (all inline

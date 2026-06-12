@@ -11,4 +11,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://jaychaseauto.github.io/ample-website/sitemap.xml
+Sitemap: https://ampleproducts.ca/sitemap.xml
