@@ -16,7 +16,7 @@
 <!-- Square "a" glyph cropped from the wordmark — the full-width logo
      squishes into an unreadable blob in a square tab slot. ?v= busts the
      browser's separate (and stubborn) favicon cache. -->
-<link rel="icon" type="image/png" href="assets/favicon-512.png?v=2">
+<link rel="icon" type="image/png" href="assets/favicon-512.png?v=3">
 <link rel="apple-touch-icon" href="assets/favicon-512.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ample.">
@@ -1984,18 +1984,33 @@ function App() {
                 );
               })}
               <TweakSection label="Featured · Catalog rail"
-                            subtitle="Zoom each product image on the home rail. Drag the image on its card to reposition. Shared with the same product's catalog card." />
+                            subtitle="Frame each product image on the home rail: Fit shows the whole photo, Fill crops to cover the card. Zoom below 1 pulls back to reveal background; Padding adds breathing room. Drag the image on its card to reposition. Shared with the same product's catalog card." />
               {(window.PRODUCT_ORDER || []).slice(0, t.gridCols || 4).map((slug) => {
                 const prod = (window.PRODUCTS || {})[slug] || {};
                 const ov = (t.productOverrides || {})[slug] || {};
                 const scale = typeof ov.cardScale === 'number'
                   ? ov.cardScale
                   : (typeof t.catalogCardScale === 'number' ? t.catalogCardScale : 1);
+                const padding = typeof ov.cardPadding === 'number'
+                  ? ov.cardPadding
+                  : (typeof t.catalogCardPadding === 'number' ? t.catalogCardPadding : 16);
+                const name = prod.title || slug;
                 return (
-                  <TweakSlider key={slug}
-                               label={`${prod.title || slug} · zoom`}
-                               value={scale} min={0.5} max={2.5} step={0.05}
-                               onChange={(v) => setProductTweak(slug, 'cardScale', v)} />
+                  <React.Fragment key={slug}>
+                    <TweakRadio label={`${name} · fit`}
+                                value={ov.cardImageFit || t.cardImageFit || 'contain'}
+                                options={[
+                                  { value: 'cover', label: 'Fill' },
+                                  { value: 'contain', label: 'Fit' },
+                                ]}
+                                onChange={(v) => setProductTweak(slug, 'cardImageFit', v)} />
+                    <TweakSlider label={`${name} · zoom`}
+                                 value={scale} min={0.5} max={2.5} step={0.05}
+                                 onChange={(v) => setProductTweak(slug, 'cardScale', v)} />
+                    <TweakSlider label={`${name} · padding`}
+                                 value={padding} min={0} max={40} step={2} unit="px"
+                                 onChange={(v) => setProductTweak(slug, 'cardPadding', v)} />
+                  </React.Fragment>
                 );
               })}
             </>
