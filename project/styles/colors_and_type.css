@@ -624,10 +624,23 @@ html.lenis, html.lenis body { height: auto; }
   gap: clamp(16px, 3vw, 40px);
   max-width: 1440px; margin: 0 auto;
 }
-.site-logo { display: inline-flex; align-items: center; text-decoration: none; }
-.site-logo img { height: 36px; display: block; }
+/* flex-shrink 0: the logo must NEVER be compressed by a tight nav — a
+   shrinking flex item clips the wordmark sideways ("bent" logo). When
+   space runs out the nav scrolls instead (below) and the logo height
+   eases down via clamp. */
+.site-logo { display: inline-flex; align-items: center; text-decoration: none; flex-shrink: 0; }
+.site-logo img { height: clamp(28px, 4.8vw, 36px); display: block; }
 
-.site-nav { display: flex; gap: 28px; flex: 1; }
+/* min-width 0 + overflow-x lets the nav give way gracefully on tight
+   viewports (just above the 720px burger breakpoint) instead of crushing
+   its siblings; the scrollbar is visually suppressed but touch/trackpad
+   scrolling still works. */
+.site-nav {
+  display: flex; gap: 28px; flex: 1;
+  min-width: 0; overflow-x: auto;
+  scrollbar-width: none; -ms-overflow-style: none;
+}
+.site-nav::-webkit-scrollbar { display: none; }
 .site-nav-link {
   font-family: var(--font-product);
   font-size: 11px; font-weight: 700;
@@ -638,8 +651,11 @@ html.lenis, html.lenis body { height: auto; }
   padding: 6px 0;
   transition: color 120ms;
   /* Touch target — keeps the link >=44px tall on mobile without bloating
-     the bar on desktop (header is var(--header-h)). */
+     the bar on desktop (header is var(--header-h)). nowrap + no-shrink:
+     when the nav overflows it scrolls as a strip; links never wrap or
+     squeeze. */
   display: inline-flex; align-items: center;
+  white-space: nowrap; flex-shrink: 0;
 }
 .site-nav-link.is-active {
   color: var(--ample-red);

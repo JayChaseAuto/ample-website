@@ -111,6 +111,13 @@ html = html.replace(
 );
 html = html.replace(/<script src="https:\/\/unpkg\.com\/@babel\/standalone[^>]*><\/script>\r?\n?/, '');
 
+// 4b. cache-bust the stylesheet — GH Pages caches ~10min per file with no
+// coordination, so a fresh HTML + stale CSS mix can ship layout bugs.
+html = html.replace(
+  /<link rel="stylesheet" href="styles\/colors_and_type\.css">/,
+  `<link rel="stylesheet" href="styles/colors_and_type.css?v=${sha}">`
+);
+
 // 5. CSP swap (the source tag is kept single-line for exactly this match).
 // The explanatory dev comment goes too — it mentions 'unsafe-eval' and
 // would trip the sanity gate below.
