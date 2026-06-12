@@ -2,8 +2,43 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<!-- CSP: dev-compatible policy (babel-standalone needs 'unsafe-eval'; the
+     editor's drag-from-web needs wide connect-src/img-src). The CI build
+     swaps this single-line tag for a tightened production policy — keep it
+     on ONE line so the build's regex match stays trivial. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https: data: blob:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>ample. Road-ready precision</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="OEM+ automotive parts engineered above stock spec — ceramic brake pads, calipers, radiators, sensors, filters and more. Every Gold Standard batch is dyno-tested before it ships.">
+<meta name="theme-color" content="#0B0B0D">
+<link rel="canonical" href="https://jaychaseauto.github.io/ample-website/">
+<link rel="icon" type="image/png" href="assets/logo-red-transparent.png">
+<link rel="apple-touch-icon" href="assets/logo-red-transparent.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ample.">
+<meta property="og:title" content="ample. Road-ready precision">
+<meta property="og:description" content="OEM+ automotive parts engineered above stock spec. Dyno-tested, road-ready.">
+<meta property="og:url" content="https://jaychaseauto.github.io/ample-website/">
+<meta property="og:image" content="https://jaychaseauto.github.io/ample-website/assets/og-home.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ample. Road-ready precision">
+<meta name="twitter:description" content="OEM+ automotive parts engineered above stock spec. Dyno-tested, road-ready.">
+<meta name="twitter:image" content="https://jaychaseauto.github.io/ample-website/assets/og-home.jpg">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- LCP: the homepage hero background. Keep in sync with
+     TWEAK_DEFAULTS.heroImage — the CI build re-derives this automatically. -->
+<link rel="preload" as="image" href="assets/hero-d3c3d9c4.webp" fetchpriority="high">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"Organization","@id":"https://jaychaseauto.github.io/ample-website/#org",
+  "name":"ample.","url":"https://jaychaseauto.github.io/ample-website/",
+  "logo":"https://jaychaseauto.github.io/ample-website/assets/logo-red-transparent.png"},
+ {"@type":"WebSite","name":"ample.","url":"https://jaychaseauto.github.io/ample-website/",
+  "publisher":{"@id":"https://jaychaseauto.github.io/ample-website/#org"}}]}
+</script>
 <link rel="stylesheet" href="styles/colors_and_type.css">
 <style>
   html, body { margin: 0; background: var(--bg-0); }
@@ -12,10 +47,20 @@
   button { font-family: inherit; }
   input, textarea { font-family: inherit; }
   input:focus, textarea:focus { border-color: var(--ample-red) !important; }
+  /* Image-download deterrents — visitors only (editor mode sets
+     data-editor="1" and needs native drag/select for its tools). Media
+     elements only: body text stays selectable. */
+  html:not([data-editor="1"]) img,
+  html:not([data-editor="1"]) video {
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
 </style>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.7/babel.min.js" integrity="sha384-ezQ6HS3FLspd9te19o2McUV6FAK091+GG7KO54f/R8DKgCDi7fULhapNrd5LY+vG" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/lenis@1.1.20/dist/lenis.min.js" integrity="sha384-eD5ubmuCcvTdCADWuSchJYE7wcj2nzNr0itbrh6w/KJyBiltSZ8w3VFRBSWu5YQ8" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -97,6 +142,26 @@
     window.__ampleEditor = flag === '1' || stored || flag !== '0';
   } catch (e) { window.__ampleEditor = false; }
   if (window.__ampleEditor) document.documentElement.setAttribute('data-editor', '1');
+})();
+</script>
+<!-- Image-download deterrents (script half — the CSS half is in the inline
+     <style> above). Blocks right-click + native drag on media for VISITORS.
+     Deterrence only: DevTools and direct asset URLs always win. Must run
+     after the editor gate; in editor mode we bail so drag-to-pan, file-drop
+     and drag-from-web keep native behavior. Capture phase so a stopPropagation
+     in page code can't accidentally re-enable the menu. -->
+<script>
+(function () {
+  if (window.__ampleEditor) return;
+  var MEDIA = 'img, video, picture';
+  document.addEventListener('contextmenu', function (e) {
+    var t = e.target;
+    if (t && t.closest && t.closest(MEDIA)) e.preventDefault();
+  }, true);
+  document.addEventListener('dragstart', function (e) {
+    var t = e.target;
+    if (t && t.closest && t.closest(MEDIA)) e.preventDefault();
+  }, true);
 })();
 </script>
 <script type="text/babel" src="src/tweaks-panel.jsx?v=60"></script>

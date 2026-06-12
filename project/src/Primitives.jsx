@@ -1,13 +1,17 @@
 /* Ample — shared primitives (Icon, Button, Badge, Eyebrow, Stripes, etc.) */
 
 function Icon({ name, size = 20, color, style, ...rest }) {
-  const src = `https://unpkg.com/lucide-static@latest/icons/${name}.svg`;
+  // Pinned (was @latest): an unpinned tag re-resolves on unpkg's schedule and
+  // could swap icon artwork — or worse — under us. Bump deliberately.
+  const src = `https://unpkg.com/lucide-static@1.18.0/icons/${name}.svg`;
   return (
     <img
       src={src}
       width={size}
       height={size}
       alt=""
+      loading="lazy"
+      decoding="async"
       style={{
         display: 'inline-block',
         verticalAlign: 'middle',

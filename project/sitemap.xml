@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Bootstrap sitemap: root only. The CI build (scripts/generate-stubs.mjs)
+     overwrites this in the deploy artifact with the full list of
+     prerendered section + product pages. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://jaychaseauto.github.io/ample-website/</loc></url>
+</urlset>
