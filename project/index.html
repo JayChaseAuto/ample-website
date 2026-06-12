@@ -1980,6 +1980,21 @@ function App() {
                   </React.Fragment>
                 );
               })}
+              <TweakSection label="Featured · Catalog rail"
+                            subtitle="Zoom each product image on the home rail. Drag the image on its card to reposition. Shared with the same product's catalog card." />
+              {(window.PRODUCT_ORDER || []).slice(0, t.gridCols || 4).map((slug) => {
+                const prod = (window.PRODUCTS || {})[slug] || {};
+                const ov = (t.productOverrides || {})[slug] || {};
+                const scale = typeof ov.cardScale === 'number'
+                  ? ov.cardScale
+                  : (typeof t.catalogCardScale === 'number' ? t.catalogCardScale : 1);
+                return (
+                  <TweakSlider key={slug}
+                               label={`${prod.title || slug} · zoom`}
+                               value={scale} min={0.5} max={2.5} step={0.05}
+                               onChange={(v) => setProductTweak(slug, 'cardScale', v)} />
+                );
+              })}
             </>
           )}
           {routeKey === 'catalog' && (
