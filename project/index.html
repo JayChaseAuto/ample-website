@@ -63,6 +63,60 @@
     -webkit-user-select: none;
     -webkit-touch-callout: none;
   }
+  /* Seasonal Canada Day popup. Shows once per visitor, auto-expires after
+     Jul 1 (date check + removal both live in the inline script near </body>).
+     z-index sits above the site (header is 50) but below the editor panel
+     (2147483645) so authoring stays usable while previewing. The card
+     entrance scales only — opacity stays 1 — so it's visible even where
+     animations are throttled; reduced-motion gets no animation. */
+  .cdpop-backdrop {
+    position: fixed; inset: 0; z-index: 99990;
+    display: flex; align-items: center; justify-content: center; padding: 24px;
+    background: rgba(8, 8, 12, 0.82);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  }
+  .cdpop-card {
+    position: relative; width: min(90vw, 360px);
+    border-radius: 14px; overflow: hidden; background: #0b0b1a;
+    border: 1px solid rgba(233, 32, 36, 0.55);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    animation: cdpop-in 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cdpop-card img { display: block; width: 100%; height: auto; max-height: 82vh; object-fit: contain; }
+  .cdpop-close {
+    position: absolute; top: 10px; right: 10px;
+    width: 34px; height: 34px; border-radius: 999px; border: 0; cursor: pointer;
+    background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 22px; line-height: 1;
+    font-family: inherit; display: flex; align-items: center; justify-content: center;
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+    transition: background 140ms, transform 140ms;
+  }
+  .cdpop-close:hover { background: var(--ample-red, #e92024); transform: scale(1.06); }
+  @keyframes cdpop-in { from { transform: scale(0.96); } to { transform: scale(1); } }
+  @media (prefers-reduced-motion: reduce) { .cdpop-card { animation: none; } }
+  /* Slim Canada-red announcement bar at the very top (normal flow, above the
+     sticky header, scrolls away). Companion to .cdpop-* — same seasonal
+     script + expiry. */
+  .cdbanner {
+    position: relative; z-index: 60;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 9px 44px; min-height: 38px;
+    background: linear-gradient(90deg, #c8102e 0%, #e92024 50%, #c8102e 100%);
+    color: #fff; text-align: center;
+  }
+  .cdbanner-msg {
+    font-family: var(--font-product, ui-sans-serif, system-ui, sans-serif);
+    font-size: 12.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .cdbanner-close {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    width: 28px; height: 28px; border: 0; border-radius: 999px; cursor: pointer;
+    background: rgba(0, 0, 0, 0.18); color: #fff; font-size: 18px; line-height: 1;
+    font-family: inherit; display: flex; align-items: center; justify-content: center;
+    transition: background 140ms;
+  }
+  .cdbanner-close:hover { background: rgba(0, 0, 0, 0.38); }
+  @media (max-width: 480px) { .cdbanner-msg { font-size: 11px; letter-spacing: 0.06em; } }
 </style>
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
@@ -2684,6 +2738,88 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App />);
     if (consecutiveFails >= 5 && Date.now() % 10000 > 2000) return;
     tick();
   }, 2000);
+})();
+</script>
+
+<!-- Seasonal Canada Day greeting: a once-per-visitor modal popup AND a
+     persistent dismissible top banner. Both self-remove from Jul 2, 2026
+     onward (date check, no deploy needed) and each remembers its own
+     dismissal. Pure vanilla so it works identically in dev (babel) and the
+     compiled production build, and lives outside #root so React re-renders
+     never disturb it. To retire early, delete this script + the .cdpop-* /
+     .cdbanner-* CSS + the webp asset (search `cdpop`/`cdbanner`). -->
+<script>
+(function () {
+  // Hide from Jul 2 onward (local time) — i.e. visible through all of Jul 1.
+  var CUTOFF = new Date(2026, 6, 2, 0, 0, 0); // month is 0-indexed: 6 = July
+  var POP_KEY = 'ample_canada_day_2026_dismissed';
+  var BANNER_KEY = 'ample_canada_day_2026_banner_dismissed';
+
+  function dismissed(key) {
+    try { return localStorage.getItem(key) === '1'; } catch (e) { return false; }
+  }
+  function remember(key) {
+    try { localStorage.setItem(key, '1'); } catch (e) {}
+  }
+
+  // Slim festive bar at the very top of the page (above the sticky header,
+  // in normal flow so it scrolls away). Independent of the popup.
+  function buildBanner() {
+    if (dismissed(BANNER_KEY) || document.getElementById('cdbanner')) return;
+    var bar = document.createElement('div');
+    bar.id = 'cdbanner';
+    bar.className = 'cdbanner';
+    bar.setAttribute('role', 'region');
+    bar.setAttribute('aria-label', 'Canada Day');
+    bar.innerHTML =
+      '<span class="cdbanner-msg">🍁 Happy Canada Day from ample.</span>' +
+      '<button type="button" class="cdbanner-close" aria-label="Dismiss">×</button>';
+    bar.querySelector('.cdbanner-close').addEventListener('click', function () {
+      remember(BANNER_KEY);
+      if (bar.parentNode) bar.parentNode.removeChild(bar);
+    });
+    document.body.insertBefore(bar, document.body.firstChild);
+  }
+
+  // Once-per-visitor centered modal using the supplied poster image.
+  function buildPopup() {
+    if (dismissed(POP_KEY) || document.getElementById('cdpop')) return;
+    var back = document.createElement('div');
+    back.id = 'cdpop';
+    back.className = 'cdpop-backdrop';
+    back.setAttribute('role', 'dialog');
+    back.setAttribute('aria-modal', 'true');
+    back.setAttribute('aria-label', 'Happy Canada Day from ample');
+    back.innerHTML =
+      '<div class="cdpop-card">' +
+        '<button type="button" class="cdpop-close" aria-label="Close">×</button>' +
+        '<img src="assets/canada-day-2026.webp" width="760" height="1267" ' +
+             'alt="Happy Canada Day from ample." />' +
+      '</div>';
+
+    function close() {
+      remember(POP_KEY);
+      document.removeEventListener('keydown', onKey);
+      if (back.parentNode) back.parentNode.removeChild(back);
+    }
+    function onKey(e) { if (e.key === 'Escape' || e.keyCode === 27) close(); }
+
+    back.addEventListener('click', function (e) { if (e.target === back) close(); });
+    back.querySelector('.cdpop-close').addEventListener('click', close);
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(back);
+  }
+
+  function init() {
+    if (new Date() >= CUTOFF || !document.body) return; // season passed
+    buildBanner();
+    buildPopup();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();
 </script>
 </body>
