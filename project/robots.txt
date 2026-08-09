@@ -4,9 +4,9 @@
 #  Applebot, Applebot-Extended, meta-externalagent — a universal allow
 #  covers every bot per RFC 9309, no per-bot groups needed).
 #
-# Note: while the site lives at jaychaseauto.github.io/ample-website/,
-# crawlers consult the DOMAIN-ROOT robots.txt (which 404s = allow all).
-# This file becomes authoritative once the custom domain is attached.
+# Served at the root of https://ampleproducts.ca/ (custom domain attached).
+# The CI build writes a regenerated copy into the deploy artifact
+# (scripts/generate-stubs.mjs) — this source copy is the dev fallback.
 
 User-agent: *
 Allow: /
