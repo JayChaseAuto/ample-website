@@ -80,7 +80,9 @@ const page = ({ rel, title, desc, ogType, imgAbs, imgRel, canonical, jsonLd, bod
 <title>${esc(title)} — ample.</title>
 <meta name="description" content="${esc(desc)}">
 <link rel="canonical" href="${canonical}">
-<link rel="icon" type="image/png" href="${rel}assets/logo-red-transparent.png">
+<link rel="icon" href="${rel}favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="192x192" href="${rel}assets/favicon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="${rel}assets/apple-touch-icon.png">
 <meta name="theme-color" content="#0B0B0D">
 <meta property="og:type" content="${ogType}">
 <meta property="og:site_name" content="ample.">
@@ -127,10 +129,20 @@ export function generateStubs(distDir) {
   const cardImages = tweaks.catalogCardImages || {};
   const urls = [SITE_URL];
 
+  // Mirrors the homepage Organization JSON-LD (same @id merges the
+  // entities) — keep the two in sync when either changes.
   const orgLd = {
     '@context': 'https://schema.org', '@type': 'Organization',
-    '@id': `${SITE_URL}#org`, name: 'ample.', url: SITE_URL,
-    logo: `${SITE_URL}assets/logo-red-transparent.png`,
+    '@id': `${SITE_URL}#org`, name: 'ample.',
+    alternateName: ['Ample Products', 'ample products'],
+    url: SITE_URL,
+    logo: {
+      '@type': 'ImageObject', '@id': `${SITE_URL}#logo`,
+      url: `${SITE_URL}assets/logo-red-transparent.png`,
+      width: 668, height: 237, caption: 'ample.',
+    },
+    email: 'support@ampleproducts.ca',
+    areaServed: 'CA',
   };
 
   for (const s of SECTIONS) {

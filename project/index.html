@@ -8,16 +8,23 @@
      on ONE line so the build's regex match stays trivial. -->
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https:; media-src 'self' blob: data:; connect-src 'self' https: data: blob:; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<title>ample. Road-ready precision</title>
+<title>ample. Road-ready precision | Ample Products</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="OEM+ automotive parts engineered above stock spec — ceramic brake pads, calipers, radiators, sensors, filters and more. Every Gold Standard batch is dyno-tested before it ships.">
+<meta name="description" content="Ample Products (ample.) — Canadian OEM+ auto parts engineered above stock spec: brake pads, calipers, radiators, sensors, filters. Dyno-tested before it ships.">
 <meta name="theme-color" content="#0B0B0D">
 <link rel="canonical" href="https://ampleproducts.ca/">
-<!-- Square "a" brand mark (supplied artwork), transparent background,
-     padded for tab breathing room. ?v= busts the browser's separate (and
-     stubborn) favicon cache — bump it whenever favicon-512.png changes. -->
-<link rel="icon" type="image/png" href="assets/favicon-512.png?v=5">
-<link rel="apple-touch-icon" href="assets/favicon-512.png">
+<!-- Square "a" brand mark (supplied artwork), transparent background.
+     Google Search requires a STABLE favicon URL — favicon.ico at the site
+     root and the versionless size PNGs are permanent addresses: never add
+     ?v= to them or rename them. If the mark changes, regenerate all sizes
+     from favicon-512.png in place (16/32/48/96/192 + favicon.ico + the
+     180px apple-touch-icon) and only bump ?v= on the 512 link below. -->
+<link rel="icon" href="favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" type="image/png" sizes="96x96" href="assets/favicon-96.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="assets/favicon-512.png?v=5">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ample.">
 <meta property="og:title" content="ample. Road-ready precision">
@@ -40,9 +47,22 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@graph":[
  {"@type":"Organization","@id":"https://ampleproducts.ca/#org",
-  "name":"ample.","url":"https://ampleproducts.ca/",
-  "logo":"https://ampleproducts.ca/assets/logo-red-transparent.png"},
- {"@type":"WebSite","name":"ample.","url":"https://ampleproducts.ca/",
+  "name":"ample.",
+  "alternateName":["Ample Products","ample products"],
+  "url":"https://ampleproducts.ca/",
+  "logo":{"@type":"ImageObject","@id":"https://ampleproducts.ca/#logo",
+   "url":"https://ampleproducts.ca/assets/logo-red-transparent.png",
+   "width":668,"height":237,"caption":"ample."},
+  "image":{"@id":"https://ampleproducts.ca/#logo"},
+  "email":"support@ampleproducts.ca",
+  "contactPoint":[
+   {"@type":"ContactPoint","contactType":"customer support","email":"support@ampleproducts.ca"},
+   {"@type":"ContactPoint","contactType":"sales","email":"partners@ampleproducts.ca"}],
+  "areaServed":"CA"},
+ {"@type":"WebSite","@id":"https://ampleproducts.ca/#website",
+  "name":"ample.",
+  "alternateName":"Ample Products",
+  "url":"https://ampleproducts.ca/",
   "publisher":{"@id":"https://ampleproducts.ca/#org"}}]}
 </script>
 <link rel="stylesheet" href="styles/colors_and_type.css">
